@@ -284,14 +284,14 @@ const FinancialAssistanceForm = ({
                 presentAddress:
                   prev.workforceApplicant?.presentAddress || parsedApplicationData?.applicantInfo?.presentAddress || employeeData?.presentAddress || "",
               },
-        workforceEmployee:parsedApplicationData
+        workforceEmployee: parsedApplicationData
           ? {
               // Replace with deceasedWorkerInfo data
               ...parsedApplicationData.deceasedWorkerInfo,
               // Retain the existing workforceEmployee id
-              id: prev.workforceEmployee?.id, 
+              id: prev.workforceEmployee?.id,
             }
-          :user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+          : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
             ? {
                 ...prev.workforceEmployee,
                 nameEn: prev.workforceEmployee?.nameEn || pickedEmployeeData?.firstNameEn || "",
@@ -352,8 +352,14 @@ const FinancialAssistanceForm = ({
         organizationType: parsedApplicationData?.organizationType || organizationType,
         applicationType: parsedApplicationData?.applicationType || selectedApplicationType,
         grantAmount: parsedApplicationData?.grantAmount || parsedApplicationData?.employeeAccidentInfo.grantAmount,
-        dependents: parsedApplicationData?.employeeDependentInfo || [{}],
-        employeeBankInfo: parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
+        dependents:
+          prev.dependents && Object.keys(prev.dependents[0] || {}).length > 0 && prev.dependents[0].fullName !== ""
+            ? prev.dependents
+            : parsedApplicationData?.employeeDependentInfo || [{}],
+        employeeBankInfo:
+          prev.employeeBankInfo && Object.keys(prev.employeeBankInfo[0] || {}).length > 0 && prev.employeeBankInfo[0].accountNumber !== ""
+            ? prev.employeeBankInfo
+            : parsedApplicationData?.employeeBankInfo || employeeData?.employeeBankInfo || [{}],
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || formData?.metadata || {},
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
@@ -375,7 +381,7 @@ const FinancialAssistanceForm = ({
                 birthDate: parsedApplicationData?.deceasedWorkerInfo?.birthDate,
                 gender: parsedApplicationData?.deceasedWorkerInfo?.gender,
                 citizenship: parsedApplicationData?.deceasedWorkerInfo?.citizenship,
-                position:parsedApplicationData?.id?parsedApplicationData?.deceasedWorkerInfo?.position: formData?.workforceEmployee?.position,
+                position: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.position : formData?.workforceEmployee?.position,
                 maritalStatus: prev.workforceEmployee?.maritalStatus || parsedApplicationData?.deceasedWorkerInfo?.maritalStatus || "",
                 nid: parsedApplicationData?.id ? parsedApplicationData?.deceasedWorkerInfo?.nid : employeeData?.nid || "",
                 birthCertificateNo: parsedApplicationData?.id
@@ -412,8 +418,6 @@ const FinancialAssistanceForm = ({
       return { ...prev, [key]: value };
     });
   };
-
-  
 
   const handleNext = async () => {
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
@@ -463,8 +467,11 @@ const FinancialAssistanceForm = ({
     }
     if (Object.keys(newErrors).length === 0 || newErrors?.documents === null) {
       const nextStep = activeStep + 1;
-      if ((nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate))|| (nextStep === 2 && !isAtLeast18YearsOld(formData?.workforceApplicant?.birthDate,12))) {
-        let fakeErrors = nextStep===2 ?{...newErrors,rdmp:"core.error.applicantAge"}:{ ...newErrors, rdmp:"core.error.workerAge"};
+      if (
+        (nextStep === 3 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) ||
+        (nextStep === 2 && !isAtLeast18YearsOld(formData?.workforceApplicant?.birthDate, 12))
+      ) {
+        let fakeErrors = nextStep === 2 ? { ...newErrors, rdmp: "core.error.applicantAge" } : { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         return false;
       } else {
