@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel, Dialog, CircularProgress } from "@material-ui/core";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
@@ -108,6 +108,8 @@ const FinancialAssistanceForm = ({
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+  const [stepLoadingState, setStepLoadingState] = useState({});
+  const [isNavigationBlocked, setIsNavigationBlocked] = useState(false);
   const [nidOrBcn, setNidOrBcn] = useState({
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
@@ -420,6 +422,10 @@ const FinancialAssistanceForm = ({
   };
 
   const handleNext = async () => {
+    if (isNavigationBlocked) {
+      return; // Prevent any navigation while data is loading
+    }
+
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     delete newErrors.documents;
     const allAssociationDate = new Date("2022-06-21");
@@ -489,7 +495,13 @@ const FinancialAssistanceForm = ({
           setAlertMessage(true);
           return false;
         }
-        setActiveStep(nextStep);
+
+        // ===== LOADING BLOCK: Prevent moving to bank step until dependent data is ready =====
+        if (nextStep === 5) {
+          setIsNavigationBlocked(true);
+          setStepLoadingState((prev) => ({ ...prev, [nextStep]: true }));
+        }
+
         if (nextStep === 3 || nextStep === 4) {
           const workforceEmployeeData = {
             nameEn: formData?.workforceEmployee?.nameEn,
@@ -641,11 +653,21 @@ const FinancialAssistanceForm = ({
             });
           }
           await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
-          if (parsedApplicationData?.id) {
-            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]));
-          } else {
-            await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]));
+          
+          // ===== FETCH DEPENDENT DATA AND UNBLOCK NAVIGATION =====
+          try {
+            if (parsedApplicationData?.id) {
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]));
+            } else {
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]));
+            }
+          } finally {
+            // Move to next step and unblock navigation after data fetch completes
+            setActiveStep(nextStep);
+            setIsNavigationBlocked(false);
+            setStepLoadingState((prev) => ({ ...prev, [nextStep]: false }));
           }
+          return true;
         } else {
           const updateApplicationData = {
             // id: decodeId(applicationId[0]?.id) || parsedApplicationData?.id,
@@ -691,6 +713,13 @@ const FinancialAssistanceForm = ({
           // }
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         }
+        
+        // Set active step and unblock navigation (except for step 5 which handles it separately)
+        if (nextStep !== 5) {
+          setActiveStep(nextStep);
+          setIsNavigationBlocked(false);
+        }
+        
         return true;
       }
     }
@@ -899,7 +928,11 @@ const FinancialAssistanceForm = ({
           ) : activeStep === 5 ? (
             <>
               {!isDependentSaved ? (
-                <b>loading ...</b>
+                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="400px" gap={2}>
+                  <Typography variant="h6">
+                    <FormattedMessage id="workforce.loading.bank.data" module="workforce" />
+                  </Typography>
+                </Box>
               ) : (
                 <EmployeeDeathAccountInfoForm
                   formdata={formData}
@@ -956,6 +989,20 @@ const FinancialAssistanceForm = ({
           )}
         </div>
       </Paper>
+
+      {/* Loading Modal */}
+      <Dialog open={isNavigationBlocked} onClose={() => {}} disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" padding={4} gap={2}>
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" align="center">
+            <FormattedMessage id="workforce.processing.data" module="workforce" />
+          </Typography>
+          <Typography variant="body2" align="center" color="textSecondary">
+            <FormattedMessage id="workforce.please.wait" module="workforce" />
+          </Typography>
+        </Box>
+      </Dialog>
+
       <CustomSnackbar
         open={alertMessage}
         onClose={() => setAlertMessage(false)}

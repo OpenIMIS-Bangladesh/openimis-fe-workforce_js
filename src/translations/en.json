@@ -1209,6 +1209,7 @@
   "workforce.factory.currentDocuments": "Current Documents",
   "workforce.factory.uploadDocumentsHelp": "Upload new documents for this factory. Choose the document type before uploading.",
   "menu.website.legal.guidelines": "Legal Guidelines Management For Website",
-  "menu.website.visitor.messages": "Visitor Messages From Website"
+  "menu.website.visitor.messages": "Visitor Messages From Website",
+  "workforce.processing.data":"Data is processing"
 
 }

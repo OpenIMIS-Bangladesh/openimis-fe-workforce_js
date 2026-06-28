@@ -1122,5 +1122,7 @@
   "workforce.banks.branches.title": "শাখা সমূহ",
   "workforce.banks.addNewTooltip": "ব্যাংক/শাখা যোগ করুন",
   "workforce.banks.bankCode": "ব্যাংক কোড",
-  "workforce.banks.district": "জেলা"
+  "workforce.banks.district": "জেলা",
+  "workforce.processing.data":"ডেটা প্রক্রিয়াজাত করা হচ্ছে।"
+
 }
