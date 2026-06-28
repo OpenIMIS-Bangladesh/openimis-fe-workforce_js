@@ -683,7 +683,11 @@ export const itemFormattersSectionAdmin = (isShowHistory, modulesManager, histor
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => application?.associationType,
-    (application) => application?.workforceEmployee?.nid,
+    (application) => {
+      const parsedDeceasedInfo = JSON.parse(application?.deceasedWorkerInfo)
+      const doubleParsedDeceasedInfo = JSON.parse(parsedDeceasedInfo)
+      return (application?.applicationType ==="financialAssistance"||application?.applicationType ==="deadlyGrant")?doubleParsedDeceasedInfo?.nid:application?.workforceEmployee?.nid
+    },
     (application) => (application?.lastMovementDate ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A"),
     (application) => (application?.applicationForwardDate ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A"),
     (application) => {

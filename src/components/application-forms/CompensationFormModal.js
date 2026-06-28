@@ -309,7 +309,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                         label="workforce.employee.application.moneyAmount"
                         type="number"
                         fullWidth
-                        value={entry.amount ?? ""}
+                        value={entry.amount !== "" && !isNaN(entry.amount) ? Number(entry.amount).toFixed(2) : ""}
                         onChange={handleChange(index, "amount")}
                         inputProps={{ step: "0.01" }}
                       />
