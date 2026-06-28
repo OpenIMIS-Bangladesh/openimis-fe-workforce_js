@@ -159,7 +159,10 @@ const hiddenKeys = [
   "workforceApplicationMovements",
   "committeeId",
   "isSubmitted",
-  "status","diseaseNo","minimumDonationAmount","maximumDonationAmount"
+  "status",
+  "diseaseNo",
+  "minimumDonationAmount",
+  "maximumDonationAmount",
 ];
 
 const formatKey = (key, language) => {
@@ -235,7 +238,7 @@ const renderDetails = (
   user_type,
   remarksMap, // <--- NEW ARGUMENT
   handleRemarksChange,
-  viewedFromFlag
+  viewedFromFlag,
 ) => {
   if (!data) return null;
 
@@ -275,10 +278,30 @@ const renderDetails = (
       if (typeof item !== "object" || !item) return null;
 
       const scalars = Object.entries(item).filter(
-        ([key, value]) => typeof value !== "object" && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key) && value !== null && value !== undefined && value !== "",
+        ([key, value]) =>
+          typeof value !== "object" &&
+          ![
+            ...hiddenKeys,
+            ...(user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type != WORKFORCE_USER_TYPE.DOCTOR
+              ? ["status", "grade", "diseaseNo", "diseaseType", "minimumDonationAmount", "maximumDonationAmount"]
+              : []),
+          ].includes(key) &&
+          value !== null &&
+          value !== undefined &&
+          value !== "",
       );
       const objects = Object.entries(item).filter(
-        ([key, value]) => typeof value === "object" && value && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : []), "attachments", "employeeBankingDependents"].includes(key),
+        ([key, value]) =>
+          typeof value === "object" &&
+          value &&
+          ![
+            ...hiddenKeys,
+            ...(user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type != WORKFORCE_USER_TYPE.DOCTOR
+              ? ["status", "grade", "diseaseNo", "diseaseType", "minimumDonationAmount", "maximumDonationAmount"]
+              : []),
+            "attachments",
+            "employeeBankingDependents",
+          ].includes(key),
       );
 
       let matchingFiles = [];
@@ -306,7 +329,7 @@ const renderDetails = (
                     <span className={classes.label} style={{ fontWeight: "bold" }}>
                       {formatKey(key, language)}:
                     </span>{" "}
-                    <FormattedMessage id={formatDynamicValue(value,language)} module={"workforce"} />
+                    <FormattedMessage id={formatDynamicValue(value, language)} module={"workforce"} />
                   </Typography>
                 </Grid>
               ))}
@@ -464,11 +487,30 @@ const renderDetails = (
       );
     }
     const scalars = Object.entries(mergedData).filter(
-      ([key, value]) => typeof value !== "object" && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key) && value !== null && value !== undefined && value !== "",
+      ([key, value]) =>
+        typeof value !== "object" &&
+        ![
+          ...hiddenKeys,
+          ...(user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type != WORKFORCE_USER_TYPE.DOCTOR
+            ? ["status", "grade", "diseaseNo", "diseaseType", "minimumDonationAmount", "maximumDonationAmount"]
+            : []),
+        ].includes(key) &&
+        value !== null &&
+        value !== undefined &&
+        value !== "",
     );
     const objects = Object.entries(mergedData).filter(([key, value]) => {
       const parsed = tryParse(value);
-      return typeof parsed === "object" && parsed && ![...hiddenKeys,...((user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type !=WORKFORCE_USER_TYPE.DOCTOR) ? ["status", "grade","diseaseNo","diseaseType","minimumDonationAmount","maximumDonationAmount"] : [])].includes(key);
+      return (
+        typeof parsed === "object" &&
+        parsed &&
+        ![
+          ...hiddenKeys,
+          ...(user_type != WORKFORCE_USER_TYPE.BLWF_DOCTOR && user_type != WORKFORCE_USER_TYPE.DOCTOR
+            ? ["status", "grade", "diseaseNo", "diseaseType", "minimumDonationAmount", "maximumDonationAmount"]
+            : []),
+        ].includes(key)
+      );
     });
 
     return (
@@ -479,7 +521,7 @@ const renderDetails = (
               <span className={classes.label} style={{ fontWeight: "bold" }}>
                 {formatKey(key, language)}:
               </span>{" "}
-              <FormattedMessage id={formatDynamicValue(value,language)} module={"workforce"} />
+              <FormattedMessage id={formatDynamicValue(value, language)} module={"workforce"} />
             </Typography>
           </Grid>
         ))}
@@ -734,13 +776,17 @@ const ApplicationViewPage = ({
   const sidebarFields = useMemo(
     () => ({
       ApplicantName:
-        language === "en"
-          ? (application?.workforceEmployee?.firstNameEn || application?.workforceEmployee?.nameEn) +
-            " " +
-            (application?.workforceEmployee?.lastNameEn != null ? application?.workforceEmployee?.lastNameEn : "")
-          : (application?.workforceEmployee?.firstNameBn || application?.workforceEmployee?.nameBn) +
-            " " +
-            (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
+        application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+          ? language === "en"
+            ? application?.applicantInfo?.nameEn || "—"
+            : application?.applicantInfo?.nameBn || "—"
+          : language === "en"
+            ? (application?.workforceEmployee?.firstNameEn || application?.workforceEmployee?.nameEn) +
+              " " +
+              (application?.workforceEmployee?.lastNameEn != null ? application?.workforceEmployee?.lastNameEn : "")
+            : (application?.workforceEmployee?.firstNameBn || application?.workforceEmployee?.nameBn) +
+              " " +
+              (application?.workforceEmployee?.lastNameBn != null ? application?.workforceEmployee?.lastNameBn : ""),
       ApplicantFactoryName: language === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn,
       ...((user_type === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
         user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
@@ -758,7 +804,9 @@ const ApplicationViewPage = ({
         ApplicantDesignation: application?.workforceEmployee?.position,
       }),
 
-      ...(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && {
+      ...((user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+        user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+        user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && {
         lastGrossSalary: application?.lastBaseSalary || "—",
       }),
       ApplicationType:
@@ -779,8 +827,8 @@ const ApplicationViewPage = ({
     if (isDeathCase && fileStepNo === "workforceEmployee") {
       return "deceasedWorkerInfo";
     }
-    if (fileStepNo ==="educations") {
-      return "employeeChildrenInfo"
+    if (fileStepNo === "educations") {
+      return "employeeChildrenInfo";
     }
     return fileStepNo;
   };
@@ -901,7 +949,7 @@ const ApplicationViewPage = ({
             <>
               {filteredDocumentTypes?.map((document, index) => (
                 <Box style={{ marginTop: "10px" }}>
-                  <Typography>{language ==="en"?document?.nameEn:document?.nameBn}</Typography>
+                  <Typography>{language === "en" ? document?.nameEn : document?.nameBn}</Typography>
                   <FileUploader
                     fieldKey={document.fieldId}
                     applicationId={application?.id}
@@ -914,15 +962,18 @@ const ApplicationViewPage = ({
               ))}
             </>
           )}
-          {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR||user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) && application?.organizationType === "eis" && (
-            <Grid container spacing={2} style={{ marginTop: "10px" }}>
-              <Grid item xs={12}>
-                <Button variant="contained" color="primary" onClick={() => setOpenCompensationInfoModal(true)} fullwidth>
-                  {<FormattedMessage id="workforce.other.compensationInfo" module="workforce" />}
-                </Button>
+          {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+            user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) &&
+            application?.organizationType === "eis" && (
+              <Grid container spacing={2} style={{ marginTop: "10px" }}>
+                <Grid item xs={12}>
+                  <Button variant="contained" color="primary" onClick={() => setOpenCompensationInfoModal(true)} fullwidth>
+                    {<FormattedMessage id="workforce.other.compensationInfo" module="workforce" />}
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          )}
+            )}
           {(user_type === WORKFORCE_USER_TYPE.DOCTOR ||
             user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
             user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ||
@@ -986,7 +1037,7 @@ const ApplicationViewPage = ({
                     user_type,
                     remarksMap,
                     handleRemarksChange,
-                    viewedFromFlag
+                    viewedFromFlag,
                   )}
 
                   {/* ----- NEW: BULK SAVE BUTTON FOR DEPENDENTS ----- */}
