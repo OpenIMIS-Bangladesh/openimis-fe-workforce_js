@@ -95,6 +95,7 @@ const BankBranchModal = ({
                     nameEn: nameEn.trim(),
                     nameBn: nameBn.trim(),
                     parentId: parentId.id,
+                    bankCode: parentId.bankCode.trim(),
                     branchCode: branchCode.trim(),
                     districtCode: districtCode,
                     districtNameEn: selectedDistrict?.districtNameEn || "",
