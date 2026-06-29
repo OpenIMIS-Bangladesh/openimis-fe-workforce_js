@@ -190,7 +190,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       }
 
       // 2. Combine the previously saved files with the new ones
-      const allFiles = [...savedFiles, ...uploadedResponses];
+      const allFiles = uploadedResponses;
 
       // ✅ ADD THIS ONE EXACT LINE HERE:
       dispatch(setUploadedFiles(fieldKey, allFiles));
@@ -254,7 +254,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    multiple: true,
+    multiple: false,
     accept: {
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],
@@ -361,7 +361,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
                   <input
                     id={`additionalFileInput-${fieldKey}-${index}`}
                     type="file"
-                    multiple
+                    // multiple
                     hidden
                     accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
                     onChange={(e) => {
