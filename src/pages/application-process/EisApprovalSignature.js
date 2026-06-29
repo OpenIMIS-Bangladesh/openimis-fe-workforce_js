@@ -467,7 +467,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
     const tableHeader = [
       "Sl #",
-      "EIS Worker ID",
+      "EIS Beneficiary ID",
       "NID/Birth Certificate of Worker",
       "Benefit Rate (%) of Gross Salary",
       "Monthly Payable Benefit (BDT)",
@@ -643,7 +643,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // LOGIC CHANGE: Exclude Rejoining, Assessment from Left
     // Items are now: Worker ID, Death Date, Accident Date, Effective Date
     const leftItems = [
-      ["EIS Worker ID", data?.beneficiaryId || ""],
+      ["EIS Worker ID", data?.workforceApplication?.applicationType=='financialAssistance'? data?.beneficiaryId.slice(0,17): data?.beneficiaryId || ""],
       ["Date of Death", dateOfDeath || ""],
       ["Date of Accident", accidentDate || ""],
       // Removed: ["Date of Rejoining", dateOfRejoining],
@@ -898,8 +898,8 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
             <table className={classes.excelTable} style={{ marginTop: 0 }}>
               <tbody>
                 <tr>
-                  <td style={{ width: "20%", fontWeight: "bold" }}>EIS Worker ID</td>
-                  <td style={{ width: "25%" }}>{firstData?.beneficiaryId || ""}</td>
+                  <td style={{ width: "20%", fontWeight: "bold" }}>EIS Beneficiary ID</td>
+                  <td style={{ width: "25%" }}>{firstData?.workforceApplication?.applicationType === 'financialAssistance' ? firstData?.beneficiaryId?.slice(0, 17) : firstData?.beneficiaryId || ""}</td>
                   <td style={{ width: "5%", border: "none" }}></td>
                   <td style={{ width: "20%", fontWeight: "bold" }}>Name of the Factory</td>
                   <td style={{ width: "25%" }}>{firstData.workforceApplication?.employeeFactory?.nameEn || ""}</td>

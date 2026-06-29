@@ -77,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 import { fetchEisPaymentProcess, eisPaymentProcessWithoutDate } from "../../actions";
+import { dataURItoByteString } from 'react-pdf/dist/umd/shared/utils';
 
 const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_Id, selectedApplicationIds }) => {
   const reduxState = useSelector((state) => state);
@@ -334,7 +335,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     sheet.addRow([]);
 
     const tableHeader = [
-      "Sl #", "EIS Worker ID", "NID/Birth Certificate of Worker", "Benefit Rate (%) of Gross Salary",
+      "Sl #", "EIS Beneficiary ID", "NID/Birth Certificate of Worker", "Benefit Rate (%) of Gross Salary",
       "Monthly Payable Benefit (BDT)", "Net Monthly Payable After Adjustment (BDT)",
       "Total time amount (individual)", "After adjustment (individual)",
       "Type of Payment", "Approval Status", "Remarks",
@@ -495,7 +496,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     // LOGIC CHANGE: Exclude Rejoining, Assessment from Left
     // Items are now: Worker ID, Death Date, Accident Date, Effective Date
     const leftItems = [
-      ["EIS Worker ID", data?.beneficiaryId || ""],
+      ["EIS Worker ID", data?.workforceApplication?.applicationType=='financialAssistance'? data?.beneficiaryId.slice(0,17): data?.beneficiaryId || ""],
       ["Date of Death", dateOfDeath || ""],
       ["Date of Accident", accidentDate || ""],
       // Removed: ["Date of Rejoining", dateOfRejoining],
@@ -778,7 +779,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: "20px" }}>
                 <div>
-                  <Typography><strong>EIS Worker ID:</strong> {first?.beneficiaryId}</Typography>
+                  <Typography><strong>EIS Worker ID:</strong> {first?.workforceApplication?.applicationType=='financialAssistance'? first?.beneficiaryId.slice(0,17): first?.beneficiaryId}</Typography>
                   {/* {selectedApplicationIds.length === 1 && (
                     first?.workforceApplication?.applicationType === 'financialAssistance' || first?.workforceApplication?.applicationType === 'deadlyGrant' ? (
                       <Typography><strong>Worker Name:</strong> {safeParse(first?.workforceApplication?.deceasedWorkerInfo).nameBn}</Typography>
@@ -820,7 +821,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
                   <TableHead>
                     <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                       <TableCell><strong>SL #</strong></TableCell>
-                      <TableCell><strong>EIS Worker ID</strong></TableCell>
+                      <TableCell><strong>EIS Beneficiary ID</strong></TableCell>
                       {/* {appType === "Death" ? (<TableCell><strong>Dependent Name</strong></TableCell>) : (
                         <TableCell><strong>Worker Name</strong></TableCell>
                       )} */}
