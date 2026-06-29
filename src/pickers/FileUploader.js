@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument, removeUploadedFile, setUploadedFiles } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import AddIcon from "@material-ui/icons/Add";
 import { safeApplicationId } from "../utils/utils";
 
@@ -78,9 +79,10 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   // 1. Get initial files from Redux to keep UI in sync
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
-  const globalUploadFile = useSelector(state => state.workforce.uploadFile || []);
-  const globalDependentFile = useSelector(state => state.workforce.uploadDependentFile || []);
-  const globalBankFile = useSelector(state => state.workforce.uploadBankFile || []);
+  const [isUploading, setIsUploading] = useState(false);
+  const globalUploadFile = useSelector((state) => state.workforce.uploadFile || []);
+  const globalDependentFile = useSelector((state) => state.workforce.uploadDependentFile || []);
+  const globalBankFile = useSelector((state) => state.workforce.uploadBankFile || []);
 
   // Sync local state when Redux updates
   useEffect(() => {
@@ -182,31 +184,35 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      // 1. Collect all newly uploaded file data
-      const uploadedResponses = [];
-      for (const file of acceptedFiles) {
-        const res = await uploadFileToApi(file);
-        if (res) uploadedResponses.push(res);
-      }
+      if (isUploading) return;
 
-      // 2. Combine the previously saved files with the new ones
-      const allFiles = uploadedResponses;
+      setIsUploading(true);
 
-      // ✅ ADD THIS ONE EXACT LINE HERE:
-      dispatch(setUploadedFiles(fieldKey, allFiles));
+      try {
+        const uploadedResponses = [];
 
-      // 3. CRITICAL FIX: Notify the parent component so formData.attachments is updated!
-      if (onFileChange) {
-        onFileChange(fieldKey, {
-          files: allFiles,
-          documentType: documentType,
-          documentPropId: documentProp?.id,
-          documentId,
-        });
+        for (const file of acceptedFiles) {
+          const res = await uploadFileToApi(file);
+          if (res) uploadedResponses.push(res);
+        }
+
+        const allFiles = uploadedResponses;
+
+        dispatch(setUploadedFiles(fieldKey, allFiles));
+
+        if (onFileChange) {
+          onFileChange(fieldKey, {
+            files: allFiles,
+            documentType,
+            documentPropId: documentProp?.id,
+            documentId,
+          });
+        }
+      } finally {
+        setIsUploading(false);
       }
     },
-    // ✅ Make sure 'dispatch' is in this dependency array at the bottom!
-    [savedFiles, fieldKey, onFileChange, documentType, documentProp, dispatch] 
+    [isUploading, dispatch, fieldKey, onFileChange, documentType, documentProp, documentId],
   );
 
   const removeFile = (fileName) => {
@@ -269,9 +275,19 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     <div>
       <Paper className={classes.dropzone}>
         <Box display="flex" alignItems="center" justifyContent="center" style={{ gap: "24px" }}>
-          <Box {...getRootProps()} display="flex" alignItems="center" style={{ gap: "8px", cursor: "pointer" }}>
-            <input {...getInputProps()} />
-            <CloudUploadIcon className={classes.uploadIcon} />
+          <Box
+            {...(!isUploading ? getRootProps() : {})}
+            display="flex"
+            alignItems="center"
+            style={{
+              gap: 8,
+              cursor: isUploading ? "not-allowed" : "pointer",
+              opacity: isUploading ? 0.5 : 1,
+              pointerEvents: isUploading ? "none" : "auto",
+            }}
+          >
+            <input {...getInputProps()} disabled={isUploading} />
+            {isUploading ? <CircularProgress size={22} /> : <CloudUploadIcon className={classes.uploadIcon} />}
             <FormattedMessage module="workforce" id="workforce.application.steps.upload">
               {(msg) => <Typography variant="body2">{msg}</Typography>}
             </FormattedMessage>
@@ -279,13 +295,14 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
           <Box
             onClick={() => {
+              if (isUploading) return;
               if (/Mobi|Android/i.test(navigator.userAgent)) {
                 document.getElementById("cameraCaptureInput").click();
               } else {
                 setWebcamOpen(true);
               }
             }}
-            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: isUploading ? "not-allowed" : "pointer", opacity: isUploading ? 0.5 : 1 }}
           >
             <PhotoCameraIcon color="action" />
             <FormattedMessage module="workforce" id="workforce.application.steps.capture">
@@ -326,7 +343,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         <Paper className={classes.fileList}>
           {files.map((file, index) => {
             // ✅ ADD THIS SAFETY CHECK: If file is undefined, skip it!
-            if (!file) return null; 
+            if (!file) return null;
 
             return (
               <Box key={`${file.name}-${index}`} className={classes.fileItem}>

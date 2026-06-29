@@ -641,19 +641,21 @@ const FinancialAssistanceForm = ({
             applicationFor: applicationForSelf === "yes" ? "self" : applicationForSelf === "" ? "" : "dependent",
           };
           console.log(uploadDependentFile);
-          if (uploadDependentFile) {
-            await uploadDependentFile.map((file) => {
-              const appId = applicationId || formData?.id;
-              return dispatch(
-                createWorkforceDocument(
-                  { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
-                  `Created workforce document`,
+          if (uploadDependentFile?.length) {
+            await Promise.all(
+              uploadDependentFile.map((file) =>
+                dispatch(
+                  createWorkforceDocument(
+                    { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
+                    `Created workforce document`,
+                  ),
                 ),
-              );
-            });
+              ),
+            );
           }
+
           await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
-          
+
           // ===== FETCH DEPENDENT DATA AND UNBLOCK NAVIGATION =====
           try {
             if (parsedApplicationData?.id) {
@@ -713,13 +715,13 @@ const FinancialAssistanceForm = ({
           // }
           dispatch(updateApplication(updateApplicationData, `update workforce application`));
         }
-        
+
         // Set active step and unblock navigation (except for step 5 which handles it separately)
         if (nextStep !== 5) {
           setActiveStep(nextStep);
           setIsNavigationBlocked(false);
         }
-        
+
         return true;
       }
     }
