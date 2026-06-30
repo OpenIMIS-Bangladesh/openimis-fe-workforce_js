@@ -426,15 +426,15 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
     if (uploadBankFile) {
-      await uploadBankFile.map((file) => {
+      await Promise.all( uploadBankFile.map((file) => {
         return dispatch(
           createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
         );
-      });
+      }))
     }
-    uploadFile.map((file, index) => {
+    await Promise.all(uploadFile.map((file, index) => {
       dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
-    });
+    }))
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -549,10 +549,11 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
             <Button
               variant="contained"
               color="primary"
-              onClick={() => {
+              onClick={async() => {
+                // setIsSubmitted(true);
+                await handleSubmit();
                 setShowVerifyNid(false);
-                setIsSubmitted(true);
-                handleSubmit();
+                setIsSubmitted(true)
               }}
             >
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />

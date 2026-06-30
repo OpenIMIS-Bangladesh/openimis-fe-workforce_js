@@ -757,19 +757,23 @@ const FinancialAssistanceForm = ({
 
   const handleSubmit = async () => {
     if (uploadBankFile) {
-      await uploadBankFile.map((file) => {
-        return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
-        );
-      });
-    }
-    uploadFile.map((file, index) => {
-      // const createDocumentData = { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }
-      // console.log({createDocumentData})
-      return dispatch(
-        createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document `),
+      await Promise.all(
+        uploadBankFile.map((file) => {
+          return dispatch(
+            createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
+          );
+        }),
       );
-    });
+    }
+    await Promise.all(
+      uploadFile.map((file, index) => {
+        // const createDocumentData = { ...file, workforceApplicationId: safeApplicationId(applicationId,parsedApplicationData) }
+        // console.log({createDocumentData})
+        return dispatch(
+          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document `),
+        );
+      }),
+    );
 
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
@@ -850,10 +854,11 @@ const FinancialAssistanceForm = ({
               variant="contained"
               color="primary"
               // disabled={disableConfirmSubmit}
-              onClick={() => {
+              onClick={async() => {
+                // setIsSubmitted(true);
+                await handleSubmit();
                 setShowVerifyNid(false);
-                setIsSubmitted(true);
-                handleSubmit();
+                setIsSubmitted(true)
               }}
             >
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />
