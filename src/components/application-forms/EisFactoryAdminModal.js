@@ -210,8 +210,8 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
       const updateApplicationData = {
         id: application?.id,
-        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo),
-        doctorEntries: JSON.stringify(formData?.doctorEntries),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo)?.replace(/\\n/g, '\\\\n')?.replace(/\\r/g, '\\\\r'),
+        doctorEntries: JSON.stringify(formData?.doctorEntries)?.replace(/\\n/g, '\\\\n')?.replace(/\\r/g, '\\\\r'),
       };
       console.log({updateApplicationData})
       await dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
