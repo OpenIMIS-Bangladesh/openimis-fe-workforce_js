@@ -27,7 +27,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -743,19 +743,19 @@ const Dashboard = ({selectedMenu}) => {
       dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res) => {
         const response = parseData(res?.payload?.data?.workforceApplication);
         const formData = response?.map((application) => {
-          const parsedMetadata = JSON.parse(application?.metadata);
-          const parsedApplicantInfo = JSON.parse(application?.applicantInfo);
-          const parsedDeceasedWorkerInfo = JSON.parse(application?.deceasedWorkerInfo);
-          const parsedEmployeeAccidentInfo = JSON.parse(application?.employeeAccidentInfo);
+          const parsedMetadata = safeParse(application?.metadata);
+          const parsedApplicantInfo = safeParse(application?.applicantInfo);
+          const parsedDeceasedWorkerInfo = safeParse(application?.deceasedWorkerInfo);
+          const parsedEmployeeAccidentInfo = safeParse(application?.employeeAccidentInfo);
           // const parsedEmployeeDependentInfo = JSON.parse(application?.employeeDependentInfo)
           // const parsedEmployeeBankInfo = JSON.parse(application?.employeeBankInfo)
 
           return {
             ...application,
-            applicantInfo: JSON.parse(parsedApplicantInfo),
-            metadata: JSON.parse(parsedMetadata),
-            deceasedWorkerInfo: JSON.parse(parsedDeceasedWorkerInfo),
-            employeeAccidentInfo: JSON.parse(parsedEmployeeAccidentInfo),
+            applicantInfo: parsedApplicantInfo,
+            metadata: parsedMetadata,
+            deceasedWorkerInfo: parsedDeceasedWorkerInfo,
+            employeeAccidentInfo: parsedEmployeeAccidentInfo,
             // employeeDependentInfo:JSON.parse(parsedEmployeeDependentInfo),
             // employeeBankInfo:JSON.parse(parsedEmployeeBankInfo)
           };
