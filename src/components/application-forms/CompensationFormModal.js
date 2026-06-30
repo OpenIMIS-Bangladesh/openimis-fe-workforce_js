@@ -116,8 +116,12 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         .then((res) => {
           const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
           console.log(fetchOtherCompensation);
+          const formattedData = fetchOtherCompensation.map((item) => ({
+            ...item,
+            amount: item.amount !== null && item.amount !== undefined ? Number(item.amount).toFixed(2) : "",
+          }));
           if (fetchOtherCompensation && fetchOtherCompensation.length > 0) {
-            setFormData(fetchOtherCompensation);
+            setFormData(formattedData);
           } else {
             // If empty array or null, reset to initial entry
             setFormData([{ ...initialEntry }]);
@@ -309,7 +313,12 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                         label="workforce.employee.application.moneyAmount"
                         type="number"
                         fullWidth
-                        value={entry.amount !== "" && !isNaN(entry.amount) ? Number(entry.amount).toFixed(2) : ""}
+                        value={entry?.amount ?? ""}
+                        // onBlur={() => {
+                        //   if (entry?.amount !== "" && entry?.amount !== null && !isNaN(entry?.amount)) {
+                        //     handleChange(index, "amount")(Number(entry?.amount).toFixed(2));
+                        //   }
+                        // }}
                         onChange={handleChange(index, "amount")}
                         inputProps={{ step: "0.01" }}
                       />

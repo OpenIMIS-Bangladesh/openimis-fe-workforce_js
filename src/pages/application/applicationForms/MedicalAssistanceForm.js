@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel, Dialog, CircularProgress } from "@material-ui/core";
 import { FormattedMessage, formatMutation, decodeId, useModulesManager, useTranslations } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -72,6 +72,7 @@ const MedicalAssistanceForm = ({
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
+  const [isNavigationBlocked, setIsNavigationBlocked] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const reduxState = useSelector((state) => state);
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
@@ -277,15 +278,18 @@ const MedicalAssistanceForm = ({
     }
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
+      const shouldBlockNavigation = formData?.applicationForSelf === "no" && activeStep === 2;
+
       if (nextStep === 1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });
         return false;
       } else {
-        if (nextStep < steps.length) {
-          setActiveStep(nextStep);
+        if (shouldBlockNavigation) {
+          setIsNavigationBlocked(true);
         }
+
         if (nextStep === 1 || nextStep === 2) {
           // const nidValue = formData?.workforceEmployee?.nid;
           const workforceEmployeeData = {
@@ -407,6 +411,23 @@ const MedicalAssistanceForm = ({
           console.log("i am from accident info", updateApplicationData);
           dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
         }
+
+        if (shouldBlockNavigation) {
+          try {
+            if (parsedApplicationData?.id) {
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]))
+            } else {
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]))
+            }
+          } finally {
+            setIsNavigationBlocked(false);
+          }
+        }
+
+        if (nextStep < steps.length) {
+          setActiveStep(nextStep);
+        }
+
         return true;
       }
     }
@@ -681,6 +702,18 @@ const MedicalAssistanceForm = ({
           )}
         </div>
       </Paper>
+      <Dialog open={isNavigationBlocked} onClose={() => {}} disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" padding={4} gap={2}>
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" align="center">
+            <FormattedMessage id="workforce.processing.data" module="workforce" />
+          </Typography>
+          <Typography variant="body2" align="center" color="textSecondary">
+            <FormattedMessage id="workforce.please.wait" module="workforce" />
+          </Typography>
+        </Box>
+      </Dialog>
+
       <CustomSnackbar
         open={showErrorSnackbar} // Use the new state
         onClose={() => setShowErrorSnackbar(false)} // Allow it to close
