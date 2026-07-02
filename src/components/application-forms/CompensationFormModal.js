@@ -212,11 +212,11 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         // UPDATE: Include the ID in the payload for the update action
         const updatePayload = { ...payload, id: safeDecodeId(item.id) };
         console.log("Updating Payload:", updatePayload);
-        // dispatch(updateWorkforceOtherCompensation(updatePayload, "update other compensation info"));
+        dispatch(updateWorkforceOtherCompensation(updatePayload, "update other compensation info"));
       } else {
         // CREATE
         console.log("Creating Payload:", payload);
-        // dispatch(createWorkforceOtherCompensation(payload, "create other compensation info"));
+        dispatch(createWorkforceOtherCompensation(payload, "create other compensation info"));
       }
     });
 
@@ -224,6 +224,8 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
   };
 
   const isOfficer = entryType === "officer";
+
+  console.log({fahimFarooq:formData})
 
   if (loader) {
     return (
@@ -341,7 +343,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                       </TextField>
                     </Grid>
 
-                    {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && (
+                    {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER||user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && (
                       <>
                         <Grid item xs={12}>
                           <FormControl component="fieldset" error={!!errors[`eisBenefitAdjustment-${index}`]}>
@@ -352,9 +354,9 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                               row
                               // This logic ensures that if the DB sends true/false, the radio stays checked
                               value={
-                                entry.eisBenefitAdjustment === true || entry.isEisBenefitAdjustmentEligible === true
+                                entry.eisBenefitAdjustment === true || entry.isEisBenefitAdjustmentEligible === "true"
                                   ? "true"
-                                  : entry.eisBenefitAdjustment === false || entry.isEisBenefitAdjustmentEligible === false
+                                  : entry.eisBenefitAdjustment === false || entry.isEisBenefitAdjustmentEligible === "false"
                                     ? "false"
                                     : ""
                               }
