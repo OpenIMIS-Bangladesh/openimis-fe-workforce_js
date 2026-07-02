@@ -1084,7 +1084,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
                     {/* Name and Role */}
                     <div className={classes.signatureBlock}>
-                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.last_name}</p>
+                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
                       <p style={{ margin: 0 }}>{sig?.role?.name}</p>
                     </div>
                   </Grid>
