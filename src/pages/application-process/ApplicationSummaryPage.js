@@ -207,7 +207,7 @@ class ApplicationSummaryPage extends Component {
       if(status === "pending")
       {
         renderSummaryData = summaryData.filter(item =>
-          item.status === "forward_to_eis_advisor" && item.organizationType==='eis'
+          (item.status === "forward_to_eis_advisor" || item.status === "meeting_created") && item.organizationType==='eis'
         );
       }
       else if(status === "rejected")
@@ -218,7 +218,7 @@ class ApplicationSummaryPage extends Component {
       }
       else if(status === "approved")
       {
-        renderSummaryData = summaryData.filter(item => item.status === "approved_by_eis_director" && item.organizationType==='eis');
+        renderSummaryData = summaryData.filter(item => (item.status === "approved_by_eis_director" || item.status === "approved_by_eis_advisor") && item.organizationType==='eis');
       }
     }
 
