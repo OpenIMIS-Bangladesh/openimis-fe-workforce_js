@@ -2534,6 +2534,8 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           dateCreated
           trackingNumber
           status
+          eisApprovalIds
+          eisApprovedByIds
           workforceEmployee {         
             id
             firstNameBn
@@ -2712,6 +2714,8 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
           dateCreated
           trackingNumber
           committeeId
+          eisApprovalIds
+          eisApprovedByIds
           workforceEmployee {         
             id
             firstNameBn

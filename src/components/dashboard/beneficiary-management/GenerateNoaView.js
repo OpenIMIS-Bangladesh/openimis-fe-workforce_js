@@ -30,7 +30,7 @@ import {
   fetchWorkforceNoaSignatureByApprovers,
   fetchWorkforceNoaSignerUserByApprovers
 } from '../../../actions';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { calculateAge, getFooterContentNew, safeDecodeId, safeParse, toBanglaNumber } from '../../../utils/utils';
 import {
   generateBankAdviceTemplate,
@@ -220,6 +220,8 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
   const [noaSignerInfo, setNoaSignerInfo] = useState({ noaSigner: null, noaSignature: null });
   const [noaSignature, setNoaSignature]= useState(null);
   const [noaSigner, setNoaSigner]= useState(null);
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || "en";
 
   const tryParse = (value) => {
     if (typeof value === "string") {
@@ -250,6 +252,19 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
     return { village, postOffice, thana, district };
   };
 
+  const getRoleInCommitteeLabel = (role="Member", locale) => {
+    switch (role) {
+      case "Member":
+        return locale === "fr" ? "সদস্য" : "Member";
+      case "President":
+        return locale === "fr" ? "সভাপতি" : "President";
+      case "Secretary General":
+        return locale === "fr" ? "সাধারণ সম্পাদক" : "Secretary General";
+      default:
+        return role;
+    }
+  };
+
   const employeePresentAddress = formatAddress(
     row?.workforceApplication?.workforceEmployee?.presentLocation,
     row?.workforceEmployee?.employeePresentAddress
@@ -271,7 +286,9 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
         setOtherCompAmount(amount);
       });
     }
+    console.log("Working Row", row);
     const eisApprovedByIds = safeParse(row?.workforceApplication?.eisApprovedByIds) || [];
+    console.log(eisApprovedByIds, "eisApprovedByIds");
     if (eisApprovedByIds.length > 0) {
       const [signatureResult, signerResult] = await Promise.all([
         dispatch(fetchWorkforceNoaSignatureByApprovers(eisApprovedByIds)),
@@ -313,6 +330,11 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
   const workerBirthDate = deceasedWorkerInfo?.birthDate ?? row?.workforceApplication?.workforceEmployee?.birthDate ?? "2026-01-01";
   const paymentType = row?.eisPaymentType;
   console.log("noa signature", noaSignature)
+
+  const deceasedEmployeePresentAddress = formatAddress(
+    deceasedWorkerInfo?.presentLocation,
+    deceasedWorkerInfo?.presentAddress
+  );
 
 
   let noaSignatureLogo = <img src={window.location.origin + (noaSignature?.url ?? "")} alt="Central Fund Logo" style={{ height: "70px" }} />;
@@ -386,28 +408,56 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
 
                       <tr>
                         <td className="noa-label">শ্রমিকের নাম:</td>
-                        <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
+                        {
+                          row?.workforceApplication?.applicationType === "financialAssistance" ? (
+                            <td className="noa-value">{deceasedWorkerInfo?.nameBn || ""}</td>
+                          ):
+                          (
+                            <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.firstNameBn || ""}</td>
+                          )
+                        }
                       </tr>
 
                       <tr>
                         <td className="noa-label">শ্রমিকের জাতীয় পরিচয়পত্র নম্বর:</td>
-                        <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid ? toBanglaNumber(row?.workforceApplication?.workforceEmployee?.nid) : ""}</td>
+                        {
+                          row?.workforceApplication?.applicationType === "financialAssistance" ? (
+                            <td className="noa-value">{deceasedWorkerInfo?.nid ? toBanglaNumber(deceasedWorkerInfo?.nid) : ""}</td>
+                          ) : (
+                            <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.nid ? toBanglaNumber(row?.workforceApplication?.workforceEmployee?.nid) : ""}</td>
+                          )
+                        }
                       </tr>
                       {applicationType === "disabilityAssistance" && (
                         <>
                           <tr>
                             <td className="noa-label">শ্রমিকের জন্ম তারিখ:</td>
-                            <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.birthDate ? new Date(row?.workforceApplication?.workforceEmployee?.birthDate).toLocaleDateString("bn-BD") : ""}</td>
+                            {
+                              row?.workforceApplication?.applicationType === "financialAssistance" ? (
+                                <td className="noa-value">{deceasedWorkerInfo?.birthDate ? new Date(deceasedWorkerInfo?.birthDate).toLocaleDateString("bn-BD") : ""}</td>
+                              ):(
+                                <td className="noa-value">{row?.workforceApplication?.workforceEmployee?.birthDate ? new Date(row?.workforceApplication?.workforceEmployee?.birthDate).toLocaleDateString("bn-BD") : ""}</td>
+                              )
+                            }
                           </tr>
                         </>
                       )}
 
                       <tr>
                         <td className="noa-label">ঠিকানা:</td>
-                        <td className="noa-value">
-                          গ্রামঃ {employeePresentAddress?.village || ""}, ডাকঘরঃ {employeePresentAddress?.postOffice || ""} , <br />
-                          উপজেলা/থানাঃ {employeePresentAddress?.thana || ""}, জেলাঃ  {employeePresentAddress?.district || ""}
-                        </td>
+                        {
+                          row?.workforceApplication?.applicationType === "financialAssistance" ? (
+                            <td className="noa-value">
+                              <b>গ্রামঃ</b> {deceasedEmployeePresentAddress?.village || ""}, <b>ডাকঘরঃ</b> {deceasedEmployeePresentAddress?.postOffice || ""} , <br />
+                              <b>উপজেলা/থানাঃ</b> {deceasedEmployeePresentAddress?.thana || ""}, <b>জেলাঃ</b>  {deceasedEmployeePresentAddress?.district || ""}
+                            </td>
+                          ):(
+                            <td className="noa-value">
+                              <b>গ্রামঃ</b> {employeePresentAddress?.village || ""}, <b>ডাকঘরঃ</b> {employeePresentAddress?.postOffice || ""} , <br />
+                              <b>উপজেলা/থানাঃ</b> {employeePresentAddress?.thana || ""}, <b>জেলাঃ</b>  {employeePresentAddress?.district || ""}
+                            </td>
+                          )
+                        }
                       </tr>
                       <tr>
                         <td className="noa-label">কর্মস্থলে দুর্ঘটনার তারিখ:</td>
@@ -629,7 +679,7 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
                     <p style={{ margin: "2px 0" }}>{noaSigner?.workforceCommitteeUser?.designation}</p>
                     <p style={{ margin: "2px 0" }}>{noaSigner?.workforceCommitteeUser?.organizationName}</p>
                     <p style={{ margin: "2px 0" }}>ও</p>
-                    <p style={{ margin: "2px 0" }}>{noaSigner?.roleInCommittee}, {noaSigner?.committee?.nameBn}</p>
+                    <p style={{ margin: "2px 0" }}>{getRoleInCommitteeLabel(noaSigner?.roleInCommittee || "Member", locale)}, {locale === "fr" ? noaSigner?.committee?.nameBn : noaSigner?.committee?.nameEn}</p>
 
                     {/* <p style={{ margin: "2px 0" }}>মহাপরিচালক</p>
                         <p style={{ margin: "2px 0" }}>কেন্দ্রীয় তহবিল</p>

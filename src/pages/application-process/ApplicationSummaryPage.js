@@ -232,7 +232,7 @@ class ApplicationSummaryPage extends Component {
             dataToRender.length === 0 && (
               <Grid item xs={12}>
                 <Typography variant="h6" align="center" style={{ marginTop: "20px" }}>
-                  Loading...
+                  No Records Found
                 </Typography>
               </Grid>
             )
