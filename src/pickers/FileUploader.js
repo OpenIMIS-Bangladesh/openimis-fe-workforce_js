@@ -80,19 +80,38 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const filesRef = useRef([]);
   const globalUploadFile = useSelector((state) => state.workforce.uploadFile || []);
   const globalDependentFile = useSelector((state) => state.workforce.uploadDependentFile || []);
   const globalBankFile = useSelector((state) => state.workforce.uploadBankFile || []);
 
   // Sync local state when Redux updates
   useEffect(() => {
-    const savedFilesString = JSON.stringify(savedFiles);
-    const currentFilesString = JSON.stringify(files);
+    const savedFilesString = JSON.stringify(savedFiles || []);
+    const currentFilesString = JSON.stringify(filesRef.current || []);
 
     if (savedFilesString !== currentFilesString) {
-      setFiles(savedFiles || []);
+      const syncedFiles = Array.isArray(savedFiles) ? savedFiles : [];
+      filesRef.current = syncedFiles;
+      setFiles(syncedFiles);
     }
   }, [savedFiles, fieldKey]);
+
+  const syncFilesWithState = useCallback(
+    (nextFiles) => {
+      const normalizedFiles = Array.isArray(nextFiles) ? nextFiles : [];
+      const dedupedFiles = normalizedFiles.filter((file, index, array) => {
+        const identity = file?.path || file?.url || file?.name;
+        return index === array.findIndex((candidate) => (candidate?.path || candidate?.url || candidate?.name) === identity);
+      });
+
+      filesRef.current = dedupedFiles;
+      setFiles(dedupedFiles);
+      dispatch(setUploadedFiles(fieldKey, dedupedFiles));
+      return dedupedFiles;
+    },
+    [dispatch, fieldKey],
+  );
 
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
@@ -196,13 +215,11 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
           if (res) uploadedResponses.push(res);
         }
 
-        const allFiles = uploadedResponses;
-
-        dispatch(setUploadedFiles(fieldKey, allFiles));
+        const mergedFiles = syncFilesWithState([...(filesRef.current || []), ...uploadedResponses]);
 
         if (onFileChange) {
           onFileChange(fieldKey, {
-            files: allFiles,
+            files: mergedFiles,
             documentType,
             documentPropId: documentProp?.id,
             documentId,
@@ -212,7 +229,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         setIsUploading(false);
       }
     },
-    [isUploading, dispatch, fieldKey, onFileChange, documentType, documentProp, documentId],
+    [isUploading, syncFilesWithState, fieldKey, onFileChange, documentType, documentProp, documentId],
   );
 
   const removeFile = (fileName) => {
@@ -222,12 +239,8 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       const identifier = fileToRemove.path;
 
       // 1. Update the local UI state array directly
-      const filteredFiles = files.filter((f) => f?.name !== fileName);
-      setFiles(filteredFiles);
-
-      // 2. OVERWRITE the UI list in Redux using the action you already know works!
-      // (This safely replaces the broken removeUploadedFile line)
-      dispatch(setUploadedFiles(fieldKey, filteredFiles));
+      const filteredFiles = (filesRef.current || []).filter((f) => f?.name !== fileName);
+      syncFilesWithState(filteredFiles);
 
       // 3. Dispatch UNIQUE actions to prevent crashing the other module
       let removeType = "WORKFORCE_REMOVE_UPLOAD_FILE";
@@ -254,7 +267,18 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     const blob = await response.blob();
     const file = new File([blob], `capture_${Date.now()}.jpg`, { type: "image/jpeg" });
 
-    await uploadFileToApi(file);
+    const uploadedFile = await uploadFileToApi(file);
+    if (uploadedFile) {
+      const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
+      if (onFileChange) {
+        onFileChange(fieldKey, {
+          files: mergedFiles,
+          documentType,
+          documentPropId: documentProp?.id,
+          documentId,
+        });
+      }
+    }
     setWebcamOpen(false);
   };
 

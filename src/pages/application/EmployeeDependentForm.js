@@ -87,36 +87,51 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
   const handleAttachmentChange = useCallback(
     (index, fieldKey, value) => {
-      const currentAttachments = typeof dependents?.[index]?.attachments === "string" ? JSON.parse(dependents?.[index]?.attachments) : dependents?.[index]?.attachments || [];
+      const normalizeAttachments = (attachments) => {
+        if (!attachments) return [];
+        if (typeof attachments === "string") {
+          try {
+            const parsed = JSON.parse(attachments);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch (error) {
+            return [];
+          }
+        }
+        return Array.isArray(attachments) ? attachments : [];
+      };
 
-      let updatedAttachments = currentAttachments;
-      if (!value?.files?.length) {
-        updatedAttachments = currentAttachments.filter((att) => att.fieldKey !== fieldKey);
-      } else {
-        updatedAttachments = currentAttachments?.some((att) => att.fieldKey === fieldKey)
-          ? currentAttachments.map((att) =>
+      const currentItem = dependents?.[index] || {};
+      const currentAttachments = normalizeAttachments(currentItem.attachments);
+
+      const updateAttachments = (normalizedAttachments) => {
+        if (!value?.files?.length) {
+          return normalizedAttachments.filter((att) => att.fieldKey !== fieldKey);
+        }
+
+        return normalizedAttachments.some((att) => att.fieldKey === fieldKey)
+          ? normalizedAttachments.map((att) =>
               att.fieldKey === fieldKey
                 ? {
                     ...att,
                     fieldKey,
-                    files: value.files, // [{ file, uploadInfo }]
+                    files: value.files,
                     documentType: value.documentType,
                     documentPropId: value.documentPropId,
                   }
                 : att,
             )
           : [
-              ...currentAttachments,
+              ...normalizedAttachments,
               {
                 fieldKey,
-                files: value.files, // [{ file, uploadInfo }]
+                files: value.files,
                 documentType: value.documentType,
                 documentPropId: value.documentPropId,
               },
             ];
-      }
+      };
 
-      handleChange(index, "attachments", updatedAttachments);
+      handleChange(index, "attachments", updateAttachments(currentAttachments));
     },
     [dependents, handleChange],
   );

@@ -420,8 +420,10 @@ const ScholarshipApplicationForm = ({
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
-      const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [{}];
-      items[index] = { ...items[index], [key]: value };
+      const items = Array.isArray(prev[fieldKey]) ? [...prev[fieldKey]] : [];
+      const currentItem = items[index] || {};
+      const nextValue = typeof value === "function" ? value(currentItem[key]) : value;
+      items[index] = { ...currentItem, [key]: nextValue };
       return { ...prev, [fieldKey]: items };
     });
   };
