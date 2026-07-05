@@ -267,12 +267,12 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
 
   const employeePresentAddress = formatAddress(
     row?.workforceApplication?.workforceEmployee?.presentLocation,
-    row?.workforceEmployee?.employeePresentAddress
+    row?.workforceEmployee?.presentAddress
   );
 
   const depentPresentAddress = formatAddress(
     row?.workforceEmployeeDependent?.[0]?.presentLocation,
-    row?.workforceEmployeeDependent?.[0]?.depentPresentAddress
+    row?.workforceEmployeeDependent?.[0]?.presentAddress
   );
 
   useEffect(async() => {
@@ -594,7 +594,7 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
                             </td>
                           </tr>
                           {
-                            calculateAge(row?.workforceEmployeeDependent?.[0]?.birthDate) >= 18 ?
+                            calculateAge(row?.workforceEmployeeDependent?.[0]?.birthDate) < 18 ?
                               (
                                 <tr>
                                   <td className="noa-label">অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:</td>
