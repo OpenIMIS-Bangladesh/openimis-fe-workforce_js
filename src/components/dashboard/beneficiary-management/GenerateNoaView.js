@@ -256,10 +256,10 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
     switch (role) {
       case "Member":
         return locale === "fr" ? "সদস্য" : "Member";
-      case "President":
-        return locale === "fr" ? "সভাপতি" : "President";
-      case "Secretary General":
-        return locale === "fr" ? "সাধারণ সম্পাদক" : "Secretary General";
+      case "Member Secretary":
+        return locale === "fr" ? "সদস্য সচিব" : "Member Secretary";
+      case "Chairman":
+        return locale === "fr" ? "চেয়ারম্যান" : "Chairman";
       default:
         return role;
     }
