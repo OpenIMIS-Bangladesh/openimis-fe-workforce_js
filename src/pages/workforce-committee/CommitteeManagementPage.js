@@ -633,6 +633,7 @@ const CommitteeManagementPage = () => {
                 <Grid item xs={12} md={5} className={classes.formGrid}>
                   {isEisPath() ? (
                     <TextField
+                      select
                       label={locale === "fr" ? "কমিটিতে ভূমিকা" : "Role in Committee"}
                       value={selectedRole}
                       onChange={(e) => setSelectedRole(e.target.value)}
@@ -640,7 +641,12 @@ const CommitteeManagementPage = () => {
                       variant="outlined"
                       required
                       placeholder={locale === "fr" ? "ভূমিকা লিখুন" : "Enter role"}
-                    />
+                    >
+                      <MenuItem value="">{locale === "fr" ? "নির্বাচন করুন" : "Select"}</MenuItem>
+                      <MenuItem value="Member">{locale === "fr" ? "সদস্য" : "Member"}</MenuItem>
+                      <MenuItem value="Member Secretary">{locale === "fr" ? "সদস্য-সচিব" : "Member Secretary"}</MenuItem>
+                      <MenuItem value="Chairman">{locale === "fr" ? "চেয়ারম্যান" : "Chairman"}</MenuItem>
+                    </TextField>
                   ) : (
                     <TextField
                       select
@@ -650,13 +656,15 @@ const CommitteeManagementPage = () => {
                       fullWidth
                       variant="outlined"
                       required
-                      SelectProps={{
-                        native: true,
-                      }}
+                      placeholder={locale === "fr" ? "ভূমিকা লিখুন" : "Enter role"}
+                      // SelectProps={{
+                      //   native: true,
+                      // }}
                     >
-                      <option value="Member">{locale === "fr" ? "সদস্য" : "Member"}</option>
-                      <option value="President">{locale === "fr" ? "সভাপতি" : "President"}</option>
-                      <option value="Secretary General">{locale === "fr" ? "সাধারণ সম্পাদক" : "Secretary General"}</option>
+                      <MenuItem value="">{locale === "fr" ?"নির্বাচন করুন" : "Select"}</MenuItem>
+                      <MenuItem value="Member">{locale === "fr" ? "সদস্য" : "Member"}</MenuItem>
+                      <MenuItem value="President">{locale === "fr" ? "সভাপতি" : "President"}</MenuItem>
+                      <MenuItem value="Secretary General">{locale === "fr" ? "সাধারণ সম্পাদক" : "Secretary General"}</MenuItem>
                     </TextField>
                   )}
                 </Grid>

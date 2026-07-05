@@ -205,7 +205,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       const senderIds = [
         ...new Set(
           actualNodes
-            .filter((item) => (item?.status === "forward_to_comiitee" || item?.status ==="approved_by_committee"))
+            .filter((item) => item?.status === "forward_to_comiitee" || item?.status === "approved_by_committee")
             .map((item) => {
               const node = item.node || item; // Handle if double nested
               return node?.applicationTo?.id ? decodeId(node.applicationTo.id) : null;
@@ -643,7 +643,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
     // LOGIC CHANGE: Exclude Rejoining, Assessment from Left
     // Items are now: Worker ID, Death Date, Accident Date, Effective Date
     const leftItems = [
-      ["EIS Worker ID", data?.workforceApplication?.applicationType=='financialAssistance'? data?.beneficiaryId.slice(0,17): data?.beneficiaryId || ""],
+      ["EIS Worker ID", data?.workforceApplication?.applicationType == "financialAssistance" ? data?.beneficiaryId.slice(0, 17) : data?.beneficiaryId || ""],
       ["Date of Death", dateOfDeath || ""],
       ["Date of Accident", accidentDate || ""],
       // Removed: ["Date of Rejoining", dateOfRejoining],
@@ -885,7 +885,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
             <Box mt={3} mb={1}>
               <Grid container justify="space-between">
                 <Grid item>
-                  <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>{eisApprovalSignature[0]?.role?.name} : {eisPayments[0]?.workforceApplication?.eisApplicationSummary?.name}</Typography>
+                  <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>
+                    {eisApprovalSignature?.[0]?.role?.name} : {eisPayments[0]?.workforceApplication?.eisApplicationSummary?.name}
+                  </Typography>
                 </Grid>
                 <Grid item>
                   <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>Date: {new Date().toLocaleDateString()}</Typography>
@@ -899,7 +901,11 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
               <tbody>
                 <tr>
                   <td style={{ width: "20%", fontWeight: "bold" }}>EIS Beneficiary ID</td>
-                  <td style={{ width: "25%" }}>{firstData?.workforceApplication?.applicationType === 'financialAssistance' ? firstData?.beneficiaryId?.slice(0, 17) : firstData?.beneficiaryId || ""}</td>
+                  <td style={{ width: "25%" }}>
+                    {firstData?.workforceApplication?.applicationType === "financialAssistance"
+                      ? firstData?.beneficiaryId?.slice(0, 17)
+                      : firstData?.beneficiaryId || ""}
+                  </td>
                   <td style={{ width: "5%", border: "none" }}></td>
                   <td style={{ width: "20%", fontWeight: "bold" }}>Name of the Factory</td>
                   <td style={{ width: "25%" }}>{firstData.workforceApplication?.employeeFactory?.nameEn || ""}</td>
@@ -1069,28 +1075,139 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
 
             {/* 4. FOOTER */}
             <Box mt={4}>
-              <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>Signature of {eisApprovalSignature[0]?.role?.name} Members:</Typography>
+              <Typography style={{ fontWeight: "bold", textDecoration: "underline", color: "#000" }}>
+                Signature of {eisApprovalSignature?.[0]?.role?.name} Members:
+              </Typography>
               <Grid container spacing={2} className={classes.signatureContainer}>
-                {eisApprovalSignature?.map((sig, i) => (
-                  <Grid item xs={3} key={sig?.user_id || i}>
-                    {/* Signature Image */}
-                    {sig?.workforce_document?.url ? (
-                      <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
-                    ) : (
-                      <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
-                        Signature not available
-                      </Typography>
-                    )}
+                {eisApprovalSignature
+                  ?.filter(
+                    (item) =>
+                      item?.representative_type === "Worker" && !(item?.role_in_committee === "Member Secretary" || item?.role_in_committee === "Chairman")
+                  )
+                  ?.map((sig, i) => (
+                    <Grid item xs={3} key={sig?.user_id || i}>
+                      {/* Signature Image */}
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
 
-                    {/* Name and Role */}
-                    <div className={classes.signatureBlock}>
-                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
-                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
-                      <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p>
-                      <p style={{ margin: 0 }}>{sig?.role?.name}</p>
-                    </div>
-                  </Grid>
-                ))}
+                      {/* Name and Role */}
+                      <div className={classes.signatureBlock}>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
+                        {/* <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p> */}
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.role_in_committee ?? "Member"}</p>
+                        <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
+                  {eisApprovalSignature
+                  ?.filter(
+                    (item) =>
+                      item?.representative_type === "Employer" && !(item?.role_in_committee === "Member Secretary" || item?.role_in_committee === "Chairman")
+                  )
+                  ?.map((sig, i) => (
+                    <Grid item xs={3} key={sig?.user_id || i}>
+                      {/* Signature Image */}
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
+
+                      {/* Name and Role */}
+                      <div className={classes.signatureBlock}>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
+                        {/* <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p> */}
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.role_in_committee ?? "Member"}</p>
+                        <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
+                  {eisApprovalSignature
+                  ?.filter(
+                    (item) =>
+                      item?.representative_type === "Government" && !(item?.role_in_committee === "Member Secretary" || item?.role_in_committee === "Chairman")
+                  )
+                  ?.map((sig, i) => (
+                    <Grid item xs={3} key={sig?.user_id || i}>
+                      {/* Signature Image */}
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
+
+                      {/* Name and Role */}
+                      <div className={classes.signatureBlock}>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
+                        {/* <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p> */}
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.role_in_committee ?? "Member"}</p>
+                        <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
+                  
+                  {eisApprovalSignature
+                  ?.filter(
+                    (item) =>item?.role_in_committee === "Member Secretary" 
+                  )
+                  ?.map((sig, i) => (
+                    <Grid item xs={3} key={sig?.user_id || i}>
+                      {/* Signature Image */}
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
+
+                      {/* Name and Role */}
+                      <div className={classes.signatureBlock}>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
+                        {/* <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p> */}
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.role_in_committee ?? "Member"}</p>
+                        <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
+                  {eisApprovalSignature
+                  ?.filter(
+                    (item) =>item?.role_in_committee === "Chairman" 
+                  )
+                  ?.map((sig, i) => (
+                    <Grid item xs={3} key={sig?.user_id || i}>
+                      {/* Signature Image */}
+                      {sig?.workforce_document?.url ? (
+                        <img src={sig.workforce_document.url} alt="signature" style={{ width: "100%", maxHeight: 80, objectFit: "contain" }} />
+                      ) : (
+                        <Typography variant="caption" style={{ fontStyle: "italic", color: "#999" }}>
+                          Signature not available
+                        </Typography>
+                      )}
+
+                      {/* Name and Role */}
+                      <div className={classes.signatureBlock}>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.designation}</p>
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.organization_name}</p>
+                        {/* <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.representative_type}</p> */}
+                        <p style={{ margin: 0, fontWeight: "bold" }}>{sig?.role_in_committee ?? "Member"}</p>
+                        <p style={{ margin: 0 }}>{sig?.role?.name}</p>
+                      </div>
+                    </Grid>
+                  ))}
               </Grid>
             </Box>
           </div>
