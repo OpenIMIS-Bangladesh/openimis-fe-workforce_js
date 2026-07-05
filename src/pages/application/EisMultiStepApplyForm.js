@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams,withHistory, withModulesManager,encodeId } from "@openimis/fe-core";
 import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
@@ -13,12 +13,13 @@ import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
-import { getParsedApplication } from "../../utils/utils";
+import { getParsedApplication, getUserType } from "../../utils/utils";
 import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
-import { fetchApplicationsSummary } from "../../actions";
+import { fetchApplicationsSummary, fetchFactoryEmployee, fetchWorkforceEmployeesSummary } from "../../actions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 import EisApplicationTypeSelector from "./EisApplicationTypeSelector";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -67,7 +68,9 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
   const modulesManager = useModulesManager();
   const { application_uuid } = useParams();
   const dispatch = useDispatch();
-   const selectedEmployeeData = useSelector((state) => state.workforce["selectedEmployee"] ?? []);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const user_type = getUserType();
+  const selectedEmployeeData = useSelector((state) => state.workforce["selectedEmployee"] ?? []);
   const [parsedApplicationData, setParsedApplicationData] = useState();
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
@@ -75,6 +78,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
   const [selectedApplicationType, setSelectedApplicationType] = useState(parsedApplicationData?.applicationType || "");
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
   const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [factoryId, setFactoryId] = useState(null);
   const reduxState = useSelector((state) => state);
   const userName = reduxState.core.user.username;
 
@@ -86,6 +90,19 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+      if (!workforceFactoryId && loggedInUserId && user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+        const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+        dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+          const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+          const node = edges[0]?.node;
+          const factoryId = node?.workforceFactory || null;
+          setFactoryId(factoryId);
+          dispatch(fetchWorkforceEmployeesSummary(modulesManager, [`workforceFactoryId:"${factoryId?.id}"`]))
+        });
+      }
+    }, []);
 
   useEffect(() => {
     if (!parsedApplicationData?.employeeDependentInfo) return;
@@ -128,7 +145,8 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
     }
   };
 
-  console.log({ eis:parsedApplicationData });
+  console.log({ eis:workforceFactoryId });
+  console.log({ eis:factoryId });
 
   return (
     <div className={classes.container}>
@@ -143,7 +161,7 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
           <>
           <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.before.eis.startDate.error" module="workforce" /></Typography>
             <EisApplicationTypeSelector
-              workforceFactoryId={workforceFactoryId}
+              workforceFactoryId={workforceFactoryId|| factoryId}
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}
@@ -210,4 +228,4 @@ const EisMultiStepApplyForm = ({workforceFactoryId}) => {
   );
 };
 
-export default EisMultiStepApplyForm;
+export default withModulesManager(withHistory(EisMultiStepApplyForm));

@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
+const EisApplicationTypeSelector = ({ workforceFactoryId, modulesManager, onSelect, selectedApplicationType, parsedApplicationData }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -40,6 +40,10 @@ const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelec
       setLocalApplicationType(appType || ""); // ✅ set locally
       const exportStatus = orgType === "cf" ? "yes" : "no";
       setIsExportOriented(exportStatus);
+      dispatch({
+        type: "SET_SELECTED_EMPLOYEE",
+        payload: parsedApplicationData?.workforceEmployee,
+      });
     }
   }, [parsedApplicationData]);
 
@@ -50,12 +54,14 @@ const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelec
   };
 
   const handleEmployeeChange = (employee) => {
+    console.log({ employee });
     dispatch({
       type: "SET_SELECTED_EMPLOYEE",
       payload: employee,
     });
   };
-  console.log({workforceFactoryId})
+  console.log({ workforceFactoryId });
+  console.log({ selectedEmployee });
 
   return (
     <Paper className={classes.paper} elevation={0}>
@@ -76,7 +82,7 @@ const EisApplicationTypeSelector = ({ workforceFactoryId,modulesManager, onSelec
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
                 workforceFactoryId={workforceFactoryId?.id}
-                value={selectedEmployee}
+                value={selectedEmployee || parsedApplicationData?.workforceEmployee?.id}
                 onChange={handleEmployeeChange}
                 required={true}
                 readOnly={false}

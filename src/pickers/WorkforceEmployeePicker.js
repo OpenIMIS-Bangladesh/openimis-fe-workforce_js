@@ -51,6 +51,8 @@ const WorkforceEmployeePicker = ({
     });
   };
 
+  console.log({selectedOption})
+
   return (
     <Autocomplete
       multiple={multiple}
@@ -65,7 +67,10 @@ const WorkforceEmployeePicker = ({
       isLoading={isLoading}
       value={selectedOption}
       getOptionLabel={(option) => (locale === "en" ? option.firstNameEn : option.firstNameBn)}
-      onChange={(option) => onChange(option, option ? `${option}` : null)}
+      onChange={(option) => {
+        console.log("WorkforceEmployeePicker selected:", option);
+        onChange(option, option ? option.id : null);
+      }}
       filterOptions={customFilterOptions}
       filterSelectedOptions={filterSelectedOptions}
       onInputChange={(text) => setSearchString(text)}

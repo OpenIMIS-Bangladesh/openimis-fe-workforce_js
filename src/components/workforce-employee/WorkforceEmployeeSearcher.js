@@ -16,10 +16,11 @@ import {
   formatMessage,
   historyPush,
   decodeId,
+  encodeId
 } from "@openimis/fe-core";
 import EditIcon from "@material-ui/icons/Edit";
 import { MODULE_NAME } from "../../constants";
-import { fetchWorkforceEmployeesSummary } from "../../actions";
+import { fetchFactoryEmployee, fetchWorkforceEmployeesSummary } from "../../actions";
 import WorkforceEmployeeFilter from "./WorkforceEmployeeFilter";
 
 const styles = (theme) => ({
@@ -88,10 +89,17 @@ class WorkforceEmployeeSearcher extends Component {
     }
   }
 
-  fetch = (prms) => {
+  fetch =async (prms) => {
     const { showHistoryFilter } = this.state;
+    const {loggedInUserId} = this.props
     this.setState({ displayVersion: showHistoryFilter });
-    this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager, prms);
+    this.props.fetchFactoryEmployee(this.props.modulesManager, [`relatedUser_Id: "${encodeId(this.props.modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`]).then((res) => {
+            const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+            const node = edges[0]?.node;
+            const factoryId = node?.workforceFactory || null;
+            
+            this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager,  [`workforceFactoryId:"${factoryId?.id}"`]);
+          })
   };
 
   rowIdentifier = (r) => r.uuid;
@@ -310,11 +318,13 @@ const mapStateToProps = (state) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   confirmed: state.core.confirmed,
+  loggedInUserId:state.core?.user?.i_user?.id
 });
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
+      fetchFactoryEmployee,
       fetchWorkforceEmployeesSummary,
       journalize,
       coreConfirm,

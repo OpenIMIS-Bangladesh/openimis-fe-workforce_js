@@ -239,12 +239,12 @@ const newApplications = () => (
   </Typography>
 );
 
-const DraftApplications = () => {
+const DraftApplications = ({workforceFactoryId}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
 
-  const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
+  // const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loggedInUserId = useSelector(
@@ -274,10 +274,10 @@ const DraftApplications = () => {
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
 
-        setWorkforceFactoryId(factoryId);
+        // setWorkforceFactoryId(factoryId);
       } catch (err) {
         console.error("Error fetching factory:", err);
-        setWorkforceFactoryId(null);
+        // setWorkforceFactoryId(null);
       } finally {
         setLoading(false);
       }
@@ -302,7 +302,7 @@ const DraftApplications = () => {
       <ApplicationProcessSearcher
         isDraft={true}
         applicationStatus={"draft"}
-        factoryId={workforceFactoryId}
+        workforceFactoryId={workforceFactoryId}
         dynamicTableTitle={"workforce.application.draft_applications"}
       />
     </>
@@ -858,7 +858,7 @@ const FactoryAdminDashboard = () => {
       case "rejectedApplication":
         return <RejectApplication />;
       case "draftApplications":
-        return <DraftApplications />;
+        return <DraftApplications workforceFactoryId={workforceFactoryId}/>;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:

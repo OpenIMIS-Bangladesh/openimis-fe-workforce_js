@@ -13,9 +13,9 @@ import DisabilityForm from "./applicationForms/DisabilityForm";
 import EducationGrantForm from "./applicationForms/EducationGrantForm";
 import FinancialAssistanceForm from "./applicationForms/FinancialAssistanceForm";
 import ScholarshipApplicationForm from "./applicationForms/ScholarshipApplicationForm";
-import { getParsedApplication, isBlwfPath, isEisPath } from "../../utils/utils";
+import { getParsedApplication, getUserType, isBlwfPath, isEisPath } from "../../utils/utils";
 import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
-import { fetchApplicationsSummary } from "../../actions";
+import { fetchApplicationsSummary, fetchFactoryEmployee, fetchWorkforceEmployeesSummary } from "../../actions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
 
@@ -66,6 +66,8 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
   const { application_uuid } = useParams();
   const dispatch = useDispatch();
   const [parsedApplicationData, setParsedApplicationData] = useState();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const user_type = getUserType();
   const [showForm, setShowForm] = useState(false);
   const [applicationForSelf, setApplicationForSelf] = useState("");
   const [organizationType, setOrganizationType] = useState("" || parsedApplicationData?.organizationType);
@@ -73,6 +75,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
   const [isApplicationForSelfSelected, setIsApplicationForSelfSelected] = useState(true);
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [selectedFactory, setSelectedFactory] = useState(null);
+  const [factoryId, setFactoryId] = useState(null);
   const reduxState = useSelector((state) => state);
   const userName = reduxState.core.user.username;
 
@@ -83,6 +86,19 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
       setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!workforceFactoryId && loggedInUserId && user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
+      const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const node = edges[0]?.node;
+        const factoryId = node?.workforceFactory || null;
+        setFactoryId(factoryId);
+        dispatch(fetchWorkforceEmployeesSummary(modulesManager, [`workforceFactoryId:"${factoryId?.id}"`]));
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -118,16 +134,18 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
 
   const handleNextButtonClicked = () => {
     if (selectedApplicationType === "financialAssistance") {
-      dispatch(fetchApplicationsSummary(modulesManager, [`applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new",organizationType:"${organizationType}"`])).then(
-        (res) => {
-          const data = res?.payload?.data?.workforceApplication?.edges;
-          if (data && data.length > 0) {
-            setOpenErrorModal(true);
-            return;
-          }
-          setShowForm(true);
+      dispatch(
+        fetchApplicationsSummary(modulesManager, [
+          `applicationType: "financialAssistance",workforceEmployee_Nid: "${userName}",status:"new",organizationType:"${organizationType}"`,
+        ]),
+      ).then((res) => {
+        const data = res?.payload?.data?.workforceApplication?.edges;
+        if (data && data.length > 0) {
+          setOpenErrorModal(true);
+          return;
         }
-      );
+        setShowForm(true);
+      });
     } else {
       setShowForm(true);
     }
@@ -147,17 +165,19 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
         />
         {!showForm ? (
           <>
-            {!isEisPath()&& !isBlwfPath() &&(
-              <Typography style={{color:"#990F02",textAlign:"center",fontWeight:800,fontSize:"large" }}><FormattedMessage id="workforce.application.company.type" module="workforce" /></Typography>
+            {!isEisPath() && !isBlwfPath() && (
+              <Typography style={{ color: "#990F02", textAlign: "center", fontWeight: 800, fontSize: "large" }}>
+                <FormattedMessage id="workforce.application.company.type" module="workforce" />
+              </Typography>
             )}
             <ApplicationTypeSelector
-              workforceFactoryId={workforceFactoryId}
+              workforceFactoryId={workforceFactoryId || factoryId}
               modulesManager={modulesManager}
               onSelect={handleSelection}
               selectedApplicationType={selectedApplicationType}
               parsedApplicationData={parsedApplicationData}
               setSelectedFactory={setSelectedFactory}
-              selectedFactory= {selectedFactory}
+              selectedFactory={selectedFactory}
             />
             <div className={classes.buttonContainer}>
               <Button
