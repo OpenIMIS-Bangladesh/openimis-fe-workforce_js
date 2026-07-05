@@ -348,7 +348,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                         value={formData?.workforceEmployee?.spouseNameEn || ""}
                         onChange={(v) => handleChange("spouseNameEn", v)}
                         readOnly={false}
-                        required
+                        // required
                         error={!!errors.spouseNameEn}
                         helperText={errors.spouseNameEn}
                       />
@@ -361,7 +361,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       value={formData?.workforceEmployee?.spouseNameBn || ""}
                       onChange={(v) => handleChange("spouseNameBn", v)}
                       readOnly={false}
-                      required
+                      // required
                       error={!!errors.spouseNameBn}
                       helperText={errors.spouseNameBn}
                     />
