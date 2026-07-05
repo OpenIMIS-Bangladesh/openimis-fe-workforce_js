@@ -267,7 +267,7 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
 
   const employeePresentAddress = formatAddress(
     row?.workforceApplication?.workforceEmployee?.presentLocation,
-    row?.workforceEmployee?.presentAddress
+    row?.workforceApplication?.workforceEmployee?.presentAddress
   );
 
   const depentPresentAddress = formatAddress(
@@ -276,8 +276,8 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
   );
 
   useEffect(async() => {
-    if (row?.workforceApplicationId) {
-      dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId: "${safeDecodeId(row?.workforceApplicationId)}"`])).then((res) => {
+    if (row?.workforceApplication?.id) {
+      dispatch(fetchWorkforceOtherCompensation(modulesManager, [`workforceApplicationId: "${safeDecodeId(row?.workforceApplication?.id)}"`])).then((res) => {
         const fetchOtherCompensation = parseData(res?.payload?.data?.workforceOtherCompensationInfo);
         let amount = 0;
         fetchOtherCompensation.forEach(element => {
