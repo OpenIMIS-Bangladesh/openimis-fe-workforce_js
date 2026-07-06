@@ -72,8 +72,11 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
     if (open) {
       setFormData({});
       let roleIds = [];
-      if (userType === "eis_coordinator") roleIds = ["53"];
-      else roleIds = ["33"];
+      // if (userType === "eis_coordinator") roleIds = ["53"];
+      // else roleIds = ["33"];
+      if(isEisPath()) roleIds = ["53"];
+      else if(!isEisPath() && !isBlwfPath()) roleIds = ["33"];
+      else if(isBlwfPath()) roleIds = ["50"];
       if (roleIds.length) {
         dispatch(
           fetchWorkforceUserRoleWiseUser(modulesManager, {
