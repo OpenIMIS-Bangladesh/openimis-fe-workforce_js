@@ -440,26 +440,42 @@ export const handleBulkSelectedByCheckerLogic = async ({
 
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
+        // const allVerified = documents?.every((doc) => {
+        //   const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+        //   console.log({ documentMapData }); // Keep for debugging
+        //   const status = documentMapData?.find((mapdata) => {
+        //     const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+        //     const roleMatch = decodedRoleId === roles[0]?.roleId;
+        //     const statusMatch = isEisPath()
+        //       ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
+        //       : userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+        //         ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+        //         : userType===WORKFORCE_USER_TYPE.BLWF_CHECKER?mapdata?.status ===WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED : mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
+        //     console.log("Decoded verifiedByRole.id:", decodedRoleId);
+        //     console.log("roles[0]?.id:", roles[0]?.roleId);
+        //     console.log("Role match:", roleMatch);
+        //     console.log("Status match:", statusMatch);
+        //     console.log("Mapdata status:", mapdata?.status);
+        //     return roleMatch && statusMatch;
+        //   });
+        //   console.log({ status }); // Keep for debugging
+        //   return !!status; // Pass for other types
+        // });
+        const expectedStatus = isEisPath()
+          ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
+          : userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+            ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+            : userType === WORKFORCE_USER_TYPE.BLWF_CHECKER
+              ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED
+              : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
+
         const allVerified = documents?.every((doc) => {
           const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
-          console.log({ documentMapData }); // Keep for debugging
-          const status = documentMapData?.find((mapdata) => {
-            const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
-            const roleMatch = decodedRoleId === roles[0]?.roleId;
-            const statusMatch = isEisPath()
-              ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-              : userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-                ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
-                : userType===WORKFORCE_USER_TYPE.BLWF_CHECKER?mapdata?.status ===WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED : mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
-            console.log("Decoded verifiedByRole.id:", decodedRoleId);
-            console.log("roles[0]?.id:", roles[0]?.roleId);
-            console.log("Role match:", roleMatch);
-            console.log("Status match:", statusMatch);
-            console.log("Mapdata status:", mapdata?.status);
-            return roleMatch && statusMatch;
-          });
-          console.log({ status }); // Keep for debugging
-          return !!status; // Pass for other types
+
+          return documentMapData?.some((mapdata) => (
+            safeDecodeId(mapdata?.verifiedByRole?.id) === roles[0]?.roleId &&
+            mapdata?.status === expectedStatus
+          ));
         });
 
         if (!allVerified) {
