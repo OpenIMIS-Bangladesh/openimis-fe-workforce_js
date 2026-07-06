@@ -113,7 +113,20 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
     } else {
       if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
         dispatch(fetchWorkforceCommittees()).then((response) => {
-          setCommittees(response?.payload?.data?.workforceCommittees || []);
+          let committees= response?.payload?.data?.workforceCommittees || [];
+          if (userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
+          {
+            setCommittees(committees.filter((committee) => committee?.organizationType === "blwf"));
+          }
+          else if(userType===WORKFORCE_USER_TYPE.SECTION_ADMIN)
+          {
+            setCommittees(committees.filter((committee) => committee?.organizationType === "cf"));
+          }
+          else
+          {
+            setCommittees(response?.payload?.data?.workforceCommittees || []);
+          }
+
         });
       }
     }
