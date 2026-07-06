@@ -338,7 +338,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
           //   isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
           // ? 194
           // : null,
-          toRoleId: isEisPath() ? 46 : 32,
+          toRoleId: isEisPath() ? 46 : selectedItem?.applicationType === "disabilityAssistance" || selectedItem?.applicationType === "financialAssistance"
+              ? 35
+              : 32,
         };
 
         await updateApplication(updateApplicationData, "update workforce application");

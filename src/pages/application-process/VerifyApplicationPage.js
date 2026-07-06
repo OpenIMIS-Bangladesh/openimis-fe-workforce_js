@@ -466,7 +466,11 @@ class VerifyApplicationPage extends Component {
       });
     } else {
       handleBulkSelectedByAssociationLogic({
-        selectedApplicationIds: [{ id: application?.id }],
+        selectedApplicationIds: [{ 
+          id: application?.id,
+          applicationType: application?.applicationType,
+          ...application
+        }],
         loggedInUserId,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
