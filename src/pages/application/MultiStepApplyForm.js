@@ -18,6 +18,7 @@ import DeadlyGrantForm from "./applicationForms/DeadlyGrantForm";
 import { fetchApplicationsSummary, fetchFactoryEmployee, fetchWorkforceEmployeesSummary } from "../../actions";
 import ConfirmModal from "../../components/application-process/modals/ConfirmModal";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
+import { WORKFORCE_USER_TYPE } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   container: {
