@@ -126,7 +126,7 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
       ? ["disabilityAssistance"]
       : !isEisPath() && !isBlwfPath()
         ? ["medicalAssistance", "disabilityAssistance", "maternityGrant"]
-        : ["medicalGrant", "maternityGrant"];
+        : ["medicalDonation", "maternityGrant"];
 
     const invalidApplication = selectedApplicationIds?.find((app) => !allowedTypes.includes(app?.applicationType));
 
