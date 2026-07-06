@@ -287,7 +287,7 @@ const DraftApplications = ({workforceFactoryId}) => {
   }, [loggedInUserId, dispatch, modulesManager]);
 
   useEffect(() => {
-    console.log("factoryId paisi:", workforceFactoryId);
+    console.log("factoryId paisi:", workforceFactoryId.id);
   }, [workforceFactoryId]);
 
   if (loading) {
@@ -297,16 +297,19 @@ const DraftApplications = ({workforceFactoryId}) => {
   if (!workforceFactoryId) {
     return <div>No factory found</div>;
   }
-  return (
-    <>
-      <ApplicationProcessSearcher
-        isDraft={true}
-        applicationStatus={"draft"}
-        workforceFactoryId={workforceFactoryId}
-        dynamicTableTitle={"workforce.application.draft_applications"}
-      />
-    </>
-  );
+  else
+  {
+    return (
+      <>
+        <ApplicationProcessSearcher
+          isDraft={true}
+          applicationStatus={"draft"}
+          factoryId={workforceFactoryId.id}
+          dynamicTableTitle={"workforce.application.draft_applications"}
+        />
+      </>
+    );
+  }
 };
 
 const ApplicationStatus = () => {
