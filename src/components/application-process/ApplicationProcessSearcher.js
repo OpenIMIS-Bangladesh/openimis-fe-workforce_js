@@ -3286,7 +3286,8 @@ class ApplicationProcessSearcher extends Component {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                  // onClick={this.handleBulkSelectedbySectionAdminToDoctor}
+                  onClick={() => this.setState({ forwardModalOpenEisDoctor: true })}
                 >
                   <FormattedMessage
                     module="workforce"
@@ -3739,6 +3740,13 @@ class ApplicationProcessSearcher extends Component {
                 <ForwardApplicationSectionAdminModal
                   open={forwardModalOpenSA}
                   onClose={this.handleCloseForwardModalForSectionAdmin}
+                  selectedApplicationIds={this.state.selectedApplicationIds}
+                  onSubmitForward={this.handleForwardSubmit}
+                  userRights={userRights}
+                />
+                <ForwardApplicationEisDoctorModal
+                  open={forwardModalOpenEisDoctor}
+                  onClose={this.handleCloseForwardModalForEisDoctor}
                   selectedApplicationIds={this.state.selectedApplicationIds}
                   onSubmitForward={this.handleForwardSubmit}
                   userRights={userRights}
