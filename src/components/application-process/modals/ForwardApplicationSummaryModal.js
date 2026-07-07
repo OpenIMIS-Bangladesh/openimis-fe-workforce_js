@@ -111,22 +111,10 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
       setServerResponse(null);
       setFormData({ roleIds: [], userIds: [], year: "", month: "", meetingName: "", meetingDate: null, committeeIds: "" });
     } else {
+      let organizationType = isEisPath() ? "eis" : isBlwfPath() ? "blwf" : "cf";
       if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN ||userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
-        dispatch(fetchWorkforceCommittees()).then((response) => {
-          let committees= response?.payload?.data?.workforceCommittees || [];
-          if (userType===WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
-          {
-            setCommittees(committees.filter((committee) => committee?.organizationType === "blwf"));
-          }
-          else if(userType===WORKFORCE_USER_TYPE.SECTION_ADMIN)
-          {
-            setCommittees(committees.filter((committee) => committee?.organizationType === "cf"));
-          }
-          else
-          {
+        dispatch(fetchWorkforceCommittees({ organizationType })).then((response) => {
             setCommittees(response?.payload?.data?.workforceCommittees || []);
-          }
-
         });
       }
     }

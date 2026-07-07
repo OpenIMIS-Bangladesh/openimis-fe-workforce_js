@@ -253,7 +253,8 @@ const CommitteeManagementPage = () => {
 
   const fetchPreloadData = async () => {
     try {
-      const committeesData = await dispatch(fetchWorkforceCommittees([]));
+      let organizationType = isEisPath() ? "eis" : isBlwfPath() ? "blwf" : "cf";
+      const committeesData = await dispatch(fetchWorkforceCommittees({ organizationType }));
       setCommittees(committeesData?.payload?.data?.workforceCommittees || []);
 
       const committeeUsersData = await dispatch(fetchWorkforceCommitteeUser([]));

@@ -3002,10 +3002,21 @@ export function updateWorkforceCommittee(payload, clientMutationLabel) {
   });
 }
 
-export function fetchWorkforceCommittees() {
+export function fetchWorkforceCommittees(filters=null) {
+  let filterString = "";
+  if(filters!==null && Object.keys(filters).length > 0) {
+    filterString += "(";
+    if (filters?.committeeId) {
+      filterString += `id: "${filters.committeeId}", `;
+    }
+    if (filters?.organizationType) {
+      filterString += `organizationType: "${filters.organizationType}", `;
+    }
+    filterString += ")";
+  }
   const payload = `
     {
-      workforceCommittees {
+      workforceCommittees ${filterString} {
         id
         nameEn
         nameBn
