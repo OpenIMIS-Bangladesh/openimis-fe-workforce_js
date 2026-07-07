@@ -82,6 +82,7 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [isNavigationBlocked, setIsNavigationBlocked] = useState(false);
+  const [isDependentSaved, setIsDependentSaved] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showVerifyNid, setShowVerifyNid] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -414,6 +415,40 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
             }
             dispatch(updateApplication(updateApplicationData, `update workforce application `));
           }
+        } else if (nextStep === 5) {
+          const updateApplicationData = {
+            id: safeApplicationId(applicationId, parsedApplicationData),
+            workforceEmployeeId: formData?.workforceEmployee.id || parsedApplicationData?.workforceEmployee?.id,
+            company: formData?.workforceEmployee?.company?.id,
+            factory: formData?.factory?.id ? safeDecodeId(formData?.factory?.id) : null,
+            organizationType: organizationType || parsedApplicationData?.organizationType,
+            applicationType: selectedApplicationType || parsedApplicationData?.applicationType,
+            grantAmount: formData?.employeeAccidentInfo.grantAmount,
+            employeeBankInfo: JSON.stringify(formData.employeeBankInfo) || JSON.stringify(parsedApplicationData?.employeeBankInfo),
+            employeeDependentInfo:
+              JSON.stringify(formData.dependents).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}") ||
+              JSON.stringify(parsedApplicationData?.employeeDependentInfo).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"),
+            employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo) || JSON.stringify(parsedApplicationData?.employeeAccidentInfo),
+            institutionInfo: JSON.stringify(formData?.institutionInfo),
+            metadata: JSON.stringify(formData?.metadata),
+            status: WORKFORCE_STATUS.DRAFT,
+            applicationFor: applicationForSelf === "yes" ? "self" : "dependent",
+          };
+          console.log(uploadDependentFile);
+          if (uploadDependentFile?.length) {
+            await Promise.all(
+              uploadDependentFile.map((file) =>
+                dispatch(
+                  createWorkforceDocument(
+                    { ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) },
+                    `Created workforce document`,
+                  ),
+                ),
+              ),
+            );
+          }
+
+          await dispatch(updateApplication(updateApplicationData, `update workforce application`)).then((res) => setIsDependentSaved(true));
         } else {
           const updateApplicationData = {
             id: safeApplicationId(applicationId, parsedApplicationData),
@@ -441,9 +476,9 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
         if (shouldBlockNavigation) {
           try {
             if (parsedApplicationData?.id) {
-              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]))
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${parsedApplicationData?.id}"`]));
             } else {
-              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]))
+              await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeApplicationId(applicationId)}"`]));
             }
           } finally {
             setIsNavigationBlocked(false);
@@ -492,15 +527,19 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
   const handleSubmit = async () => {
     console.log({ tazwer: formData });
     if (uploadBankFile) {
-      await Promise.all( uploadBankFile.map((file) => {
-        return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
-        );
-      }))
+      await Promise.all(
+        uploadBankFile.map((file) => {
+          return dispatch(
+            createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
+          );
+        }),
+      );
     }
-    await Promise.all(uploadFile.map((file, index) => {
-      dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
-    }))
+    await Promise.all(
+      uploadFile.map((file, index) => {
+        dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
+      }),
+    );
 
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
@@ -660,11 +699,11 @@ const MedicalDonationForm = ({ workforceFactoryId, organizationType, selectedApp
               variant="contained"
               color="primary"
               // disabled={disableConfirmSubmit}
-              onClick={async() => {
+              onClick={async () => {
                 // setIsSubmitted(true);
                 await handleSubmit();
                 setShowVerifyNid(false);
-                setIsSubmitted(true)
+                setIsSubmitted(true);
               }}
             >
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />

@@ -167,6 +167,7 @@ export const getParsedApplication = (modulesManager, filters) => {
         employeeAccidentInfo: safeParse(rawData?.employeeAccidentInfo) || {},
         employeeChildrenInfo: safeParse(rawData?.employeeChildrenInfo) || {},
         metadata: safeParse(rawData?.metadata) || {},
+        institutionInfo: safeParse(rawData?.institutionInfo) || {},
         deceasedWorkerInfo: safeParse(rawData?.deceasedWorkerInfo) || {},
         applicantInfo: safeParse(rawData?.applicantInfo) || {},
       };
