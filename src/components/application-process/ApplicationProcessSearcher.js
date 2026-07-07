@@ -3308,18 +3308,22 @@ class ApplicationProcessSearcher extends Component {
                 </Button>
               )
             )}
-            <Button variant="contained" color="primary" onClick={this.handleOpenBFTN} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
-            <IconButton style={{color:"white"}}>
-              <PrintIcon />
-            </IconButton>
-              <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
-            </Button>
-            <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
-            <IconButton style={{color:"white"}}>
-              <PrintIcon />
-            </IconButton>
-              <FormattedMessage id="workforce.generate.committee.report" />
-            </Button>
+            {this.props.approveMeetingSheet && (
+              <>
+              <Button variant="contained" color="primary" onClick={this.handleOpenBFTN} style={{color:"white",paddingX:0.25,fontSize:"small"}}>
+                <IconButton style={{color:"white"}}>
+                  <PrintIcon />
+                </IconButton>
+                <FormattedMessage id="workforce.generateBFTN.beneficiary.payment.calculation"/>
+              </Button>
+              <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
+                <IconButton style={{color:"white"}}>
+                  <PrintIcon />
+                </IconButton>
+                <FormattedMessage id="workforce.generate.committee.report" />
+              </Button> 
+              </>
+            )}
           </Box>
         ) : null}
         {userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR

@@ -67,11 +67,14 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
 
   const handleSelection = (event, value, reason) => {
     if (reason === "select-option" && value && typeof value === "object") {
-      const name = value.nameEn || value.nameBn || "";
+      const name =locale ==="en"? value.nameEn : value.nameBn || "";
       handleChange("instituteName", name);
+      locale === "en"?
       setFactoryPopupMessage(
         `Your factory ${name} is 100% export oriented company. You can apply from `
-      );
+      ):setFactoryPopupMessage(
+        `আপনাদের কারখানা ${name} একটি শতভাগ রপ্তানিমুখী প্রতিষ্ঠান। আবেদন করতে হলে ভিজিট করুন `
+      )
       setShowFactoryPopup(true);
     } else {
       handleChange("instituteName", value || "");
