@@ -37,15 +37,16 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
         const metadata = safeParse(app?.metadata);
         const parsedAddress = safeParse(app?.workforceEmployee?.presentAddress) || {};
         const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * (getTotalAmount() || 200000);
+        const deceasedWorkerInfo= safeParse(app?.deceasedWorkerInfo) || {};
 
         rows.push({
           sl: index + 1,
           mainListNo: app?.trackingNumber || "",
-          workerName: app?.deceasedWorkerInfo?.firstNameBn || app?.deceasedWorkerInfo?.firstNameEn || "",
-          fatherName: app?.deceasedWorkerInfo?.fatherNameBn || app?.deceasedWorkerInfo?.fatherNameEn || "",
+          workerName: deceasedWorkerInfo?.nameBn || deceasedWorkerInfo?.nameEn || "",
+          fatherName: deceasedWorkerInfo?.fatherNameBn || deceasedWorkerInfo?.fatherNameEn || "",
           factoryName: app?.employeeFactory?.nameBn || app?.employeeFactory?.nameEn || "",
-          workerNid: app?.deceasedWorkerInfo?.nid || "",
-          workerMobile: app?.deceasedWorkerInfo?.mobile || app?.deceasedWorkerInfo?.phoneNumber || "",
+          workerNid: deceasedWorkerInfo?.nid || "",
+          workerMobile: deceasedWorkerInfo?.mobile || deceasedWorkerInfo?.phoneNumber || "",
           incidentDate: date || metadata?.deathDate,
           incidentType: type || metadata?.deathType,
           nomineeName: dep?.nameBn || dep?.nameEn || dep?.bankAccountHolderName || "",
@@ -59,8 +60,8 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
           bankAc: dep?.bankAccountNo || "",
           amount: approvedAmount,
           routingNo: dep?.bank?.routingNumber || "",
-          mobile: dep?.phoneNumber || "",
-          unitNo: "",
+          mobile: dep?.phoneNumber || deceasedWorkerInfo?.phoneNumber || "",
+          unitNo: app?.workforceEmployee?.phoneNumber || "",
         });
       });
     } else {
@@ -72,28 +73,29 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
         } catch (e) {}
 
         const { type, date } = getIncidentDetails(app.employeeAccidentInfo);
-        const parsedAddress = safeParse(app?.deceasedWorkerInfo?.presentAddress) || {};
+        const deceasedWorkerInfo = safeParse(app?.deceasedWorkerInfo) || {};
+        const parsedAddress = safeParse(deceasedWorkerInfo?.presentAddress) || {};
         const formattedAddress = formatAddress(
-          app?.deceasedWorkerInfo?.presentLocation, // Make sure this matches your actual location key
-          app?.deceasedWorkerInfo?.presentAddress,
+          deceasedWorkerInfo?.presentLocation, // Make sure this matches your actual location key
+          deceasedWorkerInfo?.presentAddress,
         );
 
         bankInfos.forEach((bankInfo, bankIndex) => {
           rows.push({
             sl: appIndex + 1 + bankIndex,
             mainListNo: app.id || "",
-            workerName: app.deceasedWorkerInfo?.firstNameBn || app.deceasedWorkerInfo?.firstNameEn || "",
-            fatherName: app.deceasedWorkerInfo?.fatherNameBn || app.deceasedWorkerInfo?.fatherNameEn || "",
+            workerName: deceasedWorkerInfo?.nameBn || deceasedWorkerInfo?.nameEn || "",
+            fatherName: deceasedWorkerInfo?.fatherNameBn || deceasedWorkerInfo?.fatherNameEn || "",
             factoryName: app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "",
-            workerNid: app.deceasedWorkerInfo?.nid || "",
-            workerMobile: app.deceasedWorkerInfo?.phoneNumber || "",
+            workerNid: deceasedWorkerInfo?.nid || "",
+            workerMobile: deceasedWorkerInfo?.phoneNumber || "",
             address: `গ্রাম-${formattedAddress.village || ""}\nডাক-${formattedAddress.postOffice || ""}\nউপজেলা-${formattedAddress.thana || ""}\nজেলা-${formattedAddress.district || ""}`,
             district: formattedAddress.district || "",
             incidentDate: date,
             incidentType: type,
-            nomineeName: bankInfo?.accountHolderName || app.deceasedWorkerInfo?.firstNameBn || app.deceasedWorkerInfo?.firstNameEn || "",
+            nomineeName: bankInfo?.accountHolderName || deceasedWorkerInfo?.nameBn || deceasedWorkerInfo?.nameEn || "",
             nomineeNid: bankInfo.dependentNid || "",
-            nomineeMobile: app.workforceEmployee?.mobile || app.deceasedWorkerInfo?.phoneNumber || "",
+            nomineeMobile: app.workforceEmployee?.phoneNumber || deceasedWorkerInfo?.phoneNumber || "",
             relation: "নিজ",
             details: `আবেদনকারী নিজে একজন শ্রমিক। তিনি দুর্ঘটনার শিকার হয়েছেন।`,
             profession: app.employeeFactory?.nameBn || "গৃহ শ্রমিক",
@@ -102,8 +104,8 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
             bankAc: bankInfo?.accountNumber || "",
             amount: app.grantAmount || "",
             routingNo: bankInfo?.branch?.routingNumber || "",
-            mobile: app.workforceEmployee?.mobile || "",
-            unitNo: "",
+            mobile: app.workforceEmployee?.phoneNumber || deceasedWorkerInfo?.phoneNumber || "",
+            unitNo: app?.workforceEmployee?.phoneNumber || "",
           });
         });
       });
