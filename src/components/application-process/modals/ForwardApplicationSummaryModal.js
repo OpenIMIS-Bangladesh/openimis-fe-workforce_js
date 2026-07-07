@@ -35,7 +35,7 @@ import { WORKFORCE_STATUS, STATUS_MAP_EN, STATUS_MAP_BN } from "../../../constan
 import ForwardAdminPanel from "./ForwardAdminPanel";
 import ForwardApplicationModal from "./ForwardApplicationModal";
 import { formatApplicationSummaryGQL } from "../../../utils/format_gql";
-import { getUserTypeFromRights, safeDecodeId } from "../../../utils/utils";
+import { getUserTypeFromRights, isBlwfPath, isEisPath, safeDecodeId } from "../../../utils/utils";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../../constants";
 
 const useStyles = makeStyles((theme) => ({
