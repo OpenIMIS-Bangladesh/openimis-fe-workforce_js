@@ -1563,11 +1563,11 @@ export const formatAddress = (locationData, addressData) => {
   };
 
 export const isCfPath = () => {
-  if (typeof window !== "undefined") {
-    return window.location.href.includes("cf");
-  }
-  return false; // fallback if window is not defined
-  // return true;
+  // if (typeof window !== "undefined") {
+  //   return window.location.href.includes("cf");
+  // }
+  // return false; // fallback if window is not defined
+  return true;
 };
 
 export const isBlwfPath = () => {
