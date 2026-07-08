@@ -216,7 +216,7 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
   const documentTitle =applications?.[0]?.organizationType==="blwf"?
   "বিএলডাব্লিউএফ এর আবেদন অনুযায়ী আর্থিক সহায়তা তালিকা"
   : isEducationOrScholarship
-    ? "বিজিএমইএ - এর শিক্ষা আর্থিক সহায়তার তালিকা"
+    ? "শিক্ষা আর্থিক সহায়তার তালিকা"
     : isMedicalOrMaternity
     ? "চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা"
     : "মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
