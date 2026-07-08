@@ -265,6 +265,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
       if (
         [
           WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN,
+          WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT,
           WORKFORCE_USER_TYPE.BLWF_DIRECTOR,
           WORKFORCE_USER_TYPE.BLWF_APPROVER,
           WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR,
@@ -635,6 +636,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR
   ) // else if (!getUserTypeFromRights(userRights).includes("blwf"))
@@ -646,6 +648,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
     // if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
     if (
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
@@ -857,7 +860,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
             <FormattedMessage id="workforce.modal.close" />
           </Button>
           <Button onClick={() => window.print()} variant="contained" color="primary">
-            <FormattedMessage id="workforce.table.printSSummary" />
+            <FormattedMessage id="workforce.table.printSUmmary" />
           </Button>
           <Button onClick={exportToExcel} variant="contained" color="success">
             <FormattedMessage id="workforce.modal.excel" />

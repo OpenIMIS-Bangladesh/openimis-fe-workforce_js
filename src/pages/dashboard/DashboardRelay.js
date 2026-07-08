@@ -19,6 +19,7 @@ import EisCommitteeDashboardPage from "./EisCommitteeDashboardPage"
 import EisFinancialOfficerDashboard from "./EisFinancialOfficerDashboardPage";
 import EISAdvisorDashboard from "./EISAdvisorDashboardPage";
 import SecretaryDashboardPage from "./SecretaryDashboardPage";
+import BlwfAccountantDashboardPage from "./BlwfAccountantDashboardPage";
 
 const DashboardRelay = () => {
   const user_type = getUserType();
@@ -59,6 +60,8 @@ console.log("userTpe",user_type)
     return <EISAdvisorDashboard />;
   } else if (user_type === WORKFORCE_USER_TYPE.SECRETARY||user_type === WORKFORCE_USER_TYPE.MINISTER) {
     return <SecretaryDashboardPage />;
+  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT) {
+    return <BlwfAccountantDashboardPage />;
   } 
   else {
     return <FactoryAdminDashboardPage />;

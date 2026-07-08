@@ -1682,6 +1682,61 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters,
         [`organizationTypeIn: ["${organizationType}"]`, 'orderBy: ["-dateCreated"]']
       );
+    } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT) {
+      this.setState({ displayVersion: showHistoryFilter });
+
+      let defaultStatusFilters = [];
+      let additionalFilters = [];
+
+      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+
+      if (rejectedApplication) {
+        defaultStatusFilters.push('statusIn: ["rejected"]', 'organizationTypeIn: ["blwf"]');
+      }
+      else if (summaryId) {
+        defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]', 'organizationTypeIn: ["blwf"]');
+        additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
+      } else if (this.props.verifiedApplications) {
+        defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'organizationTypeIn: ["blwf"]');
+      }
+      else {
+        defaultStatusFilters.push('statusIn: ["verified_by_dol_dife"]', 'organizationTypeIn: ["blwf"]');
+      }
+
+      const orderByFilter = 'orderBy: ["-dateCreated"]';
+
+      const nidFilters = this.props.nidFilters || [];
+
+      let finalFilters = [];
+
+      if (nidFilters.length) {
+        finalFilters = [...nidFilters];
+
+        if (!finalFilters.some(f => f.includes("orderBy"))) {
+          finalFilters.push(orderByFilter);
+        }
+
+        if (summaryId && !finalFilters.some(f => f.includes("blwfApplicationSummary_Id"))) {
+          finalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else if (prms?.length) {
+        finalFilters = [...prms];
+
+        const hasStatusIn = finalFilters.some(f => f.includes("statusIn"));
+        const hasOrderBy = finalFilters.some(f => f.includes("orderBy"));
+
+        if (!hasStatusIn) {
+          finalFilters = [...defaultStatusFilters, ...finalFilters];
+        }
+        if (!hasOrderBy) finalFilters.push(orderByFilter);
+        if (summaryId && !finalFilters.some(f => f.includes("blwfApplicationSummary_Id"))) {
+          finalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
+        }
+      } else {
+        finalFilters = [...defaultStatusFilters, ...additionalFilters, orderByFilter];
+      }
+
+      this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
     }
     this.props.fetchRoles(loggedInUserId)
   }
@@ -2175,7 +2230,7 @@ class ApplicationProcessSearcher extends Component {
               ? headerSectionAdmin(this)
               : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
                 ? headerSectionTwoAdmin(this)
-                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT
                   ? headerBlwfSectionAdmin(this)
                   : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
                     ? headerDoctor(this)
@@ -2206,7 +2261,7 @@ class ApplicationProcessSearcher extends Component {
               ? itemFormattersSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication, this.nidFilters)
               : userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO
                 ? itemFormattersSectionTwoAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication, this.nidFilters)
-                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+                : userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT
                   ? itemFormattersBlwfSectionAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication, this.nidFilters)
                   : userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR
                     ? itemFormattersDoctor(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication)
@@ -3118,7 +3173,7 @@ class ApplicationProcessSearcher extends Component {
           onCheckBoxSelect={(ids) => this.onCheckBoxSelect(ids)}
           coloredRow={coloredRow}
         />
-        {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR ? (
+        {userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR ? (
           <Box
             style={{
               marginTop: 10,
@@ -3620,7 +3675,7 @@ class ApplicationProcessSearcher extends Component {
                 />
               </>
             );
-          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
+          } else if (userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT || userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
             return (
               <>
                 <ForwardApplicationSectionAdminModal

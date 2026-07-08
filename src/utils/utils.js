@@ -96,6 +96,8 @@ export function getUserTypeFromRights(user_rights) {
     user_type = WORKFORCE_USER_TYPE.ASSOCIATION;
   } else if (user_rights.includes(818000)) {
     user_type = WORKFORCE_USER_TYPE.MINISTER;
+  } else if (user_rights.includes(819000)) {
+    user_type = WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT;
   }else if (!isEmptyObject(user_rights)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
