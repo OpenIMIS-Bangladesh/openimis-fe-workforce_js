@@ -260,7 +260,8 @@ export const WORKFORCE_USER_TYPE = {
   LFMEAB_ASSOCIATION: "lfmeab_association",
   SECRETARY: "secretary",
   EIS_ASSOCIATION_COMMITTEE: "eis_association_committee",
-  MINISTER:"minister"
+  MINISTER: "minister",
+  BLWF_ACCOUNTANT: "blwf_accountant"
 };
 export const WORKFORCE_USER_TYPE_MAP_EN= {
   admin: "Admin",
@@ -293,6 +294,8 @@ export const WORKFORCE_USER_TYPE_MAP_EN= {
   bepza_association: "Bepza Association",
   lfmeab_association: "Lfmeab Association",
   eis_association_committee: "Eis Association Committee",
+  minister: "Minister",
+  blwf_accountant: "Blwf Accountant",
 
 };
 export const WORKFORCE_USER_TYPE_MAP_BN = {
@@ -324,6 +327,8 @@ export const WORKFORCE_USER_TYPE_MAP_BN = {
   bepza_association: "বেপজা অ্যাসোসিয়েশন",
   lfmeab_association: "এলএফএমইএবি অ্যাসোসিয়েশন",
   eis_association_committee: "ইআইএস অ্যাসোসিয়েশন কমিটি",
+  minister: "মন্ত্রী",
+  blwf_accountant: "বিএলডাব্লিউএফ হিসাবরক্ষক",
 
 
 

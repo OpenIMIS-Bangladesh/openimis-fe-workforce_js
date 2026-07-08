@@ -188,6 +188,7 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
   if (
     [
       WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN,
+      WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT,
       WORKFORCE_USER_TYPE.BLWF_DIRECTOR,
       WORKFORCE_USER_TYPE.BLWF_APPROVER,
       WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR,
@@ -217,8 +218,8 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
   : isEducationOrScholarship
     ? "বিজিএমইএ - এর শিক্ষা আর্থিক সহায়তার তালিকা"
     : isMedicalOrMaternity
-    ? "বিজিএমইএ - এর চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা"
-    : "বিজিএমইএ - এর মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
+    ? "চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা"
+    : "মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
 
   return (
     <div id="printable-content">

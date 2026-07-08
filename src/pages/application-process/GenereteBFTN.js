@@ -258,6 +258,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       let web = "www.centralfund.gov.bd";
       if (
         getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+        getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
         getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ||
         getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER ||
         getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
@@ -581,6 +582,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR || 
@@ -594,6 +596,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     // if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN)
     if (
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+      getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_APPROVER ||
       getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
