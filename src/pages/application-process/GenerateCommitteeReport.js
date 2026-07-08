@@ -395,7 +395,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
 
           if (isFinancialAssistance) {
             dependentData?.forEach((dep) => {
-              if (decodeId(dep.workforceApplicationId) === decodeId(app.id)) {
+              if (safeDecodeId(dep.workforceApplicationId) === safeDecodeId(app.id)) {
                 const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * (getTotalAmount() || 200000);
                 excelRows.push({
                   app, dep, bankInfo: dep.bank, 
@@ -416,7 +416,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
               if (info.diseaseName) diseaseType = info.diseaseName;
             } catch (e) {}
 
-            const dep = dependentData?.find((d) => decodeId(d.workforceApplicationId) === decodeId(app.id));
+            const dep = dependentData?.find((d) => safeDecodeId(d.workforceApplicationId) === safeDecodeId(app.id));
             let gpa = "";
             try { gpa = JSON.parse(app.educationInfo || "{}").gpa || dep?.gpa || ""; } catch (e) {}
 
