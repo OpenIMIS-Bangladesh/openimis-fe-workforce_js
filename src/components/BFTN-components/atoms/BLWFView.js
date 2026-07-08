@@ -24,14 +24,24 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
       }
 
       const parsedAddress = safeParse(app?.workforceEmployee?.presentAddress) || {};
-      const formattedAddress = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
+      // const formattedAddress = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
       const workerName = app.applicationType === "deadlyGrant"
         ? safeParse(app?.deceasedWorkerInfo)?.nameBn || safeParse(app?.deceasedWorkerInfo)?.nameEn || ""
         : app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "";
       const fatherName = app.applicationType === "deadlyGrant"
         ? safeParse(app?.deceasedWorkerInfo)?.fatherNameBn || safeParse(app?.deceasedWorkerInfo)?.fatherNameEn || ""
         : app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || "";
+      const workerNid = app.applicationType === "deadlyGrant"
+        ? safeParse(app?.deceasedWorkerInfo)?.nid || ""
+        : app.workforceEmployee?.nid || "";
       const factoryName = safeParse(app?.institutionInfo)?.instituteName || safeParse(app?.institutionInfo)?.aboutWork || app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "";
+      let deceasedWorkerInfo=null;
+      if (app?.applicationType =="deadlyGrant")
+      {
+        deceasedWorkerInfo = safeParse(app?.deceasedWorkerInfo) || {};
+        console.log({deceasedWorkerInfo})
+      }
+      const formattedAddress = deceasedWorkerInfo !== null && app?.applicationType=="deadlyGrant" ? formatAddress(deceasedWorkerInfo?.permanentLocation, deceasedWorkerInfo?.permanentAddress) : formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
 
       (bankInfos.length > 0 ? bankInfos : [{}]).forEach((bankInfo, bankIndex) => {
         rows.push({
@@ -40,7 +50,7 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
           workerName,
           fatherName,
           factoryName,
-          workerNid: app.workforceEmployee?.nid || "",
+          workerNid: workerNid || "",
           workerMobile: app.workforceEmployee?.phoneNumber || app.workforceEmployee?.mobile || "",
           address: `গ্রাম-${formattedAddress.village || ""}\nডাক-${formattedAddress.postOffice || ""}\nউপজেলা-${formattedAddress.thana || ""}\nজেলা-${formattedAddress.district || ""}`,
           district: formattedAddress.district || "",
