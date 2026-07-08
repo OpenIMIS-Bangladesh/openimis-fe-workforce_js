@@ -9,6 +9,7 @@ import { getUserTypeFromRights } from "../../utils/utils";
 import MedicalMaternityView from "./atoms/MedicalMaternityView";
 import DeathDisabilityView from "./atoms/DeathDisabilityView";
 import EducationScholarshipView from "./atoms/EducationScholarshipView";
+import BLWFView from "./atoms/BLWFView";
 
 const useStyles = makeStyles((theme) => ({
   docTitle: {
@@ -211,7 +212,9 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
 
 
   // Dynamic Title based on App Category
-  const documentTitle = isEducationOrScholarship
+  const documentTitle =applications?.[0]?.organizationType==="blwf"?
+  "বিএলডাব্লিউএফ এর আবেদন অনুযায়ী আর্থিক সহায়তা তালিকা"
+  : isEducationOrScholarship
     ? "বিজিএমইএ - এর শিক্ষা আর্থিক সহায়তার তালিকা"
     : isMedicalOrMaternity
     ? "বিজিএমইএ - এর চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা"
@@ -238,7 +241,9 @@ const FormattedBankPaymentAdvice = ({ applications, dependentData, getTotalAmoun
 
       <Typography className={classes.docTitle}>{documentTitle}</Typography>
 
-      {isEducationOrScholarship ? (
+      {["blwf"].includes(applications[0]?.organizationType) ? (
+        <BLWFView classes={classes} applications={applications} getTotalAmount={getTotalAmount} />
+      ) : isEducationOrScholarship ? (
         <EducationScholarshipView 
           classes={classes} 
           applications={applications} 
