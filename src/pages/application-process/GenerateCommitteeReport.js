@@ -83,6 +83,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
   const [dependentData, setDependentData] = useState([]);
+  const [loader,setLoader] = useState(false)
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
 
@@ -100,7 +101,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
 
   const handleForward = async () => {
     if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
-
+    setLoader(true)
     const filteredApplications = applications.filter((item) => String(item.status) === String(status));
 
     if (filteredApplications.length === 0) {
@@ -156,6 +157,8 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
       // setTimeout(() => {
       //   window.location.reload();
       // }, 1500);
+      setLoader(false)
+      onClose()
     }
   };
 
@@ -239,13 +242,13 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
       // FIX: Safely fallback to full applications array if status filter returns empty
       let exportApps = applications.filter((item) => String(item.status) === String(status));
       if (exportApps.length === 0 && applications.length > 0) {
-        exportApps = applications; 
+        exportApps = applications;
       }
 
       // FIX: Extract appType safely from the root applications array
-      const appType = applications?.[0]?.applicationType || exportApps[0]?.applicationType;
+      const appType = applications?.[0]?.applicationType || exportApps?.[0]?.applicationType;
 
-      const isMedicalOrMaternity = ["medicalAssistance", "maternityGrant"].includes(appType);
+      const isMedicalOrMaternity = ["medicalAssistance", "medicalDonation", "maternityGrant"].includes(appType);
       const isEducationOrScholarship = ["scholarship", "educationGrant", "educationalAssistance"].includes(appType);
       const isFinancialAssistance = appType === "financialAssistance";
 
@@ -327,59 +330,111 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
       // --- DATA EXTRACTION LOGIC ---
       let excelRows = [];
 
-      exportApps.forEach((app, appIndex) => {
-        const formattedAddr = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
-        const { type, date } = getIncidentDetails(app.employeeAccidentInfo);
-        const metadata = safeParse(app?.metadata);
-        
-        let bankInfos = [];
-        try {
-          const parsed = JSON.parse(app.employeeBankInfo);
-          bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed);
-        } catch (e) {}
+      const buildBlwfRows = (apps) => {
+        const rows = [];
 
-        if (isFinancialAssistance) {
-          dependentData?.forEach((dep) => {
-            if (decodeId(dep.workforceApplicationId) === decodeId(app.id)) {
-              const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * (getTotalAmount() || 200000);
-              excelRows.push({
-                app, dep, bankInfo: dep.bank, 
-                nomineeName: dep?.nameBn || dep?.nameEn || dep?.bankAccountHolderName || "",
-                nomineeNid: dep?.nid, nomineeMobile: dep?.mobile || dep?.phoneNumber,
-                relation: RELATION_LABEL_MAP[dep?.relationWithWorker] || dep?.relationWithWorker || "স্ত্রী",
-                amount: approvedAmount, incidentDate: date || metadata?.deathDate, incidentType: type || metadata?.deathType,
-                routing: dep?.bank?.routingNumber, account: dep?.bankAccountNo, bankName: dep?.bank?.nameEn,
-                details: `আবেদনকারী একজন শ্রমিক ছিলেন। তিনি ${date || metadata?.deathDate || ""} তারিখে মৃত্যুবরণ করেন।`,
-                gpa: ""
-              });
-            }
-          });
-        } else {
-          let diseaseType = appType === "maternityGrant" ? "Maternity" : "Treatment";
-          try {
-            const info = JSON.parse(JSON.parse(app.employeeAccidentInfo || "{}"));
-            if (info.diseaseName) diseaseType = info.diseaseName;
-          } catch (e) {}
+        apps.forEach((app, appIndex) => {
+          let bankInfos = safeParse(app?.employeeBankInfo) || [];
+          bankInfos = Array.isArray(bankInfos) ? bankInfos : [bankInfos];
+          if (bankInfos.length === 0) bankInfos = [{}];
 
-          const dep = dependentData?.find((d) => decodeId(d.workforceApplicationId) === decodeId(app.id));
-          let gpa = "";
-          try { gpa = JSON.parse(app.educationInfo || "{}").gpa || dep?.gpa || ""; } catch (e) {}
+          const deceasedInfo = safeParse(app?.deceasedWorkerInfo) || {};
+          const institutionInfo = safeParse(app?.institutionInfo) || {};
+          const workerName = app.applicationType === "deadlyGrant"
+            ? deceasedInfo?.nameBn || deceasedInfo?.nameEn || app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || ""
+            : app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "";
+          const fatherName = app.applicationType === "deadlyGrant"
+            ? deceasedInfo?.fatherNameBn || deceasedInfo?.fatherNameEn || app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || ""
+            : app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || "";
+          const factoryName = institutionInfo?.instituteName || institutionInfo?.aboutWork || app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "গৃহ শ্রমিক";
+          const formattedAddr = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
+          const addressValue = `গ্রাম-${formattedAddr.village || ""}\nডাক-${formattedAddr.postOffice || ""}\nউপজেলা-${formattedAddr.thana || ""}\nজেলা-${formattedAddr.district || ""}`;
 
-          bankInfos.forEach((bankInfo) => {
-            excelRows.push({
-              app, dep, bankInfo,
-              nomineeName: dep?.nameBn || dep?.nameEn || bankInfo?.accountHolderName || app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "",
-              nomineeNid: dep?.nid || app.workforceEmployee?.nid || "",
-              nomineeMobile: dep?.mobile || app.workforceEmployee?.mobile || app.workforceEmployee?.phoneNumber || "",
-              relation: isEducationOrScholarship ? (dep ? (RELATION_LABEL_MAP[dep.relationWithWorker] || dep.relationWithWorker) : "Self") : "নিজ",
-              amount: app.grantAmount || 0, incidentDate: date, incidentType: diseaseType,
-              routing: bankInfo?.branch?.routingNumber, account: bankInfo?.accountNumber, bankName: bankInfo?.bank?.nameEn,
-              details: isEducationOrScholarship ? `আবেদনকারীর সন্তান ${gpa} পেয়ে উত্তীর্ণ হয়েছেন।` : `আবেদনকারী ${diseaseType} এর জন্য চিকিৎসা সহায়তা চেয়েছেন।`,
-              gpa: gpa
+          bankInfos.forEach((bankInfo, bankIndex) => {
+            rows.push({
+              app,
+              mainListNo: (app.dateCreated && app.dateCreated.split && app.dateCreated.split("T")[0]) || app.trackingNumber || "",
+              workerName,
+              fatherName,
+              factoryName,
+              workerNid: app.workforceEmployee?.nid || "",
+              workerMobile: app.workforceEmployee?.phoneNumber || app.workforceEmployee?.mobile || "",
+              address: addressValue,
+              district: formattedAddr.district || "",
+              nomineeName: bankInfo?.accountHolderName || workerName || "",
+              nomineeNid: bankInfo?.dependentNid || app.workforceEmployee?.nid || "",
+              nomineeMobile: bankInfo?.phoneNumber || app.workforceEmployee?.phoneNumber || app.workforceEmployee?.mobile || "",
+              relation: "নিজ",
+              details: app.notes || app.applicationType || "",
+              profession: factoryName,
+              remarks: "শ্রম অধিদপ্তর",
+              routing: bankInfo?.branch?.routingNumber || bankInfo?.district?.routingNumber || "",
+              account: bankInfo?.accountNumber || "",
+              amount: app.grantAmount || 0,
             });
           });
-        }
-      });
+        });
+
+        return rows;
+      };
+
+      if (blwfMode) {
+        excelRows = buildBlwfRows(exportApps);
+      } else {
+        exportApps.forEach((app, appIndex) => {
+          const formattedAddr = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
+          const { type, date } = getIncidentDetails(app.employeeAccidentInfo);
+          const metadata = safeParse(app?.metadata);
+          
+          let bankInfos = [];
+          try {
+            const parsed = JSON.parse(app.employeeBankInfo);
+            bankInfos = Array.isArray(parsed) ? parsed : JSON.parse(parsed);
+          } catch (e) {}
+
+          if (isFinancialAssistance) {
+            dependentData?.forEach((dep) => {
+              if (decodeId(dep.workforceApplicationId) === decodeId(app.id)) {
+                const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * (getTotalAmount() || 200000);
+                excelRows.push({
+                  app, dep, bankInfo: dep.bank, 
+                  nomineeName: dep?.nameBn || dep?.nameEn || dep?.bankAccountHolderName || "",
+                  nomineeNid: dep?.nid, nomineeMobile: dep?.mobile || dep?.phoneNumber,
+                  relation: RELATION_LABEL_MAP[dep?.relationWithWorker] || dep?.relationWithWorker || "স্ত্রী",
+                  amount: approvedAmount, incidentDate: date || metadata?.deathDate, incidentType: type || metadata?.deathType,
+                  routing: dep?.bank?.routingNumber, account: dep?.bankAccountNo, bankName: dep?.bank?.nameEn,
+                  details: `আবেদনকারী একজন শ্রমিক ছিলেন। তিনি ${date || metadata?.deathDate || ""} তারিখে মৃত্যুবরণ করেন।`,
+                  gpa: ""
+                });
+              }
+            });
+          } else {
+            let diseaseType = appType === "maternityGrant" ? "Maternity" : "Treatment";
+            try {
+              const info = JSON.parse(JSON.parse(app.employeeAccidentInfo || "{}"));
+              if (info.diseaseName) diseaseType = info.diseaseName;
+            } catch (e) {}
+
+            const dep = dependentData?.find((d) => decodeId(d.workforceApplicationId) === decodeId(app.id));
+            let gpa = "";
+            try { gpa = JSON.parse(app.educationInfo || "{}").gpa || dep?.gpa || ""; } catch (e) {}
+
+            bankInfos.forEach((bankInfo) => {
+              excelRows.push({
+                app, dep, bankInfo,
+                nomineeName: dep?.nameBn || dep?.nameEn || bankInfo?.accountHolderName || app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "",
+                nomineeNid: dep?.nid || app.workforceEmployee?.nid || "",
+                nomineeMobile: dep?.mobile || app.workforceEmployee?.mobile || app.workforceEmployee?.phoneNumber || "",
+                relation: isEducationOrScholarship ? (dep ? (RELATION_LABEL_MAP[dep.relationWithWorker] || dep.relationWithWorker) : "Self") : "নিজ",
+                amount: app.grantAmount || 0, incidentDate: date, incidentType: diseaseType,
+                routing: bankInfo?.branch?.routingNumber, account: bankInfo?.accountNumber, bankName: bankInfo?.bank?.nameEn,
+                details: isEducationOrScholarship ? `আবেদনকারীর সন্তান ${gpa} পেয়ে উত্তীর্ণ হয়েছেন।` : `আবেদনকারী ${diseaseType} এর জন্য চিকিৎসা সহায়তা চেয়েছেন।`,
+                gpa: gpa
+              });
+            });
+          }
+        });
+      }
 
       // --- RENDER TABLE HEADERS & ROWS ---
       let headers = [];
@@ -391,17 +446,16 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
         worksheet.addRow(headers);
         
         excelRows.forEach((row, i) => {
-          const formattedAddr = formatAddress(row.app?.workforceEmployee?.presentLocation, row.app?.workforceEmployee?.presentAddress);
           worksheet.addRow([
             i + 1,
-            `${row.app?.workforceEmployee?.firstNameBn || row.app?.workforceEmployee?.firstNameEn || ""}\nপিতা-${row.app?.workforceEmployee?.fatherNameBn || ""}\nএনআইডি-${row.app?.workforceEmployee?.nid || ""}\nমোবা-${row.app?.workforceEmployee?.mobile || row.app?.workforceEmployee?.phoneNumber || ""}`,
-            `গ্রাম-${formattedAddr.village || ""}\nডাক-${formattedAddr.postOffice || ""}\nউপজেলা-${formattedAddr.thana || ""}\nজেলা-${formattedAddr.district || ""}`,
-            `${row.nomineeName} (${row.relation})\nএনআইডি-${row.nomineeNid || ""}\nমোবা-${row.nomineeMobile || ""}`,
-            row.details,
-            row.amount,
-            row.app?.employeeFactory?.nameBn || row.app?.employeeFactory?.nameEn || "গৃহ শ্রমিক",
-            formattedAddr.district || "",
-            "শ্রম অধিদপ্তর"
+            `${row.workerName || ""}\nপিতা-${row.fatherName || ""}\nএনআইডি-${row.workerNid || ""}\nমোবা-${row.workerMobile || ""}`,
+            row.address || "",
+            `${row.nomineeName || ""} (${row.relation || ""})\nএনআইডি-${row.nomineeNid || ""}\nমোবা-${row.nomineeMobile || ""}`,
+            row.details || "",
+            row.amount || 0,
+            row.profession || "গৃহ শ্রমিক",
+            row.district || "",
+            row.remarks || "শ্রম অধিদপ্তর"
           ]);
         });
       } else {
@@ -569,7 +623,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
           <Button onClick={() => window.print()} variant="contained" color="primary">
             <FormattedMessage id="workforce.table.printSUmmary" defaultMessage="মুদ্রণের সারাংশ" />
           </Button>
-          <Button onClick={() => handleForward()} variant="contained" color="primary">
+          <Button onClick={() => handleForward()} variant="contained" color="primary" disabled={loader}>
             <FormattedMessage id="workforce.table.forwardToDirector" defaultMessage="মহাপরিচালক বরাবর অগ্রায়ন করুন" />
             <ForwardIcon />
           </Button>

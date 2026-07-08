@@ -76,6 +76,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
   const [dependentData, setDependentData] = useState([]);
+  const [loader,setLoader] = useState(false)
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
 
@@ -95,7 +96,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
   const handleForward = async () => {
     // if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
-
+    setLoader(true)
     const filteredApplications = applications;
 
     // if (filteredApplications.length === 0) {
@@ -171,6 +172,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    }finally{
+      setLoader(false)
+      onClose()
     }
   };
 
@@ -569,7 +573,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
           <Button onClick={() => window.print()} variant="contained" color="primary">
             <FormattedMessage id="workforce.table.printSUmmary" defaultMessage="মুদ্রণের সারাংশ" />
           </Button>
-          <Button onClick={() => handleForward()} variant="contained" color="primary">
+          <Button onClick={() => handleForward()} variant="contained" color="primary" disabled={loader}>
             <FormattedMessage id="workforce.table.forwardToDirector" defaultMessage="মহাপরিচালক বরাবর অগ্রায়ন করুন" />
             <ForwardIcon />
           </Button>

@@ -1211,6 +1211,8 @@
   "menu.website.legal.guidelines": "Legal Guidelines Management For Website",
   "menu.website.visitor.messages": "Visitor Messages From Website",
   "workforce.processing.data":"Data is processing",
-  "workforce.please.wait":"Please wait"
+  "workforce.please.wait":"Please wait",
+  "workforce.confirm.modal.ok.notEis": "Submit"
+
 
 }

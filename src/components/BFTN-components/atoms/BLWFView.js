@@ -25,24 +25,31 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
 
       const parsedAddress = safeParse(app?.workforceEmployee?.presentAddress) || {};
       const formattedAddress = formatAddress(app?.workforceEmployee?.presentLocation, app?.workforceEmployee?.presentAddress);
+      const workerName = app.applicationType === "deadlyGrant"
+        ? safeParse(app?.deceasedWorkerInfo)?.nameBn || safeParse(app?.deceasedWorkerInfo)?.nameEn || ""
+        : app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "";
+      const fatherName = app.applicationType === "deadlyGrant"
+        ? safeParse(app?.deceasedWorkerInfo)?.fatherNameBn || safeParse(app?.deceasedWorkerInfo)?.fatherNameEn || ""
+        : app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || "";
+      const factoryName = safeParse(app?.institutionInfo)?.instituteName || safeParse(app?.institutionInfo)?.aboutWork || app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "";
 
       (bankInfos.length > 0 ? bankInfos : [{}]).forEach((bankInfo, bankIndex) => {
         rows.push({
           sl: appIndex + 1 + bankIndex,
           mainListNo: (app.dateCreated && app.dateCreated.split && app.dateCreated.split("T")[0]) || app.trackingNumber || "",
-          workerName: app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "",
-          fatherName: app.workforceEmployee?.fatherNameBn || app.workforceEmployee?.fatherNameEn || "",
-          factoryName: app.employeeFactory?.nameBn || app.employeeFactory?.nameEn || "",
+          workerName,
+          fatherName,
+          factoryName,
           workerNid: app.workforceEmployee?.nid || "",
           workerMobile: app.workforceEmployee?.phoneNumber || app.workforceEmployee?.mobile || "",
           address: `গ্রাম-${formattedAddress.village || ""}\nডাক-${formattedAddress.postOffice || ""}\nউপজেলা-${formattedAddress.thana || ""}\nজেলা-${formattedAddress.district || ""}`,
           district: formattedAddress.district || "",
-          nomineeName: bankInfo?.accountHolderName || app.workforceEmployee?.firstNameBn || app.workforceEmployee?.firstNameEn || "",
+          nomineeName: bankInfo?.accountHolderName || workerName || "",
           nomineeNid: bankInfo?.dependentNid || app.workforceEmployee?.nid || "",
           nomineeMobile: bankInfo?.phoneNumber || app.workforceEmployee?.phoneNumber || app.workforceEmployee?.mobile || "",
           relation: "নিজ",
-          details: app.notes || "",
-          profession: app.employeeFactory?.nameBn || "গৃহ শ্রমিক",
+          details: app.notes || app.applicationType || "",
+          profession: factoryName || "গৃহ শ্রমিক",
           remarks: "শ্রম অধিদপ্তর",
           routingNo: bankInfo?.branch?.routingNumber || bankInfo?.district?.routingNumber || "",
           accountNo: bankInfo?.accountNumber || "",
@@ -53,7 +60,6 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
     return rows;
   };
 
-  console.log({blwfView:applications})
   const rows = getRows();
 
   return (
@@ -68,8 +74,8 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
               <br />
               <strong>Number of Application:</strong> {stats.Total}
               <br />
-              <strong>Number of Nominees/Accounts:</strong> {rows.length}
-              <br />
+              {/* <strong>Number of Nominees/Accounts:</strong> {rows.length}
+              <br /> */}
               <strong>Total Amount:</strong> {Number(getTotalAmount()).toLocaleString("en-IN")}
               <br />
               <strong>In Words:</strong>
@@ -78,8 +84,8 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
               <table style={{ width: "100%", height: "100%", borderCollapse: "collapse" }}>
                 <tbody>
                   <tr>
-                    <td style={{ border: "none", borderBottom: "1px solid #000" }}>Application Type</td>
-                    <td style={{ border: "none", borderBottom: "1px solid #000", borderLeft: "1px solid #000" }}>Total</td>
+                    <td style={{ border: "none", borderBottom: "1px solid #000",fontWeight:"bold" }}>Application Type</td>
+                    <td style={{ border: "none", borderBottom: "1px solid #000", borderLeft: "1px solid #000",fontWeight:"bold" }}>Total</td>
                   </tr>
                   <tr>
                     <td style={{ border: "none", borderBottom: "1px solid #000" }}>Medical Donation</td>
@@ -108,87 +114,50 @@ const BLWFView = ({ classes, applications, getTotalAmount }) => {
         </tbody>
       </table>
 
-      {isBlwfPath() ? (
-        <table className={classes.excelTable}>
-          <thead>
-            <tr>
-              <th>ক্রমিক নং</th>
-              <th>আবেদনকারী শ্রমিকের নাম/পিতা/এনআইডি/মোবা-</th>
-              <th>ঠিকানা</th>
-              <th>যার জন্য আবেদন /যে আবেদন করেছেন নাম/এনআইডি/মোবা-</th>
-              <th>বিবরণ</th>
-              <th>অনুদান পরিমান</th>
-              <th>পেশা/প্রতিষ্ঠান</th>
-              <th>জেলা</th>
-              <th>মন্তব্য</th>
+      <table className={classes.excelTable}>
+        <thead>
+          <tr>
+            <th>ক্রমিক নং</th>
+            <th>আবেদনকারী শ্রমিকের নাম/পিতা/এনআইডি/মোবা-</th>
+            <th>ঠিকানা</th>
+            <th>যার জন্য আবেদন /যে আবেদন করেছেন নাম/এনআইডি/মোবা-</th>
+            <th>বিবরণ</th>
+            <th>অনুদান পরিমান</th>
+            <th>পেশা/প্রতিষ্ঠান</th>
+            <th>জেলা</th>
+            <th>মন্তব্য</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              <td style={{ textAlign: "center" }}>{i + 1}</td>
+              <td>
+                {row.workerName}
+                <br />
+                পিতা-{row.fatherName}
+                <br />
+                এনআইডি-{row.workerNid}
+                <br />
+                মোবা-{row.workerMobile}
+              </td>
+              <td style={{ whiteSpace: "pre-line" }}>{row.address}</td>
+              <td>
+                {row.nomineeName} ({row.relation})
+                <br />
+                এনআইডি-{row.nomineeNid}
+                <br />
+                মোবা-{row.nomineeMobile}
+              </td>
+              <td>{row.details}</td>
+              <td style={{ textAlign: "right" }}>{Number(row.amount).toLocaleString("en-IN")}</td>
+              <td style={{ textAlign: "center" }}>{row.profession}</td>
+              <td style={{ textAlign: "center" }}>{row.district}</td>
+              <td>{row.remarks}</td>
             </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i}>
-                <td style={{ textAlign: "center" }}>{i + 1}</td>
-                <td>
-                  {row.workerName}
-                  <br />
-                  পিতা-{row.fatherName}
-                  <br />
-                  এনআইডি-{row.workerNid}
-                  <br />
-                  মোবা-{row.workerMobile}
-                </td>
-                <td style={{ whiteSpace: "pre-line" }}>{row.address}</td>
-                <td>
-                  {row.nomineeName} ({row.relation})
-                  <br />
-                  এনআইডি-{row.nomineeNid}
-                  <br />
-                  মোবা-{row.nomineeMobile}
-                </td>
-                <td>{row.details}</td>
-                <td style={{ textAlign: "right" }}>{Number(row.amount).toLocaleString("en-IN")}</td>
-                <td style={{ textAlign: "center" }}>{row.profession}</td>
-                <td style={{ textAlign: "center" }}>{row.district}</td>
-                <td>{row.remarks}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <table className={classes.excelTable}>
-          <thead>
-            <tr>
-              <th>SL No</th>
-              <th>M:SL</th>
-              <th>Applicant Name</th>
-              <th>NID/Birth Certificate</th>
-              <th>Mobile</th>
-              <th>Factory Name</th>
-              <th>Relation</th>
-              <th>Type</th>
-              <th>Routing Number</th>
-              <th>Account No</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i}>
-                <td style={{ textAlign: "center" }}>{row.sl}</td>
-                <td style={{ textAlign: "center" }}>{row.mainListNo}</td>
-                <td>{row.workerName}</td>
-                <td>{row.workerNid}</td>
-                <td>{row.workerMobile}</td>
-                <td>{row.factoryName}</td>
-                <td>{row.relation}</td>
-                <td>{row.details}</td>
-                <td>{row.routingNo}</td>
-                <td>{row.accountNo}</td>
-                <td style={{ textAlign: "right" }}>{Number(row.amount).toLocaleString("en-IN")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };
