@@ -249,9 +249,9 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
       const isEducationOrScholarship = ["scholarship", "educationGrant", "educationalAssistance"].includes(appType);
       const isFinancialAssistance = appType === "financialAssistance";
 
-      let documentTitle = "বিজিএমইএ - এর মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
-      if (isMedicalOrMaternity) documentTitle = "বিজিএমইএ - এর চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা";
-      if (isEducationOrScholarship) documentTitle = "বিজিএমইএ - এর শিক্ষা আর্থিক সহায়তার তালিকা";
+      let documentTitle = "মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
+      if (isMedicalOrMaternity) documentTitle = "চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা";
+      if (isEducationOrScholarship) documentTitle = "শিক্ষা আর্থিক সহায়তার তালিকা";
 
       // --- LOGO & HEADER SETUP ---
       let logo = `/workforce_assets/centralfund.png`;
@@ -610,7 +610,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
         <DialogTitle disableTypography>
           <Typography variant="h6">
             {" "}
-            <FormattedMessage id="Bank Payment Advice (BFTN)" />
+            <FormattedMessage id="Committee Report" />
           </Typography>
         </DialogTitle>
         <DialogContent dividers className={classes.dialogContent}>
@@ -803,7 +803,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
             <FormattedMessage id="workforce.modal.close" />
           </Button>
           <Button onClick={() => window.print()} variant="contained" color="primary">
-            <FormattedMessage id="workforce.modal.print.advice" />
+            <FormattedMessage id="workforce.table.printSSummary" />
           </Button>
           <Button onClick={exportToExcel} variant="contained" color="success">
             <FormattedMessage id="workforce.modal.excel" />

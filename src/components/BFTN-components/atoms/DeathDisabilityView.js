@@ -50,7 +50,7 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
         fatherName: deceasedWorkerInfo?.fatherNameBn || deceasedWorkerInfo?.fatherNameEn || "",
         factoryName: app?.employeeFactory?.nameBn || app?.employeeFactory?.nameEn || "",
         workerNid: deceasedWorkerInfo?.nid || "",
-        workerMobile: deceasedWorkerInfo?.mobile || deceasedWorkerInfo?.phoneNumber || "",
+        workerMobile: deceasedWorkerInfo?.phoneNumber || "",
         address: fullAddress,
         district: formattedAddress.district || "",
         incidentDate: date || metadata?.deathDate || "",
@@ -74,7 +74,7 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
             sl: slIndex++,
             nomineeName: dep?.nameBn || dep?.nameEn || bankDetails?.accountHolderName || "",
             nomineeNid: dep?.nid || bankDetails?.dependentNid || "",
-            nomineeMobile: dep?.phoneNumber || dep?.mobile || "",
+            nomineeMobile: dep?.phoneNumber || "",
             relation: RELATION_LABEL_MAP[dep?.relationType || dep?.relationWithWorker] || dep?.relationType || "",
             details: `আবেদনকারী একজন শ্রমিক ছিলেন। তিনি ${date || metadata?.deathDate || ""} তারিখে মৃত্যুবরণ করেন।`,
             bankName: bankDetails?.bank?.nameEn || bankDetails?.bank?.nameBn || "",
@@ -253,7 +253,7 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
                 <td>{row.bankAc}</td>
                 <td style={{ textAlign: "right" }}>{Number(row.amount).toLocaleString("en-IN")}</td>
                 <td>{row.routingNo}</td>
-                <td>{row.mobile}</td>
+                <td>{row.phoneNumber}</td>
                 <td>{row.unitNo}</td>
               </tr>
             ))}
