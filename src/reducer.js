@@ -12,6 +12,40 @@ import { CLEAR, ERROR, REQUEST, SUCCESS } from "./utils/action-type";
 
 export const ACTION_TYPE = {};
 
+const getUploadIdentity = (item = {}) => item?.path || item?.url || item?.name || item?.fieldKey || item?.documentId || "";
+
+const mergeUploadItems = (existingItems = [], incomingItem = {}) => {
+  const normalizedExisting = Array.isArray(existingItems) ? existingItems : [];
+  const normalizedIncoming = incomingItem && typeof incomingItem === "object" ? incomingItem : null;
+
+  if (!normalizedIncoming) {
+    return normalizedExisting;
+  }
+
+  const incomingIdentity = getUploadIdentity(normalizedIncoming);
+  if (!incomingIdentity) {
+    return [...normalizedExisting, normalizedIncoming];
+  }
+
+  const existingIndex = normalizedExisting.findIndex((item) => getUploadIdentity(item) === incomingIdentity);
+  if (existingIndex >= 0) {
+    const updated = [...normalizedExisting];
+    updated[existingIndex] = { ...updated[existingIndex], ...normalizedIncoming };
+    return updated;
+  }
+
+  return [...normalizedExisting, normalizedIncoming];
+};
+
+const removeUploadItem = (existingItems = [], identifier = "") => {
+  const normalizedExisting = Array.isArray(existingItems) ? existingItems : [];
+  if (!identifier) {
+    return normalizedExisting;
+  }
+
+  return normalizedExisting.filter((item) => getUploadIdentity(item) !== identifier);
+};
+
 function reducer(
   state = {
     ///organizations states
@@ -477,31 +511,31 @@ function reducer(
     case "SET_UPLOAD_FILE_DATA":
       return {
         ...state,
-        uploadFile: [...(state.uploadFile || []), action.payload],
+        uploadFile: mergeUploadItems(state.uploadFile, action.payload),
       };
 
     case "SET_UPLOAD_DEPENDENT_FILE_DATA":
       return {
         ...state,
-        uploadDependentFile: [...(state.uploadDependentFile || []), action.payload],
+        uploadDependentFile: mergeUploadItems(state.uploadDependentFile, action.payload),
       };
 
     case "REMOVE_UPLOAD_DEPENDENT_FILE_DATA":
       return {
         ...state,
-        uploadDependentFile: (state.uploadDependentFile || []).filter((item) => item.path !== action.payload),
+        uploadDependentFile: removeUploadItem(state.uploadDependentFile, action.payload),
       };
 
     case "SET_UPLOAD_DEPENDENT_BANK_DATA":
       return {
         ...state,
-        uploadBankFile: [...(state.uploadBankFile || []), action.payload],
+        uploadBankFile: mergeUploadItems(state.uploadBankFile, action.payload),
       };
 
     case "REMOVE_UPLOAD_DEPENDENT_BANK_DATA":
       return {
         ...state,
-        uploadBankFile: (state.uploadBankFile || []).filter((item) => item.path !== action.payload),
+        uploadBankFile: removeUploadItem(state.uploadBankFile, action.payload),
       };
 
     case "SET_SELECTED_EMPLOYEE":
@@ -520,19 +554,19 @@ function reducer(
     case "WORKFORCE_REMOVE_UPLOAD_FILE":
       return {
         ...state,
-        uploadFile: (state.uploadFile || []).filter((item) => item.path !== action.payload),
+        uploadFile: removeUploadItem(state.uploadFile, action.payload),
       };
 
     case "WORKFORCE_REMOVE_DEPENDENT_FILE":
       return {
         ...state,
-        uploadDependentFile: (state.uploadDependentFile || []).filter((item) => item.path !== action.payload),
+        uploadDependentFile: removeUploadItem(state.uploadDependentFile, action.payload),
       };
 
     case "WORKFORCE_REMOVE_BANK_FILE":
       return {
         ...state,
-        uploadBankFile: (state.uploadBankFile || []).filter((item) => item.path !== action.payload),
+        uploadBankFile: removeUploadItem(state.uploadBankFile, action.payload),
       };
     /// all associations////
     case "WORKFORCE_ALL_ASSOCIATIONS_REQ":

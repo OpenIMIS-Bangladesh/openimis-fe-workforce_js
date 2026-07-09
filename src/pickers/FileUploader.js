@@ -76,6 +76,45 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
 
+  const getUploadIdentity = (item = {}) => item?.path || item?.url || item?.name || item?.fieldKey || item?.documentId || "";
+
+  const mergeUploadEntries = (existingItems = [], incomingItem = {}) => {
+    const normalizedExisting = Array.isArray(existingItems) ? existingItems : [];
+    const normalizedIncoming = incomingItem && typeof incomingItem === "object" ? incomingItem : null;
+
+    if (!normalizedIncoming) {
+      return normalizedExisting;
+    }
+
+    const incomingIdentity = getUploadIdentity(normalizedIncoming);
+    if (!incomingIdentity) {
+      return [...normalizedExisting, normalizedIncoming];
+    }
+
+    const existingIndex = normalizedExisting.findIndex((item) => getUploadIdentity(item) === incomingIdentity);
+    if (existingIndex >= 0) {
+      const updated = [...normalizedExisting];
+      updated[existingIndex] = { ...updated[existingIndex], ...normalizedIncoming };
+      return updated;
+    }
+
+    return [...normalizedExisting, normalizedIncoming];
+  };
+
+  const updateGlobalUploadState = useCallback(
+    (nextItems) => {
+      const normalizedItems = Array.isArray(nextItems) ? nextItems : [];
+      if (uploadedBy === "dependent") {
+        dispatch({ type: "REPLACE_UPLOAD_DEPENDENT_FILE_DATA", payload: normalizedItems });
+      } else if (uploadedBy === "bank") {
+        dispatch({ type: "REPLACE_UPLOAD_DEPENDENT_BANK_DATA", payload: normalizedItems });
+      } else {
+        dispatch({ type: "REPLACE_UPLOAD_FILE_DATA", payload: normalizedItems });
+      }
+    },
+    [dispatch, uploadedBy],
+  );
+
   // 1. Get initial files from Redux to keep UI in sync
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
@@ -157,6 +196,15 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       };
 
       // 3. Update Global Validation Arrays (Filtered by NextStep)
+      const nextUploadList = mergeUploadEntries(
+        uploadedBy === "dependent"
+          ? globalDependentFile
+          : uploadedBy === "bank"
+            ? globalBankFile
+            : globalUploadFile,
+        { ...createDocumentData, holderType: "applicant" },
+      );
+
       if (uploadedBy === "dependent") {
         dispatch({
           type: "SET_UPLOAD_DEPENDENT_FILE_DATA",
@@ -173,6 +221,8 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
           payload: createDocumentData,
         });
       }
+
+      updateGlobalUploadState(nextUploadList);
       // 4. Handle Persistent DB Storage if Application ID exists
       if (applicationId && uploadedBy === "factoryAdmin") {
         console.log("create document data", createDocumentData);
@@ -236,7 +286,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     const fileToRemove = files.find((f) => f?.name === fileName);
 
     if (fileToRemove) {
-      const identifier = fileToRemove.path;
+      const identifier = fileToRemove?.path || fileToRemove?.url || fileToRemove?.name || fileName;
 
       // 1. Update the local UI state array directly
       const filteredFiles = (filesRef.current || []).filter((f) => f?.name !== fileName);
@@ -248,6 +298,14 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       if (uploadedBy === "bank") removeType = "WORKFORCE_REMOVE_BANK_FILE";
 
       dispatch({ type: removeType, payload: identifier });
+
+      const currentUploadList = uploadedBy === "dependent"
+        ? globalDependentFile
+        : uploadedBy === "bank"
+          ? globalBankFile
+          : globalUploadFile;
+      const nextUploadList = (currentUploadList || []).filter((item) => getUploadIdentity(item) !== identifier);
+      updateGlobalUploadState(nextUploadList);
 
       // 4. Notify parent component
       if (onFileChange) {
