@@ -7,7 +7,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
-import { conditionalEnToBn, getUserTypeFromRights, safeDecodeId, safeParse } from "../../utils/utils";
+import { conditionalEnToBn, getUserTypeFromRights, isBlwfPath, isEisPath, safeDecodeId, safeParse } from "../../utils/utils";
 import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
@@ -446,7 +446,7 @@ class ViewApplicationPage extends Component {
             onOpen={() => this.setState({ open: true })}
             data={formData}
             documents={documents}
-            logoLeft="/front/workforce_assets/centralfund.png"
+            logoLeft={application?.organizationType==="blwf" ? "/front/workforce_assets/blwf.png" : "/front/workforce_assets/centralfund.png"}
             logoLeftUrl="/front/workforce_assets/bdgov.png"
           />
         </Modal>
