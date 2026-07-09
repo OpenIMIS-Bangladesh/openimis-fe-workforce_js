@@ -100,10 +100,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
         return Array.isArray(attachments) ? attachments : [];
       };
 
-      const currentItem = dependents?.[index] || {};
-      const currentAttachments = normalizeAttachments(currentItem.attachments);
+      handleChange(index, "attachments", (currentAttachments) => {
+        const normalizedAttachments = normalizeAttachments(currentAttachments);
 
-      const updateAttachments = (normalizedAttachments) => {
         if (!value?.files?.length) {
           return normalizedAttachments.filter((att) => att.fieldKey !== fieldKey);
         }
@@ -129,11 +128,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                 documentPropId: value.documentPropId,
               },
             ];
-      };
-
-      handleChange(index, "attachments", updateAttachments(currentAttachments));
+      });
     },
-    [dependents, handleChange],
+    [handleChange],
   );
 
   const onPickerChange = (v, index) => {

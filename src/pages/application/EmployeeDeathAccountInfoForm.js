@@ -125,10 +125,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
           return Array.isArray(attachments) ? attachments : [];
         };
 
-        const currentItem = accounts?.[index] || {};
-        const currentAttachments = normalizeAttachments(currentItem.attachments);
+        handleChange(index, "attachments", (currentAttachments) => {
+          const normalizedAttachments = normalizeAttachments(currentAttachments);
 
-        const updateAttachments = (normalizedAttachments) => {
           if (!value?.files?.length) {
             return normalizedAttachments.filter((att) => att.fieldKey !== fieldKey);
           }
@@ -154,11 +153,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                   documentPropId: value.documentPropId,
                 },
               ];
-        };
-
-        handleChange(index, "attachments", updateAttachments(currentAttachments));
+        });
       },
-      [accounts, handleChange]
+      [handleChange]
     );
 
   console.log({dependent})
