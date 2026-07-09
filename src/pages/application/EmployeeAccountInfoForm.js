@@ -77,8 +77,9 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
     console.log(dependent);
     const hasDependent = Array.isArray(dependent) && dependent.length > 0;
     const hasFormDependents = Array.isArray(formdata?.dependents) && formdata.dependents.some((item) => Object.keys(item).length > 0);
-    const isDependent = Array.isArray(dependent) && dependent.some((item) => Object.keys(item).length > 0);
-    const dependentId = hasDependent && hasFormDependents;
+    // const isDependent = Array.isArray(dependent) && dependent.some((item) => Object.keys(item).length > 0);
+    const isDependent = hasDependent && hasFormDependents;
+    const dependentId = isDependent ? dependent?.[index]?.id : null;;
     console.log({ isDependent });
     const baseAccount = {
       ...(accounts[index] || {}),
