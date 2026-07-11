@@ -1124,7 +1124,7 @@
   "workforce.banks.bankCode": "ব্যাংক কোড",
   "workforce.banks.district": "জেলা",
   "workforce.processing.data":"ডেটা প্রক্রিয়াজাত করা হচ্ছে।",
-  "workforce.please.wait":"অনুগ্রহ করে অপেক্ষা করুন"
-
-
+  "workforce.please.wait":"অনুগ্রহ করে অপেক্ষা করুন",
+  "workforce.application.photo.cropandupload": "ক্রপ সম্পন্ন করুন এবং আপলোড করুন",
+  "workforce.application.photo.cropmessage": "আপনার নির্বাচনকৃত ছবিটিকে পাসপোর্ট সাইজে ক্রপ করতে হবে।"
 }

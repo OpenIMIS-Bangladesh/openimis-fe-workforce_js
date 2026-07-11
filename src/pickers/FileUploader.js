@@ -512,6 +512,11 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       {/* Cropper Dialog */}
       <Dialog open={cropDialogOpen} onClose={() => setCropDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogContent style={{ padding: 0 }}>
+          <Paper style={{ padding: "8px", backgroundColor: "#fff", color: "#005f67" }}>
+            <Typography variant="body2" style={{ textAlign: "center" }}>
+              <FormattedMessage module="workforce" id="workforce.application.photo.cropmessage"/>
+            </Typography>
+          </Paper>
           {imageToCrop && (
              <Cropper
                src={imageToCrop}
@@ -528,9 +533,11 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCropDialogOpen(false)} variant="outlined" color="error">Cancel</Button>
+          <Button onClick={() => setCropDialogOpen(false)} variant="outlined" color="error">
+            <FormattedMessage module="workforce" id="workforce.confirm.modal.cancel"/>
+          </Button>
           <Button onClick={handleCropSave} variant="contained" color="primary" disabled={isUploading}>
-            {isUploading ? <CircularProgress size={24} /> : "Crop & Upload"}
+            {isUploading ? <CircularProgress size={24} /> : <FormattedMessage module="workforce" id="workforce.application.photo.cropandupload"/>}
           </Button>
         </DialogActions>
       </Dialog>

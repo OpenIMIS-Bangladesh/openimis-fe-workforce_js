@@ -1212,7 +1212,9 @@
   "menu.website.visitor.messages": "Visitor Messages From Website",
   "workforce.processing.data":"Data is processing",
   "workforce.please.wait":"Please wait",
-  "workforce.confirm.modal.ok.notEis": "Submit"
+  "workforce.confirm.modal.ok.notEis": "Submit",
+  "workforce.application.photo.cropandupload": "CROP & UPLOAD",
+  "workforce.application.photo.cropmessage": "You need to crop your selected image to passport size."
 
 
 }
