@@ -17,8 +17,8 @@ import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument, removeUploadedFile, setUploadedFiles } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import AddIcon from "@material-ui/icons/Add";
 import { safeApplicationId } from "../utils/utils";
+import Cropper from "react-cropper";
 
 const useStyles = makeStyles((theme) => ({
   dropzone: {
@@ -68,13 +68,38 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     color: "black",
   },
+  cropContainer: {
+    width: "100%",
+    height: 400,
+    background: "#333",
+  },
 }));
 
 const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  
+  // Webcam States
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
+
+  // Cropper States
+  const [cropDialogOpen, setCropDialogOpen] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [pendingFileMeta, setPendingFileMeta] = useState(null);
+  const cropperRef = useRef(null);
+
+  // Load Cropper CSS dynamically to avoid bundler issues
+  useEffect(() => {
+    const styleId = "cropperjs-styles";
+    if (!document.getElementById(styleId)) {
+      const link = document.createElement("link");
+      link.id = styleId;
+      link.rel = "stylesheet";
+      link.href = "https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css";
+      document.head.appendChild(link);
+    }
+  }, []);
 
   const getUploadIdentity = (item = {}) => item?.path || item?.url || item?.name || item?.fieldKey || item?.documentId || "";
 
@@ -115,7 +140,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     [dispatch, uploadedBy],
   );
 
-  // 1. Get initial files from Redux to keep UI in sync
   const savedFiles = useSelector((state) => state.workforce.uploadedFilesByField?.[fieldKey] || []);
   const [files, setFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -124,7 +148,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const globalDependentFile = useSelector((state) => state.workforce.uploadDependentFile || []);
   const globalBankFile = useSelector((state) => state.workforce.uploadBankFile || []);
 
-  // Sync local state when Redux updates
   useEffect(() => {
     const savedFilesString = JSON.stringify(savedFiles || []);
     const currentFilesString = JSON.stringify(filesRef.current || []);
@@ -152,6 +175,14 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     [dispatch, fieldKey],
   );
 
+  const needsCropping = useCallback(() => {
+    if (!documentType) return false;
+    const typeStr = documentType.toLowerCase();
+    const hasPhotoOrPic = typeStr.includes("photo") || typeStr.includes("picture");
+    const hasBodyPart = typeStr.includes("body part");
+    return hasPhotoOrPic && !hasBodyPart;
+  }, [documentType]);
+
   const uploadFileToApi = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -171,7 +202,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
       const responseData = await response.json();
 
-      // Construct standardized file object
       const fileWithInfo = {
         name: file.name,
         path: responseData.file_path,
@@ -179,10 +209,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         documentId,
         documentPropId: documentProp?.id,
       };
-
-      // // 2. Update Redux Field Tracking (UI list)
-      // const updatedSavedFiles = [...savedFiles, fileWithInfo];
-      // dispatch(setUploadedFiles(fieldKey, updatedSavedFiles));
 
       const createDocumentData = {
         path: responseData.file_path,
@@ -195,7 +221,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         documentId,
       };
 
-      // 3. Update Global Validation Arrays (Filtered by NextStep)
       const nextUploadList = mergeUploadEntries(
         uploadedBy === "dependent"
           ? globalDependentFile
@@ -223,7 +248,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       }
 
       updateGlobalUploadState(nextUploadList);
-      // 4. Handle Persistent DB Storage if Application ID exists
+      
       if (applicationId && uploadedBy === "factoryAdmin") {
         console.log("create document data", createDocumentData);
         dispatch(
@@ -234,7 +259,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         );
       }
 
-      if (applicationId && uploadedBy != "factoryAdmin") {
+      if (applicationId && uploadedBy !== "factoryAdmin") {
         console.log("create document data", createDocumentData);
         dispatch(
           createWorkforceDocument(
@@ -253,7 +278,20 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
-      if (isUploading) return;
+      if (isUploading || acceptedFiles.length === 0) return;
+
+      // Check if cropping is needed first
+      if (needsCropping()) {
+        const file = acceptedFiles[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImageToCrop(reader.result);
+          setPendingFileMeta({ name: file.name, type: file.type || "image/jpeg" });
+          setCropDialogOpen(true);
+        };
+        reader.readAsDataURL(file);
+        return; 
+      }
 
       setIsUploading(true);
 
@@ -279,8 +317,46 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         setIsUploading(false);
       }
     },
-    [isUploading, syncFilesWithState, fieldKey, onFileChange, documentType, documentProp, documentId],
+    [isUploading, syncFilesWithState, fieldKey, onFileChange, documentType, documentProp, documentId, needsCropping],
   );
+
+  const handleCropSave = () => {
+    const imageElement = cropperRef?.current;
+    const cropper = imageElement?.cropper;
+    
+    if (cropper) {
+      setIsUploading(true);
+      cropper.getCroppedCanvas().toBlob(async (blob) => {
+        if (!blob) {
+          console.error("Canvas is empty");
+          setIsUploading(false);
+          return;
+        }
+        
+        const croppedFile = new File([blob], pendingFileMeta.name, { type: pendingFileMeta.type });
+        
+        setCropDialogOpen(false);
+        setImageToCrop(null);
+        
+        try {
+          const uploadedFile = await uploadFileToApi(croppedFile);
+          if (uploadedFile) {
+            const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
+            if (onFileChange) {
+              onFileChange(fieldKey, {
+                files: mergedFiles,
+                documentType,
+                documentPropId: documentProp?.id,
+                documentId,
+              });
+            }
+          }
+        } finally {
+          setIsUploading(false);
+        }
+      }, pendingFileMeta.type, 1);
+    }
+  };
 
   const removeFile = (fileName) => {
     const fileToRemove = files.find((f) => f?.name === fileName);
@@ -288,11 +364,9 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     if (fileToRemove) {
       const identifier = fileToRemove?.path || fileToRemove?.url || fileToRemove?.name || fileName;
 
-      // 1. Update the local UI state array directly
       const filteredFiles = (filesRef.current || []).filter((f) => f?.name !== fileName);
       syncFilesWithState(filteredFiles);
 
-      // 3. Dispatch UNIQUE actions to prevent crashing the other module
       let removeType = "WORKFORCE_REMOVE_UPLOAD_FILE";
       if (uploadedBy === "dependent") removeType = "WORKFORCE_REMOVE_DEPENDENT_FILE";
       if (uploadedBy === "bank") removeType = "WORKFORCE_REMOVE_BANK_FILE";
@@ -307,7 +381,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       const nextUploadList = (currentUploadList || []).filter((item) => getUploadIdentity(item) !== identifier);
       updateGlobalUploadState(nextUploadList);
 
-      // 4. Notify parent component
       if (onFileChange) {
         onFileChange(fieldKey, {
           files: filteredFiles,
@@ -321,23 +394,38 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
   const captureAndUpload = async () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    const response = await fetch(imageSrc);
-    const blob = await response.blob();
-    const file = new File([blob], `capture_${Date.now()}.jpg`, { type: "image/jpeg" });
 
-    const uploadedFile = await uploadFileToApi(file);
-    if (uploadedFile) {
-      const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
-      if (onFileChange) {
-        onFileChange(fieldKey, {
-          files: mergedFiles,
-          documentType,
-          documentPropId: documentProp?.id,
-          documentId,
-        });
-      }
+    // Check if cropping is needed
+    if (needsCropping()) {
+      setImageToCrop(imageSrc);
+      setPendingFileMeta({ name: `capture_${Date.now()}.jpg`, type: "image/jpeg" });
+      setCropDialogOpen(true);
+      setWebcamOpen(false);
+      return;
     }
-    setWebcamOpen(false);
+
+    setIsUploading(true);
+    try {
+      const response = await fetch(imageSrc);
+      const blob = await response.blob();
+      const file = new File([blob], `capture_${Date.now()}.jpg`, { type: "image/jpeg" });
+
+      const uploadedFile = await uploadFileToApi(file);
+      if (uploadedFile) {
+        const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
+        if (onFileChange) {
+          onFileChange(fieldKey, {
+            files: mergedFiles,
+            documentType,
+            documentPropId: documentProp?.id,
+            documentId,
+          });
+        }
+      }
+    } finally {
+      setIsUploading(false);
+      setWebcamOpen(false);
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -421,10 +509,35 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         </DialogActions>
       </Dialog>
 
+      {/* Cropper Dialog */}
+      <Dialog open={cropDialogOpen} onClose={() => setCropDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogContent style={{ padding: 0 }}>
+          {imageToCrop && (
+             <Cropper
+               src={imageToCrop}
+               className={classes.cropContainer}
+               ref={cropperRef}
+               aspectRatio={3 / 4} 
+               viewMode={1} 
+               dragMode="move"
+               cropBoxResizable={false}
+               cropBoxMovable={false}
+               toggleDragModeOnDblclick={false}
+               guides={true}
+             />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCropDialogOpen(false)} variant="outlined" color="error">Cancel</Button>
+          <Button onClick={handleCropSave} variant="contained" color="primary" disabled={isUploading}>
+            {isUploading ? <CircularProgress size={24} /> : "Crop & Upload"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {files.length > 0 && (
         <Paper className={classes.fileList}>
           {files.map((file, index) => {
-            // ✅ ADD THIS SAFETY CHECK: If file is undefined, skip it!
             if (!file) return null;
 
             return (
@@ -452,7 +565,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
                   <IconButton onClick={() => removeFile(file.name)} size="small">
                     <DeleteIcon color="secondary" className={classes.deleteIcon} />
                   </IconButton>
-
                   {/* <IconButton size="small" onClick={() => document.getElementById(`additionalFileInput-${fieldKey}-${index}`).click()}>
                     <AddIcon style={{ fontSize: "1.2rem", color: "#005f67" }} />
                   </IconButton> */}
@@ -460,7 +572,6 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
                   <input
                     id={`additionalFileInput-${fieldKey}-${index}`}
                     type="file"
-                    // multiple
                     hidden
                     accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.gif"
                     onChange={(e) => {

@@ -46,10 +46,12 @@
     "dist"
   ],
   "dependencies": {
+    "cropperjs": "^2.1.1",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.14.0",
     "quill": "^2.0.3",
+    "react-cropper": "^2.3.3",
     "react-dropzone": "^14.3.5",
     "react-google-recaptcha-v3": "^1.11.0",
     "react-multi-date-picker": "^4.5.2",
