@@ -294,30 +294,35 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
   const handleNext = async () => {
     console.log({ formData });
     const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
-    delete newErrors?.documents;
 
-    const isBankStep = activeStep === 6;
+    const isApplicantStep = activeStep === 1;
+    const isEmployeeStep = activeStep === 2;
     const isDependentStep = activeStep === 5;
-
-    const files = isBankStep ? uploadBankFile : uploadFile;
+    const isBankStep = activeStep === 6;
+    const shouldValidateDocuments = isApplicantStep || isEmployeeStep || isDependentStep || isBankStep;
     let documentValidation = { isValid: true, errors: null };
-    const BANK_DOC = "applicants bank check copy";
 
-    if (isDependentStep) {
-      // Specialized validation for the Dependent Step
-      documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
-    } else if (isBankStep) {
-      // Filter only for Bank Documents
-      const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
-      documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+    if (!shouldValidateDocuments) {
+      delete newErrors?.documents;
     } else {
-      // Filter out Bank Documents for general info steps
-      const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
-      documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
-    }
+      const BANK_DOC = "applicants bank check copy";
 
-    if (!documentValidation.isValid) {
-      newErrors.documents = documentValidation.errors;
+      if (isDependentStep) {
+        // Specialized validation for the Dependent Step
+        documentValidation = validateMandatoryDocumentsForDependents(documentType, uploadDependentFile || [], formData.dependents || []);
+      } else if (isBankStep) {
+        // Filter only for Bank Documents
+        const bankDocsConfig = (documentType || []).filter((doc) => doc.documentType === BANK_DOC);
+        documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
+      } else if (isApplicantStep || isEmployeeStep) {
+        // Filter out Bank Documents for general info steps
+        const generalDocsConfig = (documentType || []).filter((doc) => doc.documentType !== BANK_DOC);
+        documentValidation = validateMandatoryDocuments(generalDocsConfig, uploadFile || []);
+      }
+
+      if (!documentValidation.isValid) {
+        newErrors.documents = documentValidation.errors;
+      }
     }
     setErrors(newErrors);
     console.log({ newErrors });

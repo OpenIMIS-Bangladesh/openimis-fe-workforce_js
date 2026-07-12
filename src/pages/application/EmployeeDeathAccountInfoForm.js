@@ -25,7 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
 import DistrictBanks from "../../pickers/DistrictBanks";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
-import { isAtLeast18YearsOld, safeDecodeId } from "../../utils/utils";
+import { isAtLeast18YearsOld, isCfPath, safeDecodeId } from "../../utils/utils";
 import ParentDependentPicker from "../../pickers/ParentDependentPicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -194,11 +194,13 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                     <RadioGroup row value={accountHolderType} onChange={(e) => handleAccountChange(index, "accountHolderType", e.target.value)} >
                       <FormControlLabel value="self" control={<Radio color="primary" />} label={<FormattedMessage id={"workforce.employee.account.self"} />} />
                       <FormControlLabel
+                        disabled={isCfPath()}
                         value="select_from_another_dependent"
                         control={<Radio color="primary" />}
                         label={<FormattedMessage id={"workforce.employee.account.dependent"} />}
                       />
                       <FormControlLabel
+                        disabled={isCfPath()}
                         value="other"
                         control={<Radio color="primary" />}
                         label={<FormattedMessage id={"workforce.employee.account.other"} />}

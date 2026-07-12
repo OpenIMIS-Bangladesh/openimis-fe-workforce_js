@@ -251,7 +251,8 @@ const ReturnedApplications = () => {
   return (
     <>
       <ApplicationProcessSearcher
-        returnedApplications={true}
+        // returnedApplications={true}
+        revertedApplication={true}
         loggedInUserId={loggedInUserId}
         associationIds={associations}
         disableButtons={1}

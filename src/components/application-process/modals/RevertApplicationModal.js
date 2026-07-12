@@ -173,17 +173,19 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       revertNote: editorContent,
       isReverted: true,
       applicationFromId: userId,
-      applicationToId: decodeId(selectedApplication?.workforceEmployee?.relatedUser?.id),
+      applicationToId: safeDecodeId(selectedRevertUser),
     };
+
+    console.log({createApplicationMovementData})
 
     try {
       await dispatch(updateApplication(updateApplicationData, `update workforce application`));
       await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
-      setTimeout(() => {
-        onClose();
-        history.push("/home");
-      }, 1000);
+      // setTimeout(() => {
+      //   onClose();
+      //   history.push("/home");
+      // }, 1000);
     } catch (err) {
       console.error(err);
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে" });
@@ -193,6 +195,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
   };
   
   console.log("RevertModal rendering with:", { selectedApplication, movementUsers });
+  console.log({selectedRevertUser})
 
   return (
     <Modal open={open} onClose={onClose}>

@@ -836,9 +836,9 @@ class ApplicationProcessSearcher extends Component {
           'statusIn: ["revert"]',
         ];
 
-        // if (loggedInUserId) {
-        //   defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
-        // }
+        if (loggedInUserId) {
+          defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
+        }
       }
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant"]');
@@ -1078,9 +1078,15 @@ class ApplicationProcessSearcher extends Component {
           filters
         );
       } else if (rejectedApplication) {
+        if (loggedInUserId) {
+          this.props.fetchApplicationsSummary(
+            this.props.modulesManager,
+            [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["rejected"], orderBy: ["-dateCreated"]`,`applicationTo:"${loggedInUserId}"`]
+          );
+        }
         this.props.fetchApplicationsSummary(
           this.props.modulesManager,
-          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["rejected"], orderBy: ["-dateCreated"]`]
+          [`workforceEmployee_Id: "${this.props.workforceEmployee?.id}"`, `statusIn: ["rejected"], orderBy: ["-dateCreated"]`,`applicationTo:"${loggedInUserId}"`]
         );
       } else if (this.props.applicationStatus) {
         this.props.fetchApplicationsSummary(

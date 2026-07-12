@@ -1189,7 +1189,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
     !component?.props?.forwardedApplications &&
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
-          {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+          {(component.props.disableButtons !== 1 || component.props.revertedApplication) && !component.props.revertedApplication && (
             <>
               <Tooltip title="Verify">
                 <IconButton
@@ -1208,7 +1208,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
 
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        {component.props.disableButtons !== 1 && !component.props.revertedApplication && (
+        {!component?.props?.forwardedApplications && (component.props.disableButtons !== 1 || component.props.revertedApplication) && (
           <Tooltip title="Revert">
             <IconButton
               disabled={application?.isHistory}
@@ -1226,7 +1226,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
     // --- RESEND BUTTON ---
     formatters.push((application) => (
       <div className={component.props.classes.horizontalButtonContainer}>
-        {component.props.disableButtons !== 1 && component.props.revertedApplication && (
+        {component.props.revertedApplication && (
           <Tooltip title="Resend">
             <IconButton
               disabled={application?.isHistory}
