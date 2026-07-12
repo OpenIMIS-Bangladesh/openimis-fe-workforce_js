@@ -41,7 +41,7 @@ import {
 } from "../../actions";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import FileUploader from "../../pickers/FileUploader";
-import { getUserTypeFromRights, isBlwfPath, isEisPath, safeDecodeId, safeParse, tryParse } from "../../utils/utils";
+import { getUserTypeFromRights, isBlwfPath, isCfPath, isEisPath, safeDecodeId, safeParse, tryParse } from "../../utils/utils";
 import { WORKFORCE_DOCUMENT_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
 import {
@@ -564,7 +564,13 @@ class VerifyApplicationPage extends Component {
             {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
               <Grid item xs={2}>
                 <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
-                  <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
+                  {
+                    isCfPath() || isBlwfPath() ? (
+                      <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+                    ) : (
+                      <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+                    )
+                  }
                 </Button>
               </Grid>
             )}
@@ -666,7 +672,13 @@ class VerifyApplicationPage extends Component {
             {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
               <Grid item xs={2}>
                 <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
-                  <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add Dependent" />
+                  {
+                    isCfPath() || isBlwfPath() ? (
+                      <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+                    ) : (
+                      <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+                    )
+                  }
                 </Button>
               </Grid>
             )}

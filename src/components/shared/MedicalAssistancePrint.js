@@ -47,8 +47,8 @@ const useStyles = makeStyles({
   },
   photoBox: {
     border: "1px solid #000",
-    width: 120,
-    height: 140,
+    width: "120px",
+    height: "155px",
     textAlign: "center",
     padding: 8,
     fontSize: 12,
@@ -159,7 +159,14 @@ export function MedicalAssistancePrint({ printRef, data, documents, logoLeftUrl,
             </Grid>
             <Grid item xs={2}>
               <Box className={classes.photoBox}>
-                শ্রমিক ও তার <br /> ওয়ারিশাণের পাসপোর্ট <br /> সাইজের ১ (এক) কপি <br /> করে ছবি
+                {/* শ্রমিক ও তার <br /> ওয়ারিশাণের পাসপোর্ট <br /> সাইজের ১ (এক) কপি <br /> করে ছবি */}
+                {documents &&
+                documents.length > 0 &&
+                documents.map((doc, index) => (
+                  doc?.workforceDocumentType?.nameBn==='শ্রমিকের ছবি' && (
+                    <img src={doc?.url} alt={doc?.workforceDocumentType?.nameBn} style={{ width: "100%" }} />
+                  )
+                ))}
               </Box>
             </Grid>
           </Grid>

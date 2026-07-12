@@ -167,7 +167,7 @@ const useStyles = makeStyles({
   photoBox: {
     border: "1px solid #000",
     width: "120px",
-    height: "140px",
+    height: "155px",
     textAlign: "center",
     padding: "8px",
     fontSize: "12px",
@@ -341,7 +341,14 @@ export function DeathApplicationPrint({ printRef, data, documents, logoLeftUrl, 
             <Grid item xs={2}>
               {/* Photo Box */}
               <Box className={classes.photoBox}>
-                শ্রমিক ও তার <br /> ওয়ারিশাণের পাসপোর্ট <br /> সাইজের ১ (এক) কপি <br /> করে ছবি
+                {/* শ্রমিক ও তার <br /> ওয়ারিশাণের পাসপোর্ট <br /> সাইজের ১ (এক) কপি <br /> করে ছবি */}
+                {documents &&
+                documents.length > 0 &&
+                documents.map((doc, index) => (
+                  doc?.workforceDocumentType?.nameBn==='শ্রমিকের ছবি' && (
+                    <img src={doc?.url} alt={doc?.workforceDocumentType?.nameBn} style={{ width: "100%" }} />
+                  )
+                ))}
               </Box>
             </Grid>
           </Grid>

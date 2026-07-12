@@ -204,13 +204,13 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
                 textAlign: "center",
               }}
             >
-              {!isEisPath()? "ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}
+              {!isEisPath()? "উপ-সহকারী পরিচালক/ ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}
             </Typography>
             <Grid item xs={12} sm={12}>
               <FormControl fullWidth>
                 <Select value={formData?.userId || ""} onChange={(e) => setFormData({ ...formData, userId: e.target.value })} displayEmpty>
                   <MenuItem value="">
-                    <em>{!isEisPath()? "ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}</em>
+                    <em>{!isEisPath()? "উপ-সহকারী পরিচালক/ ডাটা এন্ট্রি অপারেটর নির্বাচন করুন":"অফিসার নির্বাচন করুন"}</em>
                   </MenuItem>
                   {officers.map((officer) => (
                     <MenuItem key={officer.id} value={officer.userId}>

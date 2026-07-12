@@ -3,6 +3,7 @@ import { Grid, Paper, Typography, Divider, Card, CardContent, Box } from "@mater
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { FormattedMessage } from "@openimis/fe-core";
+import { isBlwfPath, isCfPath } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: {
@@ -94,6 +95,7 @@ const banglaLabels = {
   deathType: "মৃত্যুর ধরণ",
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
   employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
+  employeeWarishInfo: "ওয়ারিশদের তথ্য",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   applicant_type: "আবেদনকারীর ধরণ",
   bankCode: "ব্যাংক কোড",
@@ -293,7 +295,13 @@ const PreviewDetails = ({ formData = {}, classes, language = "en" }) => {
         <Card className={classes.card}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              <FormattedMessage module="workforce" id="workforce.previewDetails.employeeDependentInfo" defaultMessage={formatKey("employeeDependentInfo")} />
+              {
+                isCfPath() || isBlwfPath() ? (
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.employeeWarishInfo" defaultMessage={formatKey("employeeWarishInfo")} />
+                ) : (
+                  <FormattedMessage module="workforce" id="workforce.previewDetails.employeeDependentInfo" defaultMessage={formatKey("employeeDependentInfo")} />
+                )
+              }
             </Typography>
             <Divider style={{ marginBottom: "10px" }} />
             {filteredItems.map((dep, index) => (

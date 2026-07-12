@@ -323,6 +323,7 @@
   "workforce.application.steps.hsc": "এইচ.এস.সি. বা সমমান",
   "workforce.application.steps.skip": "বাদ দিন",
   "workforce.application.steps.dependentAdd": "নির্ভরশীল যোগ করুন",
+  "workforce.application.steps.warishAdd": "ওয়ারিশ যোগ করুন",
   "workforce.application.steps.reasonsforSeekingFinancialAssistance": "আর্থিক সহায়তা চাওয়ার কারণ (সর্বশেষ সময়সীমা বিগত ১০৫ দিনের মধ্যে হতে হবে)",
   "workforce.application.steps.previousGrantInfo": "পূর্ববর্তী অনুদানের তথ্য",
   "workforce.application.steps.otherInfo": "অন্যান্য তথ্য",
@@ -554,6 +555,7 @@
   "workforce.previewDetails.factory": "শ্রমিকের কর্মরত প্রতিষ্ঠান / কারখানার তথ্য",
   "workforce.previewDetails.educations":"নিজের/সন্তানের শিক্ষাগত যোগ্যতা",
   "workforce.previewDetails.employeeDependentInfo":"নির্ভরশীল সদস্যদের তথ্য",
+  "workforce.previewDetails.employeeWarishInfo":"ওয়ারিশদের তথ্য",
   "workforce.previewDetails.metadata":"আবেদনের প্রয়োজনীয় তথ্য",
 
 

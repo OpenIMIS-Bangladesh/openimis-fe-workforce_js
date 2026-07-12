@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createWorkforceDocument, fetchEmployeeDependent, setUploadedFiles, updateApplication } from "../../../actions";
 import EmployeeDependentForm from "../../../pages/application/EmployeeDependentForm";
 import EmployeeDeathAccountInfoForm from "../../../pages/application/EmployeeDeathAccountInfoForm";
-import { getRelationForApi, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
+import { getRelationForApi, isCfPath, isBlwfPath, safeDecodeId, validateRequiredFields } from "../../../utils/utils";
 import CustomSnackbar from "../CustomSnackbar";
 
 const useStyles = makeStyles((theme) => ({
@@ -221,7 +221,11 @@ const AddDependentModal = ({ open, onClose, application }) => {
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           {activeStep === 0 ? (
-            <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+              isCfPath() || isBlwfPath() ? (
+                <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+              ) : (
+                <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+              )
           ) : (
             <FormattedMessage id="workforce.application.steps.bankInfo" defaultMessage="Bank Account Info" />
           )}

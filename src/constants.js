@@ -1,3 +1,5 @@
+import { isEisPath } from "./utils/utils";
+
 export const MODULE_NAME = "workforce";
 export const DEFAULT_DEBOUNCE_TIME = 500;
 export const ENTER_KEY = "Enter";
@@ -618,8 +620,8 @@ export const banglaLabels = {
   disabilityType: "প্রতিবন্ধিতার ধরণ",
   deathType: "মৃত্যুর ধরণ",
   scholarshipFor: "স্কলারশিপের উদ্দেশ্য",
-  employeeDependentInfo: "নির্ভরশীল সদস্যদের তথ্য",
-  workforceEmployeeDependentApplication: "নির্ভরশীল সদস্যদের তথ্য",
+  employeeDependentInfo: isEisPath() ? "নির্ভরশীল সদস্যদের তথ্য" : "ওয়ারিশদের তথ্য",
+  workforceEmployeeDependentApplication: isEisPath() ? "নির্ভরশীল সদস্যদের তথ্য" : "ওয়ারিশদের তথ্য",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   employeeBankingInfoApplication: "শ্রমিকের ব্যাংক তথ্য",
   applicant_type: "আবেদনকারীর ধরণ",
@@ -675,7 +677,7 @@ export const banglaLabels = {
   branch: "শাখা",
   employeeBankInfo: "শ্রমিকের ব্যাংক তথ্য",
   ApplicationFor:"আবেদনকারীর ধরন",
-  dependents:"নির্ভরশীল সদস্যদের তথ্য",
+  dependents: isEisPath() ? "নির্ভরশীল সদস্যদের তথ্য" : "ওয়ারিশদের তথ্য",
   institutionInfo:"প্রতিষ্ঠানের তথ্য",
   position:"পদবী",
   grade:"গ্রেড",

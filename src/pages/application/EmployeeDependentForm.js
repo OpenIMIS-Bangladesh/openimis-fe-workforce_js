@@ -26,7 +26,7 @@ import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import { getRelationForApi, isVerify } from "../../utils/utils";
+import { getRelationForApi, isBlwfPath, isCfPath, isVerify } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -508,7 +508,13 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
       {applicationType === "financialAssistance" && (
         <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>
-          <FormattedMessage module="workforce" id="workforce.application.steps.dependentAdd" />
+          {
+            isCfPath() || isBlwfPath() ? (
+              <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+            ) : (
+              <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+            )
+          }
         </Button>
       )}
     </Box>
