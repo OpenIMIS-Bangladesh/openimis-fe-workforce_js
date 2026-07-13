@@ -340,7 +340,7 @@ const BeneficiaryDisbursedPayments = () => {
 
                     <TableCell>
                       <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
-                      <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + row.bank?.routingNumber + ")" || "N/A"}</Typography>
+                      <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + (row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber) + ")" || "N/A"}</Typography>
                       <Typography variant="caption" color="textSecondary">{"A/C: " + row.bankAccountNo}</Typography>
                     </TableCell>
 

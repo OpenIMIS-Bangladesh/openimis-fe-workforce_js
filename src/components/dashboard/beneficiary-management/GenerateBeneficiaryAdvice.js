@@ -173,7 +173,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.parent?.nameEn || ""}</td>
       <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.nameEn || ""}</td>
       <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.districtNameEn || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.routingNumber || ""}</td>
+      <td style="border: 1px solid #000; padding: 8px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.paidAmount || 0}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.beneficiaryId || ""}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
@@ -328,7 +328,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
 
       sheet.addRow([
         index + 1, row?.bankAccountHolderName || "", row?.bankAccountNo || "", row?.bank?.parent?.nameEn || "",
-        row?.bank?.nameEn || "", row?.bank?.districtNameEn || "", row?.bank?.routingNumber || "",
+        row?.bank?.nameEn || "", row?.bank?.districtNameEn || "", (row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || "",
         row?.paidAmount || 0, row?.beneficiaryId || "", payFrom, payTo,
       ]);
     });
@@ -461,7 +461,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                       <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
                       <TableCell>{row?.bank?.nameEn}</TableCell>
                       <TableCell>{row?.bank?.districtNameEn}</TableCell>
-                      <TableCell>{row?.bank?.routingNumber}</TableCell>
+                      <TableCell>{(row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber)}</TableCell>
                       <TableCell align="right">{row?.paidAmount}</TableCell>
                       <TableCell align="right">{row?.beneficiaryId}</TableCell>
                       <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>

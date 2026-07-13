@@ -2273,6 +2273,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         phoneNumber
         noaSmsSent
         noaConfirmed
+        routingNumber
         bank {
           id
           nameEn
@@ -2472,6 +2473,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         noaSmsSent
         noaConfirmed
         noaBlocked
+        routingNumber
         bank {
           id
           nameEn
@@ -2656,6 +2658,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         isDisbursed
         phoneNumber
         userConfirmed
+        routingNumber
         workforceEisBankAdvice{
         id
         isConfirmed
