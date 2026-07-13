@@ -1,5 +1,6 @@
 import React from "react";
 import { safeParse, isBlwfPath, formatAddress } from "../../../utils/utils";
+import { applyMiddleware } from "redux";
 
 const MedicalMaternityView = ({ classes, applications, getTotalAmount }) => {
   console.log({applications})
@@ -60,7 +61,7 @@ const MedicalMaternityView = ({ classes, applications, getTotalAmount }) => {
   };
 
   const rows = getRows();
-
+  console.log({MedicalMaternityView:applications})
   return (
     <>
       <table className={classes.summaryTable}>

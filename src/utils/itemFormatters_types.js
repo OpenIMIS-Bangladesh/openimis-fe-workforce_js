@@ -182,7 +182,20 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
       </div>
     ) : null,
   );
-
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+          }}
+        >
+          <VerifiedUserIcon style={{ color: "green" }} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="save">
@@ -262,6 +275,20 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
           onClick={() => component.handleUpdateGrantMoney(application)}
         >
           <SaveIcon style={{ color: "primary" }} />
+        </IconButton>
+      </Tooltip>
+    </div>
+  ));
+  formatters.push((application) => (
+    <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+          }}
+        >
+          <VerifiedUserIcon style={{ color: "green" }} />
         </IconButton>
       </Tooltip>
     </div>

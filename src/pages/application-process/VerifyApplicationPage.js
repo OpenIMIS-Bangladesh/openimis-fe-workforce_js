@@ -669,7 +669,7 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
           <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
             {/* <Grid item xs={6}></Grid> */}
-            {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
+            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER||user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.ADMIN) && application?.applicationType === "financialAssistance" && (
               <Grid item xs={2}>
                 <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
                   {

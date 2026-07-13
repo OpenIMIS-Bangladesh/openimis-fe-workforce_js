@@ -76,7 +76,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [revertNotes, setRevertNotes] = useState([]);
   const [serverResponse, setServerResponse] = useState(null);
   const [dependentData, setDependentData] = useState([]);
-  const [loader,setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
 
@@ -96,7 +96,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
   const handleForward = async () => {
     // if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
-    setLoader(true)
+    setLoader(true);
     const filteredApplications = applications;
 
     // if (filteredApplications.length === 0) {
@@ -104,7 +104,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     // }
 
     const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
-    const isRepresentative = mappings?.find(item=>item?.committee?.approvalType === "representative" ||item?.committee?.approvalType === null||item?.committee?.approvalType === "");
+    const isRepresentative = mappings?.find(
+      (item) => item?.committee?.approvalType === "representative" || item?.committee?.approvalType === null || item?.committee?.approvalType === "",
+    );
     const totalApprovers = mappings?.length || 1;
 
     try {
@@ -138,16 +140,16 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         }
         await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
       }
-        console.log("hello",isRepresentative)
-        console.log("hello2",isQuorum)
+      console.log("hello", isRepresentative);
+      console.log("hello2", isQuorum);
 
       if (isRepresentative) {
-        console.log("hello")
+        console.log("hello");
         for (const mapItem of mappings || []) {
           if (mapItem?.isRepresentative && String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
-            console.log("hello3")
+            console.log("hello3");
             for (const app of filteredApplications) {
-            console.log("hello4")
+              console.log("hello4");
               const decodedId = safeDecodeId(app.id);
               let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
               let updatePayload = { id: decodedId };
@@ -157,7 +159,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                 setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
                 return;
               }
-              console.log(approvedUserIds.includes(loggedInUserId))
+              console.log(approvedUserIds.includes(loggedInUserId));
               approvedUserIds.push(loggedInUserId);
               updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
               updatePayload.status = targetStatus;
@@ -172,9 +174,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
     } catch (error) {
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
-    }finally{
-      setLoader(false)
-      onClose()
+    } finally {
+      setLoader(false);
+      onClose();
     }
   };
 
@@ -589,7 +591,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
-    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR || 
+    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
   ) // else if (!getUserTypeFromRights(userRights).includes("blwf"))
   {
@@ -610,10 +612,22 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       address = "১৮ তলা, ভবন#৬, বাংলাদেশ সচিবালয়, ঢাকা-১০০০";
       web = "www.blwf.gov.bd";
     }
-    // else if(getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_SECTION_ADMIN)
-    // {
-    //   logo= <img src={`workforce_assets/eis.png`} alt="Logo" style={{ width: "120px" }} />;
-    // }
+    const appType = applications?.[0]?.applicationType;
+    console.log({ fromBankAdvice: appType });
+
+    const isMedicalOrMaternity = ["medicalAssistance", "maternityGrant", "medicalDonation"]?.includes(appType);
+    const isEducationOrScholarship = ["scholarship", "educationGrant"].includes(appType);
+    console.log({ fromBankAdvice: isMedicalOrMaternity });
+
+    // Dynamic Title based on App Category
+    const documentTitle =
+      applications?.[0]?.organizationType === "blwf"
+        ? "বিএলডাব্লিউএফ এর আবেদন অনুযায়ী আর্থিক সহায়তা তালিকা"
+        : isEducationOrScholarship
+          ? "শিক্ষা আর্থিক সহায়তার তালিকা"
+          : isMedicalOrMaternity
+            ? "চিকিৎসা ও মাতৃত্বকালীন আর্থিক সহায়তার তালিকা"
+            : "মৃত্যু ও দুর্ঘটনাজনিত আর্থিক সহায়তার তালিকা";
     return (
       <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle disableTypography>
@@ -642,7 +656,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               </TableRow>
               <TableRow>
                 <TableCell colSpan={9} style={{ textAlign: "center" }}>
-                  <p style={{ textDecoration: "underline", margin: 0 }}>মৃত্যু ও দূর্ঘটনাজনিত আর্থিক সহায়তা তালিকা </p>
+                  <p style={{ textDecoration: "underline", margin: 0 }}>{documentTitle} </p>
                   <p style={{ textDecoration: "underline", margin: 0 }}>সুবিধাভোগী কল্যাণ হিসাব (নং ৪৪২৬৩৩৬০০১০৩৪)</p>
                 </TableCell>
               </TableRow>
@@ -747,7 +761,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                       <FormattedMessage id="Customer Account No" />
                     </TableCell>
                     <TableCell style={{ fontWeight: "700" }}>
-                      <FormattedMessage id="Type(C/D)" />
+                      <FormattedMessage id="Factory Name" />
                     </TableCell>
                     <TableCell style={{ textAlign: "right", fontWeight: "700" }}>
                       <FormattedMessage id="Approved Amount" />
@@ -771,12 +785,12 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                       <TableRow key={`${row.id}-${bankIndex}`}>
                         <TableCell>{bankIndex + 1}</TableCell>
                         <TableCell>{row?.dateCreated?.split("T")[0]}</TableCell>
-                        <TableCell>4426336001034</TableCell>
+                        <TableCell>{bankInfo?.accountNumber}</TableCell>
                         <TableCell>{bankInfo?.branch?.routingNumber}</TableCell>
                         <TableCell>200275714</TableCell>
                         <TableCell>{bankInfo?.accountHolderName}</TableCell>
                         <TableCell>{bankInfo?.accountNumber}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{row?.employeeFactory?.nameEn}</TableCell>
                         <TableCell align="right">{row?.grantAmount}</TableCell>
                       </TableRow>
                     ));

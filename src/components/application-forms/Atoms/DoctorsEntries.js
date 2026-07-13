@@ -5,7 +5,7 @@ import { FormattedMessage, TextInput } from "@openimis/fe-core";
 import { updateApplication } from "../../../actions";
 import CustomSnackbar from "../../shared/CustomSnackbar";
 import EisFactoryAdminModal from "../EisFactoryAdminModal";
-import { getUserType } from "../../../utils/utils";
+import { getUserType, isBlwfPath } from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 
 const isEmpty = (value) => {
@@ -54,7 +54,7 @@ const DoctorsEntries = ({ application }) => {
       doctorsDiagnosis: doctorDiagnosis || null,
       doctorComment: doctorComment || null,
       doctorsFlag: doctorsActions,
-      diseaseGrade:diseaseGrade,
+      diseaseGrade: diseaseGrade,
       doctorEntries: JSON.stringify({
         doctorsAssesment: doctorDiagnosis || null,
         doctorAssesmentComment: doctorComment || null,
@@ -114,7 +114,13 @@ const DoctorsEntries = ({ application }) => {
             {/* Conditional Fields */}
             {doctorsActions === "recommend" && (
               <Grid item xs={12}>
-                <TextInput label="workforce.application.diagnosis.byDoctor" value={doctorDiagnosis} onChange={(v) => setDoctorDiagnosis(v)} multiline rows={3}/>
+                <TextInput
+                  label="workforce.application.diagnosis.byDoctor"
+                  value={doctorDiagnosis}
+                  onChange={(v) => setDoctorDiagnosis(v)}
+                  multiline
+                  rows={3}
+                />
               </Grid>
             )}
 
@@ -123,9 +129,11 @@ const DoctorsEntries = ({ application }) => {
                 <TextInput label="workforce.application.reasons.addComment" value={doctorComment} onChange={(v) => setDoctorComment(v)} multiline rows={3} />
               </Grid>
             )}
-            <Grid item xs={12}>
-              <TextInput label="workforce.application.diseaseGrade" value={diseaseGrade} onChange={(v) => setDiseaseGrade(v)} />
-            </Grid>
+            {isBlwfPath() && (
+              <Grid item xs={12}>
+                <TextInput label="workforce.application.diseaseGrade" value={diseaseGrade} onChange={(v) => setDiseaseGrade(v)} />
+              </Grid>
+            )}
           </>
         )}
 
