@@ -666,7 +666,9 @@ class VerifyApplicationPage extends Component {
           user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
           user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
           user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
-          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR||
+          user_type === WORKFORCE_USER_TYPE.DIRECTOR || 
+          user_type === WORKFORCE_USER_TYPE.ADMIN) && (
           <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
             {/* <Grid item xs={6}></Grid> */}
             {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER||user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.ADMIN) && application?.applicationType === "financialAssistance" && (
