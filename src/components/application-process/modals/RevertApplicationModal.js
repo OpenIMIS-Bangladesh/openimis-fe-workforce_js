@@ -22,8 +22,8 @@ import {
   createApplicationMovement,
   fetchApplicationWiseMovementList,
 } from "../../../actions";
-import { WORKFORCE_STATUS } from "../../../constants";
-import { safeDecodeId } from "../../../utils/utils";
+import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
+import { safeDecodeId, getUserType, isBlwfPath } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -61,15 +61,48 @@ const useStyles = makeStyles((theme) => ({
   responseMessage: { marginBottom: theme.spacing(2), fontWeight: 600 },
 }));
 
+// Filter users based on logged-in user type
+const filterUsersByType = (users) => {
+  const user_type = getUserType();
+  if (user_type === WORKFORCE_USER_TYPE.CHECKER || user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
+    // CHECKER can only revert to users with role "section_admin"
+    return users.filter(
+      (user) =>
+        user.role === "section_admin" ||
+        user.role === "Section Admin" ||
+        user.role === "Applicant" // Keep applicant option
+    );
+  } else if (user_type === WORKFORCE_USER_TYPE.CHECKER_TWO || user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
+    // CHECKER_TWO can only revert to users with role "section_admin_two"
+    return users.filter(
+      (user) =>
+        user.role === "section_admin_two" ||
+        user.role === "Section Admin Two" ||
+        user.role === "Applicant" // Keep applicant option
+    );
+  } else if (user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER) {
+    // BLWF_CHECKER can only revert to users with role "blwf_section_admin"
+    return users.filter(
+      (user) =>
+        user.role === "blwf_section_admin" ||
+        user.role === "BLWF Section Admin" ||
+        user.role === "Applicant" // Keep applicant option
+    );
+  }
+  // For all other user types, return all users (existing logic)
+  return users;
+};
+
 // No changes to RevertPathSelector needed
-const RevertPathSelector = ({ users, selectedUser, onChange }) => (
+const RevertPathSelector = ({ users,userType, selectedUser, onChange }) => (
   <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
     <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>
       আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
     </Typography>
     {users.length > 0 ? (
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        {users.map((user) => (
+        {users.filter(row => (isBlwfPath()&& ([WORKFORCE_USER_TYPE.CHECKER, WORKFORCE_USER_TYPE.CHECKER_TWO,WORKFORCE_USER_TYPE.BLWF_CHECKER,WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR].includes(userType)) && 
+        ["Section Admin","Section Admin Two","BLWF Section Admin","S1 Asst Deputy Director","S2 Asst Deputy Director"].includes(row?.role))).map((user) => (
           <FormControlLabel
             key={user.id}
             value={user.id}
@@ -89,6 +122,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const userId = useSelector((state) => state.core?.user?.i_user?.id);
+  const userType = getUserType()
 
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -137,6 +171,10 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
               role: u?.userRoles?.[0]?.role?.name || "User",
             })),
           ];
+          
+          console.log({users})
+          // Apply user type-based filtering
+          // const filteredUsers = filterUsersByType(users);
           setMovementUsers(users);
         })
         .catch((err) => {
@@ -231,7 +269,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
                 <CircularProgress />
             </Box>
         ) : (
-            <RevertPathSelector users={movementUsers} selectedUser={selectedRevertUser} onChange={setSelectedRevertUser} />
+            <RevertPathSelector users={movementUsers} userType={userType} selectedUser={selectedRevertUser} onChange={setSelectedRevertUser} />
         )}
         
         <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", marginTop: 1, textAlign: "center" }}>

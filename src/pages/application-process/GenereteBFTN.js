@@ -695,7 +695,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                       <FormattedMessage id="Dependent Account No" />
                     </TableCell>
                     <TableCell style={{ fontWeight: "700" }}>
-                      <FormattedMessage id="Type(C/D)" />
+                      <FormattedMessage id="Factory Name" />
                     </TableCell>
                     <TableCell style={{ textAlign: "right", fontWeight: "700" }}>
                       <FormattedMessage id="Approved Amount" />
@@ -717,7 +717,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                         <TableCell>200275714</TableCell>
                         <TableCell>{dep?.bankAccountHolderName || ""}</TableCell>
                         <TableCell>{dep?.bankAccountNo || ""}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell>{applications?.[0]?.employeeFactory?.nameEn}</TableCell>
                         <TableCell align="right">{approvedAmount}</TableCell>
                       </TableRow>
                     );

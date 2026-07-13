@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, makeStyles } from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, makeStyles, CircularProgress, Typography } from "@material-ui/core";
 import { FormattedMessage, useModulesManager, useTranslations } from "@openimis/fe-core";
 import { useDispatch, useSelector } from "react-redux";
 import { createWorkforceDocument, fetchEmployeeDependent, setUploadedFiles, updateApplication } from "../../../actions";
@@ -31,6 +31,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const [errors, setErrors] = useState({});
   const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
   const [dependentErr, setDependentErr] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
 
@@ -105,6 +106,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     if (Object.keys(newErrors).length > 0) {
       setShowErrorSnackbar(true);
+      setIsProcessing(false);
       return; // Stop execution
     } else {
       setShowErrorSnackbar(false);
@@ -119,8 +121,11 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     if (validDependents?.length !== currentDependents?.length) {
       setDependentErr(true);
+      setIsProcessing(false);
       return;
     }
+
+    setIsProcessing(true);
 
     const finalDependentList = formData.employeeDependentInfo || [];
     const payload = {
@@ -128,40 +133,40 @@ const AddDependentModal = ({ open, onClose, application }) => {
       employeeDependentInfo: formatPayloadJson(finalDependentList),
     };
 
-    if (uploadDependentFile) {
-      await Promise.all(
-        uploadDependentFile.map((file) => {
-          return dispatch(
-            createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
-          );
-        })
-      );
-    }
+    try {
+      if (uploadDependentFile) {
+        await Promise.all(
+          uploadDependentFile.map((file) => {
+            return dispatch(
+              createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
+            );
+          })
+        );
+      }
 
-    dispatch(updateApplication(payload, "update dependent info")).then((res) => {
-      // 1. Wait for the fresh dependents to be fetched into Redux
-      dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(application?.id)}"`])).then(() => {
-        
-        // 2. Extract all valid NIDs from the CURRENT dependent list
-        const activeNids = finalDependentList.map((dep) => String(dep.nid));
+      await dispatch(updateApplication(payload, "update dependent info"));
+      await dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(application?.id)}"`]));
 
-        // 3. Filter out any bank info where the dependentNid no longer exists
-        setFormData((prev) => {
-          const cleansedBankInfo = (prev.employeeBankInfo || []).filter((bank) => {
-            if (bank?.dependentNid) {
-              return activeNids.includes(String(bank.dependentNid));
-            }
-            return true; // Keep it if it doesn't have a dependentNid (e.g., 'self' account)
-          });
+      const activeNids = finalDependentList.map((dep) => String(dep.nid));
 
-          return { ...prev, employeeBankInfo: cleansedBankInfo };
+      setFormData((prev) => {
+        const cleansedBankInfo = (prev.employeeBankInfo || []).filter((bank) => {
+          if (bank?.dependentNid) {
+            return activeNids.includes(String(bank.dependentNid));
+          }
+          return true;
         });
 
-        // 4. Move to next step only after state is perfectly clean
-        setActiveStep(1);
-        setExpanded(0);
+        return { ...prev, employeeBankInfo: cleansedBankInfo };
       });
-    });
+
+      setActiveStep(1);
+      setExpanded(0);
+    } catch (error) {
+      setShowErrorSnackbar(true);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleSaveBankInfo = async () => {
@@ -280,7 +285,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
         <DialogActions>
           <Button onClick={onClose} color="secondary" variant="outlined">
-            <FormattedMessage id="workforce.cancel" defaultMessage="Cancel" />
+            <FormattedMessage id="core.LanguageQuickPicker.dialog.cancel" defaultMessage="Cancel" />
           </Button>
 
           {/* BUTTON LOGIC */}
@@ -301,6 +306,17 @@ const AddDependentModal = ({ open, onClose, application }) => {
             </>
           )}
         </DialogActions>
+      </Dialog>
+      <Dialog open={isProcessing} onClose={() => {}} disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" padding={4} gap={2}>
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" align="center">
+            <FormattedMessage id="workforce.processing.data" module="workforce" />
+          </Typography>
+          <Typography variant="body2" align="center" color="textSecondary">
+            <FormattedMessage id="workforce.please.wait" module="workforce" />
+          </Typography>
+        </Box>
       </Dialog>
       <CustomSnackbar
         open={showErrorSnackbar} // Use the new state

@@ -310,6 +310,7 @@
   "workforce.application.steps.upload": "আপলোড",
   "workforce.application.steps.capture": "ছবি তুলুন",
   "workforce.application.steps.dependent": "যার জন্য আবেদন, তার বিবরণ",
+  "workforce.application.subHeader.dependent.blwf": "যার জন্য আবেদন করা হয়েছে, তার বিবরণ (নির্ভরশীল)",
   "workforce.application.subHeader.dependent": "সুবিধা ভোগীর বিবরণ",
   "workforce.application.steps.account.info": "অ্যাকাউন্ট তথ্য",
   "workforce.application.steps.aidReason": "আর্থিক সহায়তা কারণ",

@@ -90,7 +90,7 @@ const WorkerExtraInfo = ({ handleChange, formData, errors }) => {
       <Typography mb={4} style={{ textAlign: "center", fontWeight: "bold", fontSize: "small", margin: "15px" }}>
         <FormattedMessage id="workforce.application.steps.worker.extraInfo" module="workforce" />
       </Typography>
-      <FormControl component="fieldset">
+      <FormControl component="fieldset" fullWidth>
         <Typography variant="body1" className={`${classes.title} ${classes.section}`}>
           {formatMessage("workforce.applicant.workInfo.title")}
         </Typography>

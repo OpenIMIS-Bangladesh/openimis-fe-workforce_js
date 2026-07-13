@@ -237,8 +237,32 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
     isShowHistory() ? application?.version : null,
   ];
 
+  // formatters.push((application) => (
+  //   <div className={component.props.classes.horizontalButtonContainer}>
+  //     <Tooltip title="Verify">
+  //       <IconButton
+  //         disabled={application?.isHistory}
+  //         onClick={() => {
+  //           historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+  //         }}
+  //       >
+  //         <VerifiedUserIcon style={{ color: "green" }} />
+  //       </IconButton>
+  //     </Tooltip>
+  //   </div>
+  // ));
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
+      <Tooltip title="Verify">
+        <IconButton
+          disabled={application?.isHistory}
+          onClick={() => {
+            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+          }}
+        >
+          <VerifiedUserIcon style={{ color: "green" }} />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="View">
         <IconButton
           disabled={application?.isHistory}
@@ -279,20 +303,7 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
       </Tooltip>
     </div>
   ));
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
-          }}
-        >
-          <VerifiedUserIcon style={{ color: "green" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
+  
   return formatters;
 };
 
@@ -435,7 +446,7 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Revert">
-            <IconButton disabled={application?.isHistory} onClick={() => component.handleOpenRevertModal(application)}>
+            <IconButton disabled={application?.isHistory} onClick={() => {component.handleOpenRevertModal(application);component.setState({ revertByChecker: true });}}>
               <UndoIcon style={{ color: "red" }} />
             </IconButton>
           </Tooltip>

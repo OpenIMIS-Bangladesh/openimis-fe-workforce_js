@@ -665,7 +665,7 @@ const CommitteeManagementPage = () => {
                       <MenuItem value="">{locale === "fr" ?"নির্বাচন করুন" : "Select"}</MenuItem>
                       <MenuItem value="Member">{locale === "fr" ? "সদস্য" : "Member"}</MenuItem>
                       <MenuItem value="President">{locale === "fr" ? "সভাপতি" : "President"}</MenuItem>
-                      <MenuItem value="Secretary General">{locale === "fr" ? "সাধারণ সম্পাদক" : "Secretary General"}</MenuItem>
+                      <MenuItem value="Secretary General">{locale === "fr" ? "সদস্য সচিব" : "Member Secretary"}</MenuItem>
                     </TextField>
                   )}
                 </Grid>

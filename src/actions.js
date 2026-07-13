@@ -717,7 +717,7 @@ export function fetchApplication(mm, filters) {
     "institutionInfo",
     "educations{edges{node{id,childNameEn,childNameBn,childBirthDate,childBirthCertificateNo,childNidNo,studyClass,institution,educationLevel,educationBoard,passingYear,rollNumber,registrationNumber,result}}}",
     // "workforceEmployeeDependentApplication{edges{node{id,nameBn,nameEn,fatherNameBn,fatherNameEn,motherNameBn,motherNameEn,nid,birthDate,percentageOfCfGrant,phoneNumber,presentLocation {id},presentAddress,permanentLocation {id},permanentAddress}}}",
-    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," +
+    "workforceEmployeeDependentApplication{edges{node{id,dateCreated,nameBn,nameEn,fatherNameBn,fatherNameEn,maritalStatus,gender,percentageOfCfGrant,occupation,email,phoneNumber,birthDate,nid,birthCertificateNo,disabilityStatus,disabilityType,lastVerificationDate,relationWithWorker,attachments,isEligible,remarks,status,employeeBankingDependents{edges{node{id}}},presentAddress,permanentAddress," +
     present_location_projection +
     permanent_location_projection +
     ",bankingInfo{id}}}}",
