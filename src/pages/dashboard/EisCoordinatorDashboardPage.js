@@ -1321,7 +1321,7 @@ const EisCoordinatorDashboardPage = () => {
   }, []);
   const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
 
-  const pendingSummaryData = data.filter((d) => d.status !== "approved_by_dg");
+  const pendingSummaryData = data.filter((d) => d.status === "forward_to_dg" || d.status === "forward_to_eis_advisor" || d.status === "meeting_created");
   const approvedSummaryData = data.filter((d) => d.status === "approved_by_committee");
   const advisorApprovedSummaryData = data.filter((d) => d.status === "approved_by_eis_advisor");
   const sentSummaryData = data.filter((d) => d.status === "forward_to_comiitee");
