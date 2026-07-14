@@ -339,12 +339,21 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
             />
           </Grid>
           <Grid item xs={12} className={clsx(classes.item, classes.overrideReadOnly)}>
-            <Typography variant="subtitle1" className={classes.sectionTitle}>
+            {/* <Typography variant="subtitle1" className={classes.sectionTitle}>
               <FormattedMessage
                 id="workforce.disability.observationCurrentCondition"
                 defaultMessage="Observation After Evaluating the Current Condition of Employee"
               />
-            </Typography>
+            </Typography> */}
+            <TextInput
+              multiline
+              rows={4}
+              label="workforce.disability.observationCurrentCondition"
+              value={formData?.employeeAccidentInfo?.observationCurrentCondition || formData?.doctorsEntry?.observationCurrentCondition || ""}
+              onChange={(v) => handleChange("observationCurrentCondition", v)}
+              required
+              readOnly={user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
+            />
           </Grid>
           <Grid item xs={6} className={clsx(classes.item, classes.overrideReadOnly)}>
             <FormControl component="fieldset">
