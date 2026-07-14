@@ -3228,12 +3228,12 @@ class ApplicationProcessSearcher extends Component {
                   <IconButton onClick={this.handleOpenBFTN}>
                     <PrintIcon />
                   </IconButton>
-                  <Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
+                  {userType === WORKFORCE_USER_TYPE.BLWF_ACCOUNTANT && (<Button variant="contained" color="primary" onClick={this.handleOpenGenerateCommitteeReport} style={{color:"white",paddingX:0.1,fontSize:"small"}}>
                     <IconButton style={{color:"white"}}>
                       <PrintIcon />
                     </IconButton>
                     <FormattedMessage id="workforce.generate.committee.report" />
-                  </Button>
+                  </Button>)}
                   </>
                 )}
                 {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
