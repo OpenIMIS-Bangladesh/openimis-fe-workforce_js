@@ -1421,6 +1421,7 @@ export const itemFormattersApprover = (isShowHistory, modulesManager, history, c
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
     },
+    ...(component?.props?.statusInSummary ? [(application) => application?.committeeRemarks]:[] ),
     isShowHistory() ? application?.version : null,
   ];
   formatters.push((application) => (

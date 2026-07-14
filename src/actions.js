@@ -631,7 +631,8 @@ export function fetchApplicationsSummary(mm, filters) {
     "lastMovementDate",
     "doctorsFlag",
     "doctorsRecommendedDonation",
-    "doctorsDiagnosis"
+    "doctorsDiagnosis",
+    "committeeRemarks"
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS");

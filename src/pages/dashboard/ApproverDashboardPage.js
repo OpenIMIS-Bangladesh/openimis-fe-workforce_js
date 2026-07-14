@@ -21,6 +21,7 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import CancelTwoToneIcon from "@material-ui/icons/CancelTwoTone";
 import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import RestorePageIcon from "@material-ui/icons/RestorePage";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
@@ -103,43 +104,28 @@ const useStyles = makeStyles((theme) => ({
 const SidebarMenu = [
   {
     id: "pendingMeetingSheet",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.employee.application.meetingSheet"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.employee.application.meetingSheet" />,
     icon: <HourglassFullTwoToneIcon />,
   },
   {
     id: "approveMeetingSheet",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.forwarded"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.application.forwarded" />,
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
   {
     id: "revertedApplications",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.reverted"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.application.reverted" />,
     icon: <RestorePageIcon />,
   },
   {
     id: "returnedApplications",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.returned"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.application.returned" />,
     icon: <ArrowBackIcon />,
+  },
+  {
+    id: "rejectedApplications",
+    text: <FormattedMessage module="workforce" id="workforce.application.rejected" />, // Add appropriate i18n id
+    icon: <CancelTwoToneIcon />,
   },
 ];
 
@@ -154,7 +140,7 @@ const ReturnedApplications = () => {
         returnedApplications={true}
         loggedInUserId={loggedInUserId}
         disableButtons={1}
-        dynamicTableTitle= {"workforce.application.returned"}
+        dynamicTableTitle={"workforce.application.returned"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -166,8 +152,8 @@ const ReturnedApplications = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 const RevertedApplications = () => {
   const classes = useStyles();
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -177,7 +163,7 @@ const RevertedApplications = () => {
         revertedApplications={true}
         loggedInUserId={loggedInUserId}
         disableButtons={1}
-        dynamicTableTitle= {"workforce.application.reverted"}
+        dynamicTableTitle={"workforce.application.reverted"}
       />
       {/* Pagination */}
       <div className={classes.pagination}>
@@ -189,10 +175,10 @@ const RevertedApplications = () => {
         </Button>
       </div>
     </>
-  )
-}
+  );
+};
 
-const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
+const FiledApplications = ({ summaryData = [], disableButtons = 0, rejectedByCommittee }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const [currentData, setCurrentData] = useState(summaryData);
@@ -226,30 +212,16 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   return (
     <div className={classes.accordionPadding}>
       <Typography variant="h5" gutterBottom>
-        <FormattedMessage
-          module="workforce"
-          id="workforce.cf.approver.dashboard"
-        />
+        <FormattedMessage module="workforce" id="workforce.cf.approver.dashboard" />
       </Typography>
 
       {currentData.map((item) => (
-        <Accordion
-          key={item.id}
-          expanded={expanded === item.id}
-          onChange={handleChange(item.id)}
-          className={classes.accordion}
-        >
-          <AccordionSummary
-            className={classes.accordionSummary}
-            expandIcon={<ExpandMoreIcon className="material-icons" />}
-          >
+        <Accordion key={item.id} expanded={expanded === item.id} onChange={handleChange(item.id)} className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
             <Typography variant="subtitle1" style={{ flex: 1 }}>
               <strong>{item.name}</strong>
             </Typography>
-            <Typography
-              variant="body2"
-              style={{ marginLeft: "auto", color: "#015C63" }}
-            >
+            <Typography variant="body2" style={{ marginLeft: "auto", color: "#015C63" }}>
               {item.meetingDate} | {item.month} {item.year}
             </Typography>
           </AccordionSummary>
@@ -263,6 +235,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                     loggedInUserId={loggedInUserId}
                     coloredRow={true}
                     summaryData={item}
+                    statusInSummary={rejectedByCommittee ? "rejected_by_committee" : "forward_to_comiitee"}
                   />
                 )}
               </CardContent>
@@ -274,8 +247,6 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
   );
 };
 
-
-
 // ------------------------------------------------------------
 
 const ApproverDashboard = () => {
@@ -284,30 +255,26 @@ const ApproverDashboard = () => {
   const modulesManager = useModulesManager();
   const [selectedMenu, setSelectedMenu] = useState("pendingMeetingSheet");
   useEffect(() => {
-    return dispatch(
-      fetchSummaryApplications(modulesManager, ['organizationType:"cf"'])
-    );
+    return dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"cf"']));
   }, []);
 
-  const data = useSelector(
-    (state) => state.workforce[`applicationsSummary`] ?? []
-  );
+  const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
 
-  const pendingSummaryData = data.filter(d => (d.status === "meeting_created"||d.status === "forward_to_comiitee"));
-  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director' || d.status ==='approved_by_committee' );
-
+  const pendingSummaryData = data.filter((d) => d.status === "meeting_created" || d.status === "forward_to_comiitee");
+  const sentSummaryData = data.filter((d) => d.status === "forward_to_dg" || d.status === "forward_to_director" || d.status === "approved_by_committee");
+  const rejectedSummaryData = data.filter((d) => d.status === "forward_to_comiitee");
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingMeetingSheet":
-        return (
-          <FiledApplications summaryData={pendingSummaryData}/>
-        );
+        return <FiledApplications summaryData={pendingSummaryData} />;
       case "approveMeetingSheet":
-        return <FiledApplications summaryData={sentSummaryData} disableButtons={1}/>;
+        return <FiledApplications summaryData={sentSummaryData} disableButtons={1} />;
       case "revertedApplications":
-        return <RevertedApplications/>;
+        return <RevertedApplications />;
       case "returnedApplications":
-        return <ReturnedApplications/>;
+        return <ReturnedApplications />;
+      case "rejectedApplications":
+        return <FiledApplications summaryData={rejectedSummaryData} rejectedByCommittee={true} />;
       default:
         return <FiledApplications />;
     }
@@ -321,12 +288,7 @@ const ApproverDashboard = () => {
           <Paper className={classes.sidebar}>
             <List>
               {SidebarMenu.map((item) => (
-                <ListItem
-                  button
-                  key={item.id}
-                  selected={selectedMenu === item.id}
-                  onClick={() => setSelectedMenu(item.id)}
-                >
+                <ListItem button key={item.id} selected={selectedMenu === item.id} onClick={() => setSelectedMenu(item.id)}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>

@@ -1129,5 +1129,8 @@
   "workforce.processing.data":"ডেটা প্রক্রিয়াজাত করা হচ্ছে।",
   "workforce.please.wait":"অনুগ্রহ করে অপেক্ষা করুন",
   "workforce.application.photo.cropandupload": "ক্রপ সম্পন্ন করুন এবং আপলোড করুন",
-  "workforce.application.photo.cropmessage": "আপনার নির্বাচনকৃত ছবিটিকে পাসপোর্ট সাইজে ক্রপ করতে হবে।"
+  "workforce.application.photo.cropmessage": "আপনার নির্বাচনকৃত ছবিটিকে পাসপোর্ট সাইজে ক্রপ করতে হবে।",
+  "workforce.reject.reason": "প্রত্যাখ্যানের কারণ যোগ করুন",
+  "workforce.reject.reason.placeholder": "প্রত্যাখ্যানের কারণ লিখুন...",
+  "workforce.application.rejected":"বাতিলকৃত আবেদনসমূহ"
 }

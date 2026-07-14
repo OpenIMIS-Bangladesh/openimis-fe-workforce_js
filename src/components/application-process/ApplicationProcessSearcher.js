@@ -63,6 +63,7 @@ import GenerateEisBFTN from "../../pages/application-process/GenereteEisBFTN";
 import GenereteEisDependentBFTN from "../../pages/application-process/GenereteEisDependentBFTN";
 import EisApprovalSignature from "../../pages/application-process/EisApprovalSignature";
 import GenerateCommitteeReport from "../../pages/application-process/GenerateCommitteeReport";
+import ConfirmRejectModal from "./modals/ConfirmRejectModal";
 
 
 const styles = (theme) => ({
@@ -124,6 +125,9 @@ class ApplicationProcessSearcher extends Component {
       revertByFactoryAdmin: false,
       dynamicTableTitle: "",
       confirmModalOpen: false,
+      rejectComment:"",
+      modalFlag:"",
+      openRejectModal:false,
       confirmModalMessage: "",
       confirmModalCallback: null,
     };
@@ -1058,6 +1062,10 @@ class ApplicationProcessSearcher extends Component {
         }
       }
 
+      if (this.props.statusInSummary) {
+        filters.push(`statusInSummary: "${this.props.statusInSummary}"`);
+      }
+
       if (this.props.returnedApplications) {
         filters.push(`statusIn: ["revert"]`);
         if (loggedInUserId) {
@@ -1859,9 +1867,12 @@ class ApplicationProcessSearcher extends Component {
 
   handleReject = (application) => {
     const { selectedApplication } = this.state;
+  
     this.setState({
-      confirmModalOpen: true,
-      confirmModalMessage: "workforce.application.reject.message",
+      // confirmModalOpen: true,
+      openRejectModal:true,
+      modalFlag:"reject",
+      // confirmModalMessage: "workforce.application.reject.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
           this.setState({
@@ -1870,13 +1881,17 @@ class ApplicationProcessSearcher extends Component {
               isHistory: true,
             },
           }, async () => {
+            const { rejectComment, modalFlag } = this.state;
+
             const updateApplicationData = {
               id: decodeId(application.id),
-              status: WORKFORCE_STATUS.REJECTED,
+              status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+              committeeRemarks:rejectComment
             };
+            console.log({rejectComment})
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
-              status: WORKFORCE_STATUS.REJECTED,
+              status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
               note: "আবেদন বাতিল করা হয়েছে",
               action: "rejected",
             };
@@ -1889,7 +1904,7 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন বাতিল করা হয়েছে!",
                 },
               });
-              window.location.reload();
+              // window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
               this.setState({
@@ -2062,6 +2077,13 @@ class ApplicationProcessSearcher extends Component {
               status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
               grantAmount: this.state.editedGrantMoney,
             };
+            const updateApplicationSummaryData = {
+              id: isEisPath()?safeDecodeId(application?.eisApplicationSummary?.id):isBlwfPath()?safeDecodeId(application?.blwfApplicationSummary?.id):safeDecodeId(application?.cfApplicationSummary?.id),
+              status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
+              // grantAmount: this.state.editedGrantMoney,
+            };
+            console.log({updateApplicationSummaryData:application})
+            console.log({updateApplicationSummaryData})
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
               status: WORKFORCE_STATUS.APPROVED_BY_DOCTOR,
@@ -2087,6 +2109,7 @@ class ApplicationProcessSearcher extends Component {
             };
             try {
               await this.props.updateApplication(updateApplicationData, "update workforce application");
+              await this.props.updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
               await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
 
               this.setState({
@@ -3083,6 +3106,17 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ confirmModalOpen: false });
     }
   };
+  handleConfirmRejectModalClose = (result) => {
+    if (this.state.confirmModalCallback) {
+      this.state.confirmModalCallback(result === 1);
+    } else {
+      this.setState({ openRejectModal: false });
+    }
+  };
+
+  handleAddComment=(args)=>{
+    this.setState({rejectComment:args})
+  }
 
   render() {
     const {
@@ -3899,6 +3933,14 @@ class ApplicationProcessSearcher extends Component {
           open={this.state.confirmModalOpen}
           message={this.state.confirmModalMessage}
           onClose={this.handleConfirmModalClose}
+          addComment={this.handleAddComment}
+          modalFlag={this.state.modalFlag}
+        />
+        <ConfirmRejectModal
+          open={this.state.openRejectModal}
+          onClose={this.handleConfirmRejectModalClose}
+          addComment={this.handleAddComment}
+          modalFlag={"reject"}
         />
       </React.Fragment>
     );

@@ -21,6 +21,7 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import HourglassFullTwoToneIcon from "@material-ui/icons/HourglassFullTwoTone";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import CancelTwoToneIcon from "@material-ui/icons/CancelTwoTone";
 import CheckCircleOutlineTwoToneIcon from "@material-ui/icons/CheckCircleOutlineTwoTone";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { fetchSummaryApplications } from "../../actions";
@@ -102,33 +103,23 @@ const useStyles = makeStyles((theme) => ({
 const SidebarMenu = [
   {
     id: "pendingMeetingSheet",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.employee.application.meetingSheet"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.employee.application.meetingSheet" />,
     icon: <HourglassFullTwoToneIcon />,
   },
   {
     id: "approveMeetingSheet",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.forwarded"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.application.forwarded" />,
     icon: <CheckCircleOutlineTwoToneIcon />,
   },
   {
     id: "returnedApplications",
-    text: (
-      <FormattedMessage
-        module="workforce"
-        id="workforce.application.returned"
-      />
-    ),
+    text: <FormattedMessage module="workforce" id="workforce.application.returned" />,
     icon: <ArrowBackIcon />,
+  },
+  {
+    id: "rejectedApplications",
+    text: <FormattedMessage module="workforce" id="workforce.application.rejected" />, // Add appropriate i18n id
+    icon: <CancelTwoToneIcon />,
   },
 ];
 
@@ -158,7 +149,7 @@ const ReturnedApplications = () => {
   )
 }
 
-const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
+const FiledApplications = ({ summaryData = [], disableButtons = 0,rejectedByCommittee }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
@@ -206,7 +197,7 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0 }) => {
                 <Card style={{ width: "100%" }}>
                   <CardContent>
                     {expanded === item.id && (
-                      <ApplicationProcessSearcher coloredRow={true} summaryId={item.id} loggedInUserId={loggedInUserId} disableButtons={disableButtons} />
+                      <ApplicationProcessSearcher coloredRow={true} summaryId={item.id} loggedInUserId={loggedInUserId} disableButtons={disableButtons} statusInSummary={rejectedByCommittee?"rejected_by_committee":"forward_to_comiitee"}/>
                     )}
                   </CardContent>
                 </Card>
@@ -235,20 +226,20 @@ const BlwfApproverDashboard = () => {
     (state) => state.workforce[`applicationsSummary`] ?? []
   );
 
-  // const pendingSummaryData = data.filter(d => d.status === "meeting_created"|| d.status ==="forward_to_comiitee");
-  const pendingSummaryData = data.filter(d =>d.status ==="forward_to_comiitee");
-  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status ==='forward_to_director');
+  const pendingSummaryData = data.filter(d => d.status === "forward_to_comiitee");
+  const sentSummaryData = data.filter(d => d.status === "forward_to_dg" || d.status === 'forward_to_director');
+  const rejectedSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "pendingMeetingSheet":
-        return (
-          <FiledApplications summaryData={pendingSummaryData}/>
-        );
+        return <FiledApplications summaryData={pendingSummaryData} />;
       case "approveMeetingSheet":
         return <FiledApplications summaryData={sentSummaryData} disableButtons={1} />;
       case "returnedApplications":
         return <ReturnedApplications />;
+      case "rejectedApplications":
+        return <FiledApplications summaryData={rejectedSummaryData} rejectedByCommittee={true}/>;
       default:
         return <FiledApplications />;
     }
