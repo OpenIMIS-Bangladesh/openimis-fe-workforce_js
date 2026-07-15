@@ -1925,13 +1925,13 @@ class ApplicationProcessSearcher extends Component {
             }
             const updateApplicationData = {
               id: decodeId(application.id),
-              status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+              status: (userType===WORKFORCE_USER_TYPE.BLWF_APPROVER||userType===WORKFORCE_USER_TYPE.APPROVER) ?WORKFORCE_STATUS.REJECTED_BY_COMMITTEE:WORKFORCE_STATUS.REJECTED,
               committeeRemarks:rejectComment
             };
             console.log({rejectComment:application})
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
-              status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+              status: (userType===WORKFORCE_USER_TYPE.BLWF_APPROVER||userType===WORKFORCE_USER_TYPE.APPROVER) ?WORKFORCE_STATUS.REJECTED_BY_COMMITTEE:WORKFORCE_STATUS.REJECTED,
               note: "আবেদন বাতিল করা হয়েছে",
               action: "rejected",
             };
