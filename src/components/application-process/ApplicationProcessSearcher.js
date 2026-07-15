@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IconButton, Box, Button } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
-import { coreConfirm, journalize, withHistory, withModulesManager, FormattedMessage, decodeId } from "@openimis/fe-core";
+import { coreConfirm, journalize, withHistory, withModulesManager, FormattedMessage, decodeId,formatMutation } from "@openimis/fe-core";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import {
   fetchApplicationsSummary,
@@ -64,6 +64,7 @@ import GenereteEisDependentBFTN from "../../pages/application-process/GenereteEi
 import EisApprovalSignature from "../../pages/application-process/EisApprovalSignature";
 import GenerateCommitteeReport from "../../pages/application-process/GenerateCommitteeReport";
 import ConfirmRejectModal from "./modals/ConfirmRejectModal";
+import { formatApplicationSummaryGQL } from "../../utils/format_gql";
 
 
 const styles = (theme) => ({
@@ -268,7 +269,7 @@ class ApplicationProcessSearcher extends Component {
 
       let defaultStatusFilters = [];
       let additionalFilters = [];
-      const summaryId = this.props.summaryId ? decodeId(this.props.summaryId) : null;
+      const summaryId = this.props.summaryId ? safeDecodeId(this.props.summaryId) : null;
       const sectionApplicationTypes =
         'applicationTypeIn: ["scholarship","medicalAssistance","maternityGrant"]';
 
@@ -301,6 +302,9 @@ class ApplicationProcessSearcher extends Component {
           sectionApplicationTypes
         );
       } else if (summaryId) {
+        if (this.props.statusInSummary) {
+        defaultStatusFilters.push(`statusIn: ["${this.props.statusInSummary}"]`);
+        }
         defaultStatusFilters.push(sectionApplicationTypes);
         additionalFilters.push(`cfApplicationSummary_Id:"${summaryId}"`);
       } else {
@@ -418,6 +422,9 @@ class ApplicationProcessSearcher extends Component {
           defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
         }
       } else if (summaryId) {
+        if (this.props.statusInSummary) {
+        defaultStatusFilters.push(`statusIn: ["${this.props.statusInSummary}"]`,sectionTwoApplicationTypes);
+        }
         defaultStatusFilters.push(
           'statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]',
           sectionTwoApplicationTypes
@@ -533,7 +540,11 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push('statusIn: ["forward_for_verification","forward_to_doctor"]', 'organizationTypeIn: ["blwf"]');
       }
       else if (summaryId) {
-        defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]', 'organizationTypeIn: ["blwf"]');
+        if (this.props.statusInSummary) {
+        defaultStatusFilters.push(`statusIn: ["${this.props.statusInSummary}"], 'organizationTypeIn: ["blwf"]`);
+        }else{
+          defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]', 'organizationTypeIn: ["blwf"]');
+        }
         additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
       } else if (this.props.verifiedApplications) {
         defaultStatusFilters.push('statusIn: ["approved_by_doctor","verified"]', 'organizationTypeIn: ["blwf"]');
@@ -1063,7 +1074,7 @@ class ApplicationProcessSearcher extends Component {
       }
 
       if (this.props.statusInSummary) {
-        filters.push(`statusInSummary: "${this.props.statusInSummary}"`);
+        filters.push(`statusIn: ["${this.props.statusInSummary}"]`);
       }
 
       if (this.props.returnedApplications) {
@@ -1867,7 +1878,7 @@ class ApplicationProcessSearcher extends Component {
 
   handleReject = (application) => {
     const { selectedApplication } = this.state;
-  
+    const userType = getUserTypeFromRights(this.props.userRights);
     this.setState({
       // confirmModalOpen: true,
       openRejectModal:true,
@@ -1882,13 +1893,42 @@ class ApplicationProcessSearcher extends Component {
             },
           }, async () => {
             const { rejectComment, modalFlag } = this.state;
+            const summary =
+              application.blwfApplicationSummary ||
+              application.cfApplicationSummary ||
+              application.eisApplicationSummary;
 
+            if (summary) {
+              // applicationData is stored as a JSON string
+              const applicationIds = JSON.parse(summary.applicationData);
+
+              // Remove the current application's id
+              const updatedApplicationIds = applicationIds.filter(
+                (id) => safeDecodeId(id) !== safeDecodeId(application.id)
+              );
+
+              console.log("Before:", applicationIds);
+              console.log("After:", updatedApplicationIds);
+
+              // Payload for updating the summary
+              const updateSummaryData = {
+                id: safeDecodeId(summary?.id),
+                applicationData: JSON.stringify(updatedApplicationIds),
+              };
+              // const applicationSummeryMutation = formatMutation(
+              //         "updateWorkforceApplicationSummary",
+              //         formatApplicationSummaryGQL(updateSummaryData),
+              //         "update workforce application summary",
+              //       );
+              console.log(updateSummaryData);
+              this.props.updateApplicationSummary(updateSummaryData,"update application summary")
+            }
             const updateApplicationData = {
               id: decodeId(application.id),
               status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
               committeeRemarks:rejectComment
             };
-            console.log({rejectComment})
+            console.log({rejectComment:application})
             const createApplicationMovementData = {
               applicationId: decodeId(application.id),
               status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,

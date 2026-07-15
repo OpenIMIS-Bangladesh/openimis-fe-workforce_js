@@ -247,6 +247,74 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0, rejectedByCom
   );
 };
 
+const RejectedApplications = ({ disableButtons = 0 }) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const [expanded, setExpanded] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    // Adjust the fetch action/parameters for rejected applications as needed
+    dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"blwf"', 'status:"forward_to_comiitee"','applicationStatusIn:["rejected_by_committee"]']));
+  }, [dispatch, modulesManager]);
+
+  const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
+  // Adjust the filter based on your API response
+  // const summaryData = data.filter(d => d.status === "rejected" || d.status === "forward_to_comiitee"); 
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+
+  return (
+    <div className={classes.accordionPadding}>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.dashboard" />
+      </Typography>
+
+      {data.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
+            >
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher 
+                    coloredRow={true} 
+                    summaryId={item.id} 
+                    loggedInUserId={loggedInUserId} 
+                    disableButtons={disableButtons} 
+                    statusInSummary={"rejected_by_committee"} 
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </div>
+  );
+};
+
 // ------------------------------------------------------------
 
 const ApproverDashboard = () => {
@@ -274,7 +342,7 @@ const ApproverDashboard = () => {
       case "returnedApplications":
         return <ReturnedApplications />;
       case "rejectedApplications":
-        return <FiledApplications summaryData={rejectedSummaryData} rejectedByCommittee={true} />;
+        return <RejectedApplications/>;
       default:
         return <FiledApplications />;
     }

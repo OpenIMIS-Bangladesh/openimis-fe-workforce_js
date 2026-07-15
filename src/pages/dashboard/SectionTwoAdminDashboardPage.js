@@ -44,6 +44,7 @@ import AssignmentReturnedIcon from '@material-ui/icons/AssignmentReturned';
 import ForwardIcon from '@material-ui/icons/Forward';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import BeneficiaryReport from "../reports/BeneficiaryReport";
+import { isEisPath } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -528,6 +529,75 @@ const RejectApplication = () => {
     </>
   )
 }
+
+const RejectedApplications = ({ disableButtons = 0 }) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
+  const [expanded, setExpanded] = useState(null);
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+
+  useEffect(() => {
+    // Adjust the fetch action/parameters for rejected applications as needed
+    dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"blwf"', 'status:["forward_to_comiitee","forward_to_director","forward_to_dg","approved_by_dg","approved_by_committee"]','applicationStatusIn:["rejected_by_committee"]']));
+  }, [dispatch, modulesManager]);
+
+  const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
+  // Adjust the filter based on your API response
+  // const summaryData = data.filter(d => d.status === "rejected" || d.status === "forward_to_comiitee"); 
+
+  const handleChange = (panelId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panelId : null);
+  };
+
+  return (
+    <div className={classes.accordionPadding}>
+      <Typography variant="h5" gutterBottom>
+        <FormattedMessage module="workforce" id="workforce.dashboard" />
+      </Typography>
+
+      {data.map((item, index) => (
+        <Accordion
+          key={index}
+          expanded={expanded === item.id}
+          onChange={handleChange(item.id)}
+          className={classes.accordion}
+        >
+          <AccordionSummary
+            className={classes.accordionSummary}
+            expandIcon={<ExpandMoreIcon className="material-icons" />}
+          >
+            <Typography variant="subtitle1" style={{ flex: 1 }}>
+              <strong>{item.name}</strong>
+            </Typography>
+            <Typography
+              variant="body2"
+              style={{ marginLeft: "auto", color: "#015C63" }}
+            >
+              {item.meetingDate} | {item.month} {item.year}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
+            <Card style={{ width: "100%" }}>
+              <CardContent>
+                {expanded === item.id && (
+                  <ApplicationProcessSearcher 
+                    coloredRow={true} 
+                    summaryId={item.id} 
+                    loggedInUserId={loggedInUserId} 
+                    disableButtons={disableButtons} 
+                    statusInSummary={"rejected_by_committee"} // Update status if needed
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </div>
+  );
+};
+
 const PendingMeetingSheet = ({ summaryData = [] }) => {
   console.log("summary data", summaryData);
   const classes = useStyles()
@@ -584,7 +654,7 @@ const SectionTwoAdminDashboardPage = () => {
       case "verifiedApplications":
         return <VerifiedApplications />;
       case "rejectedApplication":
-        return <RejectApplication />;
+        return !isEisPath()?<RejectedApplications /> : <RejectApplication />;
       case "revertedApplication":
         return <RevertApplication />;
       case "returnedApplication":
