@@ -74,9 +74,9 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
       let roleIds = [];
       // if (userType === "eis_coordinator") roleIds = ["53"];
       // else roleIds = ["33"];
-      if(isEisPath()) roleIds = ["53"];
-      else if(!isEisPath() && !isBlwfPath()) roleIds = ["33"];
-      else if(isBlwfPath()) roleIds = ["50"];
+      if (isEisPath()) roleIds = ["53"];
+      else if (!isEisPath() && !isBlwfPath()) roleIds = ["33"];
+      else if (isBlwfPath()) roleIds = ["50"];
       if (roleIds.length) {
         dispatch(
           fetchWorkforceUserRoleWiseUser(modulesManager, {
@@ -187,6 +187,32 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
       }
 
       // ===== Forward to Doctor =====
+      const appToDoctorsMap = {};
+
+      if (!isEisPath()) {
+        const numDocs = formData.userIds.length;
+        const baseShare = Math.floor(ids.length / numDocs);
+        let remainder = ids.length % numDocs;
+        let currentDocIndex = 0;
+        let assignedToCurrentDoc = 0;
+
+        ids.forEach((appId) => {
+          const currentDocShare = baseShare + (remainder > 0 ? 1 : 0);
+          appToDoctorsMap[appId] = [formData.userIds[currentDocIndex]];
+          assignedToCurrentDoc++;
+
+          if (assignedToCurrentDoc === currentDocShare) {
+            currentDocIndex++;
+            assignedToCurrentDoc = 0;
+            remainder--;
+          }
+        });
+      } else {
+        ids.forEach((appId) => {
+          appToDoctorsMap[appId] = formData.userIds;
+        });
+      }
+
       for (const applicationId of ids) {
         await dispatch(
           updateApplication(
@@ -197,7 +223,7 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
                 ? {
                     eisApplicationSummaryId: decodeId(applicationSummaryId),
                   }
-                : !isEisPath() && isBlwfPath()
+                : isBlwfPath()
                   ? {
                       blwfApplicationSummaryId: decodeId(applicationSummaryId),
                     }
@@ -209,7 +235,8 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
           ),
         );
 
-        for (const userId of formData.userIds) {
+        const targetUsers = appToDoctorsMap[applicationId] || [];
+        for (const userId of targetUsers) {
           await dispatch(
             createApplicationMovement(
               {
@@ -300,6 +327,8 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
       setTimeout(() => window.location.reload(), 1000);
     }
   }, [serverResponse]);
+
+  console.log({ selectedApplicationIds });
 
   return (
     <Modal open={open} onClose={onClose}>

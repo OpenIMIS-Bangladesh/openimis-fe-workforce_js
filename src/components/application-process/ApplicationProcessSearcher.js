@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IconButton, Box, Button } from "@material-ui/core";
 import { withStyles, withTheme } from "@material-ui/core/styles";
-import { coreConfirm, journalize, withHistory, withModulesManager, FormattedMessage, decodeId,formatMutation } from "@openimis/fe-core";
+import { coreConfirm, journalize, withHistory, withModulesManager, parseData,FormattedMessage, decodeId,formatMutation } from "@openimis/fe-core";
 import { MODULE_NAME, WORKFORCE_USER_TYPE } from "../../constants";
 import {
   fetchApplicationsSummary,
@@ -2147,9 +2147,20 @@ class ApplicationProcessSearcher extends Component {
                       ? 42
                       : null,
             };
+            const summaryApplications =isEisPath()? parseData(application?.blwfApplicationSummary?.cfApplicationSummary):
+                                         isBlwfPath()?parseData(application?.blwfApplicationSummary?.blwfApplicationSummary):
+                                            parseData(application?.blwfApplicationSummary?.cfApplicationSummary)
+
+            const shouldUpdateSummary = summaryApplications.every(
+              (app) => app.status === "approved_by_doctor" || decodeId(app.id) === decodeId(application.id)
+            );
+            console.log({summaryApplications})
+            console.log({shouldUpdateSummary})
             try {
               await this.props.updateApplication(updateApplicationData, "update workforce application");
-              await this.props.updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              if (shouldUpdateSummary) {
+                await this.props.updateApplicationSummary(updateApplicationSummaryData, "update workforce application summary");
+              }
               await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
 
               this.setState({
@@ -2158,7 +2169,7 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন অনুমোদন করা হয়েছে!",
                 },
               });
-              window.location.reload();
+              // window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
               this.setState({
