@@ -28,7 +28,7 @@ import {
   fetchCommitteeBankAdviceMap 
 } from '../../../actions';
 import { useDispatch } from "react-redux";
-import { safeDecodeId } from '../../../utils/utils';
+import { safeDecodeId, safeParse } from '../../../utils/utils';
 import { 
   generateBankAdviceTemplate, 
   generateBankAdviceContent 
@@ -251,10 +251,13 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
   }
   }, [rawTemplate, eisPayments, topHtml]);
 
+  const adviceMonth= eisPayments.length>0 ? eisPayments[0]?.monthIndex : 0;
+  const adviceYear= eisPayments.length>0 ? eisPayments[0]?.year : 0;
+
   const printYear = new Date().getFullYear();
-  const printMonth = new Date().getMonth();
-  const excelmonthFormatted = String(printMonth + 1).padStart(2, "0");
-  const excelyear = printYear;
+  const printMonth = adviceMonth === 0 ? new Date().getMonth() : adviceMonth;
+  const excelmonthFormatted = String(adviceMonth > 0 ? adviceMonth : (printMonth + 1)).padStart(2, "0");
+  const excelyear = adviceYear === 0 ? printYear : adviceYear;
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -452,11 +455,21 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                   const monthIndex = row?.monthIndex || "";
                   const monthFormatted = String(monthIndex).padStart(2, "0");
                   const lastDay = new Date(rowYear, monthIndex, 0).getDate();
+                  let onBehalfOf="";
+                  if (row?.workforceApplication?.applicationType=='financialAssistance') {
+                    let dependent=row?.workforceEmployeeDependent[0]?.nameEn || "";
+                    onBehalfOf = dependent;
+                  }
+                  // else
+                  // {
+                  //   let applicant_info = safeParse(row?.workforceApplication?.applicantInfo || "{}");
+                  //   onBehalfOf = applicant_info?.nameEn || "";
+                  // }
 
                   return (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row?.bankAccountHolderName}</TableCell>
+                      <TableCell>{row?.bankAccountHolderName} {onBehalfOf!=="" && `(${onBehalfOf})`}</TableCell>
                       <TableCell>{row?.bankAccountNo}</TableCell>
                       <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
                       <TableCell>{row?.bank?.nameEn}</TableCell>
