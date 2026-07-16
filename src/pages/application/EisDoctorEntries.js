@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     pageBreakInside: "avoid",
   },
   signatureBlock: {
-    marginTop: "40px",
+    // marginTop: "40px",
     borderTop: "1px solid #000",
     paddingTop: "5px",
     fontSize: "11px",
