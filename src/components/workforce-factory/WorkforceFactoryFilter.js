@@ -132,6 +132,27 @@ class WorkforceFactoryFilter extends Component {
         />
         <ControlledField
           module={MODULE_NAME}
+          id="workforce.representative.phone"
+          field={
+            <Grid item xs={3} className={classes.item}>
+              <TextInput
+                module={MODULE_NAME}
+                label="workforce.representative.phone"
+                name="address"
+                value={this._filterValue("workforceRepresentative.phoneNumber")}
+                onChange={(v) => this.debouncedOnChangeFilter([
+                  {
+                    id: 'workforceRepresentative.phoneNumber',
+                    value: v,
+                    filter: `workforceRepresentative_PhoneNumber_Icontains: "${v}"`,
+                  },
+                ])}
+              />
+            </Grid>
+          }
+        />
+        <ControlledField
+          module={MODULE_NAME}
           id="workforce.factory.status"
           field={
             <Grid item xs={3} className={classes.item}>
