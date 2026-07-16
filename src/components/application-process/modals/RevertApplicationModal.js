@@ -228,6 +228,9 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       await dispatch(updateApplication(updateApplicationData, `update workforce application`));
       await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
+      setTimeout(() => {
+        window.location.href='/';
+      }, 1000);
       // setTimeout(() => {
       //   onClose();
       //   history.push("/home");
