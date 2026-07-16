@@ -23,7 +23,7 @@ import {
   fetchApplicationWiseMovementList,
 } from "../../../actions";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
-import { safeDecodeId, getUserType, isBlwfPath } from "../../../utils/utils";
+import { safeDecodeId, getUserType, isBlwfPath, isEisPath } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -110,6 +110,14 @@ const RevertPathSelector = ({ users,userType, selectedUser, onChange }) => (
             label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
           />
         ))}
+        {users.map((user) => (
+          <FormControlLabel
+            key={user.id}
+            value={user.id}
+            control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
+            label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
+          />
+        ))}
       </Breadcrumbs>
     ) : (
       <Typography variant="body2" color="textSecondary">No revert path available.</Typography>
@@ -122,7 +130,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
   const userId = useSelector((state) => state.core?.user?.i_user?.id);
-  const userType = getUserType()
+  const userType = getUserType();
 
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
