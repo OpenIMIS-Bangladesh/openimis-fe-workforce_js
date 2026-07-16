@@ -22,8 +22,8 @@ import {
   createApplicationMovement,
   fetchApplicationWiseMovementList,
 } from "../../../actions";
-import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
-import { safeDecodeId, getUserType, isBlwfPath, isEisPath } from "../../../utils/utils";
+import { blwfApplicationTypeOptions, cfApplicationTypeOptions, eisApplicationTypeOptions, WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
+import { safeDecodeId, getUserType, isBlwfPath, isEisPath, safeParse } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -101,23 +101,30 @@ const RevertPathSelector = ({ users,userType, selectedUser, onChange }) => (
     </Typography>
     {users.length > 0 ? (
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        {users.filter(row => (isBlwfPath()&& ([WORKFORCE_USER_TYPE.CHECKER, WORKFORCE_USER_TYPE.CHECKER_TWO,WORKFORCE_USER_TYPE.BLWF_CHECKER,WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR].includes(userType)) && 
-        ["Section Admin","Section Admin Two","BLWF Section Admin","S1 Asst Deputy Director","S2 Asst Deputy Director"].includes(row?.role))).map((user) => (
-          <FormControlLabel
-            key={user.id}
-            value={user.id}
-            control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
-            label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
-          />
-        ))}
-        {users.map((user) => (
-          <FormControlLabel
-            key={user.id}
-            value={user.id}
-            control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
-            label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
-          />
-        ))}
+        {
+          isBlwfPath()?
+          (
+            users.filter(row => (isBlwfPath()&& ([WORKFORCE_USER_TYPE.CHECKER, WORKFORCE_USER_TYPE.CHECKER_TWO,WORKFORCE_USER_TYPE.BLWF_CHECKER,WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR].includes(userType)) && 
+            ["Section Admin","Section Admin Two","BLWF Section Admin","S1 Asst Deputy Director","S2 Asst Deputy Director"].includes(row?.role))).map((user) => (
+              <FormControlLabel
+                key={user.id}
+                value={user.id}
+                control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
+                label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
+              />
+            ))
+          ):
+          (
+            users.map((user) => (
+              <FormControlLabel
+                key={user.id}
+                value={user.id}
+                control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
+                label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
+              />
+            ))
+          )
+        }
       </Breadcrumbs>
     ) : (
       <Typography variant="body2" color="textSecondary">No revert path available.</Typography>
@@ -246,6 +253,24 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
   console.log("RevertModal rendering with:", { selectedApplication, movementUsers });
   console.log({selectedRevertUser})
 
+  const applicantInfo = ["financialAssistance", "deadlyGrant"].includes(selectedApplication?.applicationType) ? safeParse(selectedApplication?.applicantInfo) : null;
+  let applicationTypeString= "";
+  if (isBlwfPath()){
+    let chosenApplicationType= blwfApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
+    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
+  }
+  else if (isEisPath()){
+    let chosenApplicationType= eisApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
+    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
+  }
+  else
+  {
+    let chosenApplicationType= cfApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
+    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
+  }
+
+
+
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer}>
@@ -265,10 +290,22 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
         <Paper className={classes.sectionPaper} elevation={1}>
           {selectedApplication ? (
             <Typography variant="subtitle1" gutterBottom style={{width: '100%'}}>
-              <b>আবেদনকারীর নাম :</b> {selectedApplication?.workforceEmployee?.firstNameBn || 'N/A'} <br />
-              <b>আবেদনের ধরন :</b> {selectedApplication?.applicationType || 'N/A'} <br />
-              <b>জাতীয় পরিচয়পত্র :</b> {selectedApplication?.workforceEmployee?.nid || 'N/A'} <br />
-              <b>ফোন নম্বর :</b> {selectedApplication?.workforceEmployee?.phoneNumber || 'N/A'} <br />
+              {applicantInfo!==null ? (
+                <>
+                  <b>আবেদনকারীর নাম :</b> {applicantInfo.nameBn || 'N/A'} <br />
+                  <b>আবেদনের ধরন :</b> {applicationTypeString || 'N/A'} <br />
+                  <b>জাতীয় পরিচয়পত্র :</b> {applicantInfo?.nid || 'N/A'} <br />
+                  <b>ফোন নম্বর :</b> {applicantInfo?.phoneNumber || 'N/A'} <br />
+                </>
+
+              ):(
+                <>
+                  <b>আবেদনকারীর নাম :</b> {selectedApplication?.workforceEmployee?.firstNameBn || 'N/A'} <br />
+                  <b>আবেদনের ধরন :</b> {applicationTypeString || 'N/A'} <br />
+                  <b>জাতীয় পরিচয়পত্র :</b> {selectedApplication?.workforceEmployee?.nid || 'N/A'} <br />
+                  <b>ফোন নম্বর :</b> {selectedApplication?.workforceEmployee?.phoneNumber || 'N/A'} <br />
+                </>
+              )}
             </Typography>
           ) : (
             <CircularProgress size={24} />
