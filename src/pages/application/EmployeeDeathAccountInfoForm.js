@@ -54,14 +54,14 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
     if (applicationId && applicationId[0]?.id) {
       setLoading(true);
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId[0].id)}"`])).then((res) =>
-        console.log("from account dependent", res)
+        console.log("from account dependent", res),
       );
       setLoading(false);
     }
     if (applicationId && !applicationId[0]?.id) {
       setLoading(true);
       dispatch(fetchEmployeeDependent(modulesManager, [`workforceApplication_Id:"${safeDecodeId(applicationId)}"`])).then((res) =>
-        console.log("from account dependent", res)
+        console.log("from account dependent", res),
       );
       setLoading(false);
     }
@@ -73,7 +73,12 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => {handleChange(index, "accountHolderName", dep?.nameBn);handleChange(index, "dependentId", dep?.id);handleChange(index, "dependentNid", dep?.nid);handleChange(index, "accountHolderType", "self")});
+      dependent?.map((dep, index) => {
+        handleChange(index, "accountHolderName", dep?.nameBn);
+        handleChange(index, "dependentId", dep?.id);
+        handleChange(index, "dependentNid", dep?.nid);
+        handleChange(index, "accountHolderType", "self");
+      });
     } else {
       handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
       // handleChange(index, "accountHolderType", "self")
@@ -111,54 +116,54 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   const allowAdd = !applicationId || !applicationId[0]?.id;
 
   const handleAttachmentChange = useCallback(
-      (index, fieldKey, value) => {
-        const normalizeAttachments = (attachments) => {
-          if (!attachments) return [];
-          if (typeof attachments === "string") {
-            try {
-              const parsed = JSON.parse(attachments);
-              return Array.isArray(parsed) ? parsed : [];
-            } catch (error) {
-              return [];
-            }
+    (index, fieldKey, value) => {
+      const normalizeAttachments = (attachments) => {
+        if (!attachments) return [];
+        if (typeof attachments === "string") {
+          try {
+            const parsed = JSON.parse(attachments);
+            return Array.isArray(parsed) ? parsed : [];
+          } catch (error) {
+            return [];
           }
-          return Array.isArray(attachments) ? attachments : [];
-        };
+        }
+        return Array.isArray(attachments) ? attachments : [];
+      };
 
-        handleChange(index, "attachments", (currentAttachments) => {
-          const normalizedAttachments = normalizeAttachments(currentAttachments);
+      handleChange(index, "attachments", (currentAttachments) => {
+        const normalizedAttachments = normalizeAttachments(currentAttachments);
 
-          if (!value?.files?.length) {
-            return normalizedAttachments.filter((att) => att.fieldKey !== fieldKey);
-          }
+        if (!value?.files?.length) {
+          return normalizedAttachments.filter((att) => att.fieldKey !== fieldKey);
+        }
 
-          return normalizedAttachments.some((att) => att.fieldKey === fieldKey)
-            ? normalizedAttachments.map((att) =>
-                att.fieldKey === fieldKey
-                  ? {
-                      ...att,
-                      fieldKey,
-                      files: value.files,
-                      documentType: value.documentType,
-                      documentPropId: value.documentPropId,
-                    }
-                  : att
-              )
-            : [
-                ...normalizedAttachments,
-                {
-                  fieldKey,
-                  files: value.files,
-                  documentType: value.documentType,
-                  documentPropId: value.documentPropId,
-                },
-              ];
-        });
-      },
-      [handleChange]
-    );
+        return normalizedAttachments.some((att) => att.fieldKey === fieldKey)
+          ? normalizedAttachments.map((att) =>
+              att.fieldKey === fieldKey
+                ? {
+                    ...att,
+                    fieldKey,
+                    files: value.files,
+                    documentType: value.documentType,
+                    documentPropId: value.documentPropId,
+                  }
+                : att,
+            )
+          : [
+              ...normalizedAttachments,
+              {
+                fieldKey,
+                files: value.files,
+                documentType: value.documentType,
+                documentPropId: value.documentPropId,
+              },
+            ];
+      });
+    },
+    [handleChange],
+  );
 
-  console.log({dependent})
+  console.log({ dependent });
 
   return (
     <Box mt={1}>
@@ -191,20 +196,24 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                       <FormattedMessage id={"workforce.employee.whoseAccount"} />
                     </Typography>
 
-                    <RadioGroup row value={accountHolderType} onChange={(e) => handleAccountChange(index, "accountHolderType", e.target.value)} >
+                    <RadioGroup row value={accountHolderType} onChange={(e) => handleAccountChange(index, "accountHolderType", e.target.value)}>
                       <FormControlLabel value="self" control={<Radio color="primary" />} label={<FormattedMessage id={"workforce.employee.account.self"} />} />
-                      <FormControlLabel
-                        disabled={isCfPath()}
-                        value="select_from_another_dependent"
-                        control={<Radio color="primary" />}
-                        label={<FormattedMessage id={"workforce.employee.account.dependent"} />}
-                      />
-                      <FormControlLabel
-                        disabled={isCfPath()}
-                        value="other"
-                        control={<Radio color="primary" />}
-                        label={<FormattedMessage id={"workforce.employee.account.other"} />}
-                      />
+                      {!isCfPath() && (
+                        <>
+                          <FormControlLabel
+                            // disabled={isCfPath()}
+                            value="select_from_another_dependent"
+                            control={<Radio color="primary" />}
+                            label={<FormattedMessage id={"workforce.employee.account.dependent"} />}
+                          />
+                          <FormControlLabel
+                            // disabled={isCfPath()}
+                            value="other"
+                            control={<Radio color="primary" />}
+                            label={<FormattedMessage id={"workforce.employee.account.other"} />}
+                          />
+                        </>
+                      )}
                     </RadioGroup>
                   </FormControl>
                 </Grid>
