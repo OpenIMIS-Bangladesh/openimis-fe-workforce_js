@@ -174,7 +174,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.nameEn || ""}</td>
       <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.districtNameEn || ""}</td>
       <td style="border: 1px solid #000; padding: 8px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.paidAmount || 0}</td>
+      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${Number(row?.paidAmount?.toFixed(2)) || "0.00"}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.beneficiaryId || ""}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
       <td style="border: 1px solid #000; padding: 8px; text-align: right;">${lastDay}.${monthFormatted}.${rowYear}</td>
@@ -475,7 +475,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                       <TableCell>{row?.bank?.nameEn}</TableCell>
                       <TableCell>{row?.bank?.districtNameEn}</TableCell>
                       <TableCell>{(row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber)}</TableCell>
-                      <TableCell align="right">{row?.paidAmount}</TableCell>
+                      <TableCell align="right">{Number(row?.paidAmount).toFixed(2)}</TableCell>
                       <TableCell align="right">{row?.beneficiaryId}</TableCell>
                       <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>
                       <TableCell align="right">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
