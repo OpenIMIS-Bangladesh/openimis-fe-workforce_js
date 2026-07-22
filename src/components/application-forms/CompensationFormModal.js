@@ -22,7 +22,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CloseIcon from "@material-ui/icons/Close";
 import { TextInput, PublishedComponent, FormattedMessage, useModulesManager, parseData, useTranslations } from "@openimis/fe-core";
-import { getUserType, normalizeNumberInput, safeDecodeId, validateRequiredFields } from "../../utils/utils";
+import { getUserType, safeDecodeId, validateRequiredFields } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
 import { createWorkforceOtherCompensation, fetchWorkforceOtherCompensation, updateWorkforceOtherCompensation } from "../../actions";
@@ -143,11 +143,11 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
   const handleChange = (index, key) => (eventOrValue) => {
     let value = eventOrValue;
     if (eventOrValue && eventOrValue.target) {
-      value = normalizeNumberInput(eventOrValue.target.value);
+      value = eventOrValue.target.value;
     }
     setFormData((prev) => {
       const newArray = [...prev];
-      newArray[index] = { ...newArray[index], [key]: normalizeNumberInput(value) };
+      newArray[index] = { ...newArray[index], [key]: value };
       return newArray;
     });
   };
