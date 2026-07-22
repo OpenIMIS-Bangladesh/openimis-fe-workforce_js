@@ -3409,9 +3409,7 @@ export function fetchWebsiteLegalGuidelines(userIds) {
           description
           documentPath
           documentUrl
-
         }
-    
     }
       `;
 
@@ -3536,4 +3534,31 @@ export function fetchWorkforceBankManagement(filters) {
     banksOnly: filters?.banksOnly,
     districtsOnly: filters?.districtsOnly,
   });
+}
+
+export function fetchPrevApplicationHistory(filters){
+  const queryParams = filters.join("\n");
+  // const projections = [
+  //   "id",
+  //   "organizationType",
+  //   "status",
+  //   "dateCreated",
+  //   // "user{id, loginName}",
+  //   // "workforceApplication{id, trackingNumber}",
+  //   "status"
+  // ];
+  const payload = `
+    {
+      workforceCheckApplicationDuplicacy(
+        ${queryParams}
+      ) {
+          id
+          organizationType
+          status
+          dateCreated
+        }
+      }
+    `;
+  // const payload = formatPageQueryWithCount("workforceCheckApplicationDuplicacy", filters, projections);
+  return graphql(payload, "WORKFORCE_NOTIFICATION_DATA");
 }

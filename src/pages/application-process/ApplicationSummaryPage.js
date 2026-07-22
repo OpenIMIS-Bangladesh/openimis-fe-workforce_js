@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import {Grid, Fab, Accordion, AccordionSummary, Typography, AccordionDetails, Card, CardContent, Button } from "@material-ui/core";
+import {Grid, Fab, Accordion, AccordionSummary, Typography, AccordionDetails, Card, CardContent, Button,CircularProgress } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import {
   historyPush, withModulesManager, withHistory, withTooltip, FormattedMessage, decodeId,
@@ -56,6 +56,7 @@ class ApplicationSummaryPage extends Component {
       // ADDED: State for Reschedule Dialog
       rescheduleDialogOpen: false,
       selectedRescheduleId: null,
+      isLoading: true,
     };
   } 
 
@@ -133,11 +134,18 @@ class ApplicationSummaryPage extends Component {
   
   componentDidMount() {
     const { modulesManager, fetchSummaryApplications } = this.props;
-    fetchSummaryApplications(modulesManager);
+    Promise.resolve(fetchSummaryApplications(modulesManager))
+      .finally(() => this.setState({ isLoading: false }));
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.state.isLoading && prevProps.summaryData !== this.props.summaryData) {
+      this.setState({ isLoading: false });
+    }
   }
 
   render() {
-    const { classes, rights, applications, summaryData, loggedInUserId, status, disableButtons = 0 } = this.props;
+    const { classes, rights, applications, summaryData, loggedInUserId, status, disableButtons = 0,isLoading } = this.props;
     // EXTRACTED new state variables
     const { value, openGenerateBFTN, expanded, reorderedData, rescheduleDialogOpen, selectedRescheduleId } = this.state;
 
@@ -221,6 +229,44 @@ class ApplicationSummaryPage extends Component {
         renderSummaryData = summaryData.filter(item => (item.status === "approved_by_eis_director" || item.status === "approved_by_eis_advisor") && item.organizationType==='eis');
       }
     }
+    else if(currentUserType === WORKFORCE_USER_TYPE.SECRETARY)
+    {
+      if(status === "pending")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "approved_by_dg"
+        );
+      }
+      else if(status === "rejected")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "rejected"
+        );
+      }
+      else if(status === "approved")
+      {
+        renderSummaryData = summaryData.filter(item => item.status === "approved_by_secretary");
+      }
+    }
+    else if(currentUserType === WORKFORCE_USER_TYPE.MINISTER)
+    {
+      if(status === "pending")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "approved_by_secretary"
+        );
+      }
+      else if(status === "rejected")
+      {
+        renderSummaryData = summaryData.filter(item =>
+          item.status === "rejected"
+        );
+      }
+      else if(status === "approved")
+      {
+        renderSummaryData = summaryData.filter(item => item.status === "approved_by_minister");
+      }
+    }
 
     this.renderSummaryData = renderSummaryData;
     const dataToRender = reorderedData || renderSummaryData;
@@ -228,15 +274,17 @@ class ApplicationSummaryPage extends Component {
     return (
        <div>
         <Grid container spacing={2}>
-          {
-            dataToRender.length === 0 && (
-              <Grid item xs={12}>
-                <Typography variant="h6" align="center" style={{ marginTop: "20px" }}>
-                  No Records Found
-                </Typography>
-              </Grid>
-            )
-          }
+          {isLoading ? (
+            <Grid item xs={12} style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+              <CircularProgress />
+            </Grid>
+          ) : dataToRender.length === 0 && (
+            <Grid item xs={12}>
+              <Typography variant="h6" align="center" style={{ marginTop: "20px" }}>
+                No Records Found
+              </Typography>
+            </Grid>
+          )}
           <Grid item xs={12}>
             {dataToRender.map((item, index) => (
               <Accordion

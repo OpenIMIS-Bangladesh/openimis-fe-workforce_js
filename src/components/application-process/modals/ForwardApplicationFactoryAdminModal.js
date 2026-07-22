@@ -19,7 +19,7 @@ import {
   useModulesManager,
   formatMutation,
   decodeId,
-  FormattedMessage,
+  FormattedMessage,useHistory,historyPush
 } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import DistrictOfficePicker from "../../../pickers/DistrictOfficePicker";
@@ -81,6 +81,7 @@ const ForwardApplicationFactoryAdminModal = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
+  const history = useHistory();
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [serverResponse, setServerResponse] = useState(null);
@@ -132,7 +133,9 @@ const ForwardApplicationFactoryAdminModal = ({
     userRights,
     modulesManager,
     fetchWorkforceDocument,
-    roles
+    roles,
+    history,
+    historyPush
   });
 //     for (const encodedId of selectedApplicationIds) {
 
@@ -169,7 +172,9 @@ const ForwardApplicationFactoryAdminModal = ({
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
+        // historyPush(modulesManager, history, "/")
+        history.push("/")
       }, 2000);
     }
   }, [serverResponse]);

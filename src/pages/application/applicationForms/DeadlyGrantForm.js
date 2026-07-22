@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations } from "@openimis/fe-core";
+import { Button, Stepper, Step, StepLabel, Paper, Box, Typography, Checkbox, Grid, FormControlLabel, Dialog, CircularProgress } from "@material-ui/core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useTranslations, useHistory } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import FileUploader from "../../../pickers/FileUploader";
 import EmployeeDetailsForm from "../EmployeeDetailsForm";
@@ -17,6 +17,7 @@ import {
   fetchApplicationId,
   fetchEmployeeDependent,
   fetchInfoIdByClientMutationId,
+  fetchPrevApplicationHistory,
   fetchWorkforceEmployee,
   updateApplication,
   updateWorkforceEmployee,
@@ -89,6 +90,9 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
   const [showPreview, setShowPreview] = useState(false);
   const [deathType, setDeathType] = useState("");
   const [disableConfirmSubmit, setDisableConfirmSubmit] = useState(false);
+  const [isNavigationBlocked, setIsNavigationBlocked] = useState(false);
+  const [showDuplicateError, setShowDuplicateError] = useState(false);
+  const history = useHistory();
   const [nidOrBcn, setNidOrBcn] = useState({
     nid: formData?.workforceEmployee?.nid || "",
     birthCertificateNo: formData?.workforceEmployee?.birthCertificateNo,
@@ -354,6 +358,25 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
           setActiveStep(nextStep);
         }
         if (nextStep === 3 || nextStep === 4) {
+          // Duplicacy check
+          const duplicacyFilters = [
+            `nid: "${formData?.deceasedWorkerInfo?.nid || formData?.workforceEmployee?.nid}"`,
+            `organizationType: "${organizationType}"`,
+            `getOtherApplicationList: false`,
+            `applicationTypeIn: ["financialAssistance","deadlyGrant"]`,
+          ];
+          const duplicacyResponse = await dispatch(fetchPrevApplicationHistory(duplicacyFilters));
+          const duplicacyData = duplicacyResponse?.payload?.data?.workforceCheckApplicationDuplicacy;
+          if (duplicacyData && duplicacyData.length > 0) {
+            setIsNavigationBlocked(true);
+            setShowDuplicateError(true);
+            setTimeout(() => {
+              history.push("/home");
+              window.location.reload();
+            }, 5000);
+            return;
+          }
+
           const workforceEmployeeData = {
             nameEn: formData?.workforceEmployee?.nameEn,
             nameBn: formData?.workforceEmployee?.nameBn,
@@ -825,6 +848,25 @@ const DeadlyGrantForm = ({ workforceFactoryId, organizationType, selectedApplica
         message={<FormattedMessage id="core.error.generel" module="workforce" />}
         duration={4000}
       />
+      <CustomSnackbar
+        open={showDuplicateError}
+        onClose={() => setShowDuplicateError(false)}
+        type="error"
+        message={<FormattedMessage id="workforce.application.duplicate.found" module="workforce" />}
+        duration={5000}
+      />
+      {/* Loading Modal */}
+      <Dialog open={isNavigationBlocked} onClose={() => {}} disableBackdropClick disableEscapeKeyDown maxWidth="sm" fullWidth>
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" padding={4} gap={2}>
+          <CircularProgress size={60} thickness={4} />
+          <Typography variant="h6" align="center">
+            <FormattedMessage id="workforce.processing.data" module="workforce" />
+          </Typography>
+          <Typography variant="body2" align="center" color="textSecondary">
+            <FormattedMessage id="workforce.please.wait" module="workforce" />
+          </Typography>
+        </Box>
+      </Dialog>
     </div>
   );
 };

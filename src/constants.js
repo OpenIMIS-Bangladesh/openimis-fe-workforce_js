@@ -71,6 +71,8 @@ export const WORKFORCE_STATUS = {
   COMPLETED: "completed",
   ARCHIVED: "archived",
   APPROVED_BY_DG: "approved_by_dg",
+  APPROVED_BY_SECRETARY: "approved_by_secretary",
+  APPROVED_BY_MINISTER: "approved_by_minister",
   APPROVED_BY_DIRECTOR: "approved_by_director",
   APPROVED_BY_DOCTOR: "approved_by_doctor",
   REJECTED: "rejected",
@@ -170,7 +172,9 @@ export const STATUS_MAP_BN  = {
   approved_by_eis_advisor: "ইআইএস উপদেষ্টা দ্বারা অনুমোদিত",
   forward_to_blwf_section: "বিএলডাব্লিউএফ শাখায় প্রেরণ",
   rejected_by_committee:"কমিটি কর্তৃক বাতিলকৃত",
-
+  forward_to_factory_admin:"ফ্যাক্টরি অ্যাডমিনের কাছে পাঠানো হয়েছে",
+  approved_by_secretary:"সচিব কর্তৃক অনুমোদিত",
+  approved_by_minister:"মন্ত্রী কর্তৃক অনুমোদিত"
 };
 export const STATUS_MAP_EN = {
   active: "Active",
@@ -224,7 +228,10 @@ export const STATUS_MAP_EN = {
   resubmitted_application: "Resubmitted Application",
   approved_by_eis_advisor: "Approved by Eis Advisor",
   forward_to_eis_coordinator: "Forward to Eis Coordinator",
-  rejected_by_committee:"Rejected by committee"
+  rejected_by_committee:"Rejected by committee",
+  forward_to_factory_admin:"Forwarded to Factory Admin",
+  approved_by_secretary:"Approved by Secretary",
+  approved_by_minister:"Approved by Minister"
 };
 
 
@@ -671,6 +678,7 @@ export const banglaLabels = {
   SubmittedBy: "জমা দিয়েছেন",
   GrantAmount: "অনুদানের পরিমাণ",
   CreatedDate: "আবেদনের তারিখ",
+  appliedOn: "আবেদনের তারিখ",
   metadata:"অন্যান্য তথ্য",
   employeeChildrenInfo:"শিক্ষাগত তথ্য",
   applicationFor:"আবেদন কার জন্য",

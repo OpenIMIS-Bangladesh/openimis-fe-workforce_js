@@ -46,7 +46,8 @@ import {
   itemFormattersFactoryAdmin,
   itemFormattersDirector,
   itemFormattersDeputyAsstDirector,
-  itemFormattersBlwfSectionAdmin
+  itemFormattersBlwfSectionAdmin,
+  itemFormattersSecretaryMinister
 } from "../../utils/itemFormatters_types";
 import GenerateBFTN from "../../pages/application-process/GenereteBFTN";
 import {
@@ -131,6 +132,7 @@ class ApplicationProcessSearcher extends Component {
       openRejectModal:false,
       confirmModalMessage: "",
       confirmModalCallback: null,
+      loader:false
     };
     this.rowsPerPageOptions = [10, 20, 50, 100];
     this.defaultPageSize = 10;
@@ -426,7 +428,7 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters.push(`statusIn: ["${this.props.statusInSummary}"]`,sectionTwoApplicationTypes);
         }
         defaultStatusFilters.push(
-          'statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg"]',
+          'statusIn: ["forward_to_cf_section","meeting_created","approved_by_dg","approved_by_secretary","approved_by_minister"]',
           sectionTwoApplicationTypes
         );
 
@@ -1762,6 +1764,78 @@ class ApplicationProcessSearcher extends Component {
       }
 
       this.props.fetchApplicationsSummary(this.props.modulesManager, finalFilters);
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECRETARY) {
+      this.setState({ displayVersion: showHistoryFilter });
+      if (this.props.summaryId) {
+        const filtersBase = [
+          'statusIn: ["forward_to_director","approved_by_director","approved_by_dg","approved_by_secretary"]',
+          'organizationTypeIn: ["cf","blwf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+
+
+        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+        const [] = await Promise.all([
+          this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+          this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+        ]);
+      } else if (rejectedApplication) {
+        const filtersBase = [
+          'statusIn: ["rejected_by_dg"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if (loggedInUserId) {
+          filtersBase.push(`applicationTo:"${loggedInUserId}"`);
+        }
+        await this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      } else if (this.props.returnedApplications) {
+        const filtersBase = [
+          'statusIn: ["revert"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if (loggedInUserId) {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
+    }else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.MINISTER) {
+      this.setState({ displayVersion: showHistoryFilter });
+      if (this.props.summaryId) {
+        const filtersBase = [
+          'statusIn: ["forward_to_director","approved_by_director","approved_by_secretary"]',
+          'organizationTypeIn: ["cf","blwf"]',
+          'orderBy: ["-dateCreated"]',
+        ];
+
+
+        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+
+        const [] = await Promise.all([
+          this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
+          this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),
+        ]);
+      } else if (rejectedApplication) {
+        const filtersBase = [
+          'statusIn: ["rejected_by_dg"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if (loggedInUserId) {
+          filtersBase.push(`applicationTo:"${loggedInUserId}"`);
+        }
+        await this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      } else if (this.props.returnedApplications) {
+        const filtersBase = [
+          'statusIn: ["revert"]',
+          'orderBy: ["-dateCreated"]'
+        ];
+        if (loggedInUserId) {
+          filtersBase.push(`applicationFrom:"${loggedInUserId}"`);
+        }
+        this.props.fetchApplicationsSummary(this.props.modulesManager, filtersBase);
+      }
     }
     this.props.fetchRoles(loggedInUserId)
   }
@@ -1878,6 +1952,7 @@ class ApplicationProcessSearcher extends Component {
 
   handleReject = (application) => {
     const { selectedApplication } = this.state;
+    const {history}= this.props
     const userType = getUserTypeFromRights(this.props.userRights);
     this.setState({
       // confirmModalOpen: true,
@@ -1944,7 +2019,8 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন বাতিল করা হয়েছে!",
                 },
               });
-              // window.location.reload();
+              historyPush(modulesManager, history, "/")
+              window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
               this.setState({
@@ -1962,7 +2038,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleRejectByDG = async (application) => {
     const { selectedApplication } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.reject.message",
@@ -1995,6 +2071,7 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন বাতিল করা হয়েছে!",
                 },
               });
+              historyPush(modulesManager, history, "/")
               window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
@@ -2013,6 +2090,7 @@ class ApplicationProcessSearcher extends Component {
   };
   handleApproval = async (application) => {
     const { selectedApplication } = this.state;
+    const {history}= this.props
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.approve.message",
@@ -2022,6 +2100,7 @@ class ApplicationProcessSearcher extends Component {
             selectedApplication: {
               ...selectedApplication,
               isHistory: true,
+              loader:true
             },
           }, async () => {
             const updateApplicationData = {
@@ -2037,6 +2116,7 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন অনুমোদন করা হয়েছে!",
                 },
               });
+              historyPush(modulesManager, history, "/")
               window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
@@ -2049,12 +2129,13 @@ class ApplicationProcessSearcher extends Component {
             }
           });
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null ,loader:false});
       }
     });
   };
   handleApprovalByDirector = async (application) => {
     const { selectedApplication } = this.state;
+    const {history}= this.props
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.approve.message",
@@ -2064,6 +2145,7 @@ class ApplicationProcessSearcher extends Component {
             selectedApplication: {
               ...selectedApplication,
               isHistory: true,
+              loader:true,
             },
           }, async () => {
             const updateApplicationData = {
@@ -2079,6 +2161,7 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন অনুমোদন করা হয়েছে!",
                 },
               });
+              historyPush(modulesManager, history, "/")
               window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
@@ -2091,14 +2174,14 @@ class ApplicationProcessSearcher extends Component {
             }
           });
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   
   handleApprovalByDoctor = async (application) => {
     const { selectedApplication } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
 
     this.setState({
@@ -2110,6 +2193,7 @@ class ApplicationProcessSearcher extends Component {
             selectedApplication: {
               ...selectedApplication,
               isHistory: true,
+              loader:true,
             },
           }, async () => {
             const updateApplicationData = {
@@ -2169,7 +2253,9 @@ class ApplicationProcessSearcher extends Component {
                   message: "আবেদন অনুমোদন করা হয়েছে!",
                 },
               });
-              // window.location.reload();
+              //historyPush(modulesManager, history, "/home");
+              history.push("/")
+              window.location.reload();
             } catch (error) {
               console.error("Approval failed:", error);
               this.setState({
@@ -2181,13 +2267,14 @@ class ApplicationProcessSearcher extends Component {
             }
           });
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   
   handleSelected = async (application) => {
     const { selectedApplication } = this.state;
+    const {history}= this.props
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.select.message",
@@ -2198,6 +2285,7 @@ class ApplicationProcessSearcher extends Component {
               selectedApplication: {
                 ...selectedApplication,
                 isHistory: true,
+                loader:true,
               },
             },
             async () => {
@@ -2223,6 +2311,8 @@ class ApplicationProcessSearcher extends Component {
                     message: "আবেদন নির্বাচন করা হয়েছে!",
                   },
                 });
+                //historyPush(modulesManager, history, "/home");
+              history.push("/")
                 window.location.reload();
               } catch (error) {
                 console.error("Approval failed:", error);
@@ -2236,7 +2326,7 @@ class ApplicationProcessSearcher extends Component {
             }
           );
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
@@ -2353,7 +2443,9 @@ class ApplicationProcessSearcher extends Component {
                           ? itemFormattersFactoryAdmin(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.revertedApplication, this.rejectedApplication)
                           : userType === WORKFORCE_USER_TYPE.DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR
                             ? itemFormattersDirector(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication, this.revertedApplication)
-                            : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication, this.revertedApplication);
+                            :userType === WORKFORCE_USER_TYPE.SECRETARY || userType === WORKFORCE_USER_TYPE.MINISTER
+                              ? itemFormattersSecretaryMinister(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication, this.revertedApplication)
+                              : itemAdminFormatters(this.isShowHistory, this.props.modulesManager, this.props.history, this, locale, this.rejectedApplication, this.revertedApplication);
   };
 
   sorts = () => [];
@@ -2364,7 +2456,7 @@ class ApplicationProcessSearcher extends Component {
 
   handleBulkSelectedByApprover = async () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
 
     if (selectedApplicationIds.length === 0) {
@@ -2376,6 +2468,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.select.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
@@ -2410,16 +2503,18 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkSelectedbyAssociation = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId, updateApplication, createApplicationMovement, userRights, modulesManager, fetchWorkforceDocument,fetchUsersByRoleId, testWorkforcePayment,roles } = this.props;
+    const { loggedInUserId, updateApplication, createApplicationMovement, userRights, modulesManager, fetchWorkforceDocument,fetchUsersByRoleId, testWorkforcePayment,roles,history } = this.props;
     handleBulkSelectedByAssociationLogic({
       selectedApplicationIds,
       loggedInUserId,
@@ -2435,11 +2530,14 @@ class ApplicationProcessSearcher extends Component {
       setConfirmModalOpen: (v) => this.setState({ confirmModalOpen: v }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
       setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      history: history,
+      setCloseLoader:(l)=>this.setState({loader:l}),
+      loader:this.state.loader
     });
   };
   handleBulkSelectedbySectionAdminToDoctor = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -2450,6 +2548,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.forward.message.toDoctor",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
@@ -2495,10 +2594,12 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
-            // window.location.reload();
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
+            window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
@@ -2531,13 +2632,15 @@ class ApplicationProcessSearcher extends Component {
       setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
       setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
-      dispatch: this.props.dispatch
+      dispatch: this.props.dispatch,
+      setCloseLoader:(l)=>this.setState({loader:l}),
+      loader:this.state.loader
     });
   };
 
   handleBulkSelectedbyFactoryAdmin = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     console.log("FACTORYADMINWEEE", loggedInUserId);
 
     if (selectedApplicationIds.length === 0) {
@@ -2549,6 +2652,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.forward.message.toAssociation",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
@@ -2586,15 +2690,18 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkSelectedbySectionAdmin = async () => {
     const { selectedApplicationIds } = this.state;
+    const {history}= this.props
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -2604,6 +2711,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.forward.message.toSectionUser",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
@@ -2638,15 +2746,18 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkSelectedbySectionTwoAdmin = async () => {
     const { selectedApplicationIds } = this.state;
+    const {history}= this.props
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -2656,6 +2767,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.forward.message.toSectionUser",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement } = this.props;
           try {
             await Promise.all(
@@ -2690,16 +2802,19 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkApproveByAdmin = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
+    const userType = getUserTypeFromRights(this.props.userRights);
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -2709,6 +2824,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.approve.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
           try {
             await Promise.all(
@@ -2716,12 +2832,16 @@ class ApplicationProcessSearcher extends Component {
                 const decodedId = decodeId(selectedItem?.id);
                 const updateApplicationData = {
                   id: decodedId,
-                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  status: userType===WORKFORCE_USER_TYPE.ADMIN? WORKFORCE_STATUS.APPROVED_BY_DG:
+                            userType ===WORKFORCE_USER_TYPE.SECRETARY?WORKFORCE_STATUS.APPROVED_BY_SECRETARY:
+                            userType ===WORKFORCE_USER_TYPE.MINISTER?WORKFORCE_STATUS.APPROVED_BY_MINISTER:"" ,
                   grantAmount: this.state.editedGrantMoney,
                 };
                 const createApplicationMovementData = {
                   applicationId: decodedId,
-                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  status:  userType===WORKFORCE_USER_TYPE.ADMIN? WORKFORCE_STATUS.APPROVED_BY_DG:
+                            userType ===WORKFORCE_USER_TYPE.SECRETARY?WORKFORCE_STATUS.APPROVED_BY_SECRETARY:
+                            userType ===WORKFORCE_USER_TYPE.MINISTER?WORKFORCE_STATUS.APPROVED_BY_MINISTER:"" ,
                   note: "আবেদন ডিজি দ্বারা অনুমোদন করা হয়েছে",
                   action: "approved_by_dg",
                   applicationFromId: loggedInUserId,
@@ -2730,7 +2850,9 @@ class ApplicationProcessSearcher extends Component {
                 };
                 const updateApplicationSummaryData = {
                   id: decodeId(this.props.summaryId),
-                  status: WORKFORCE_STATUS.APPROVED_BY_DG,
+                  status:  userType===WORKFORCE_USER_TYPE.ADMIN? WORKFORCE_STATUS.APPROVED_BY_DG:
+                            userType ===WORKFORCE_USER_TYPE.SECRETARY?WORKFORCE_STATUS.APPROVED_BY_SECRETARY:
+                            userType ===WORKFORCE_USER_TYPE.MINISTER?WORKFORCE_STATUS.APPROVED_BY_MINISTER:"" ,
                 };
                 await updateApplication(updateApplicationData, "update workforce application");
                 await createApplicationMovement(createApplicationMovementData, "create workforce movement");
@@ -2743,6 +2865,8 @@ class ApplicationProcessSearcher extends Component {
                 message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
               },
             });
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           } catch (error) {
             console.error("Bulk selection failed:", error);
@@ -2752,10 +2876,12 @@ class ApplicationProcessSearcher extends Component {
                 message: "একাধিক আবেদন নির্বাচন ব্যর্থ হয়েছে!",
               },
             });
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
@@ -2773,6 +2899,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.approve.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           try {
             const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
             await Promise.all(
@@ -2818,17 +2945,19 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkApproveByEisAdvisor = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -2839,6 +2968,7 @@ class ApplicationProcessSearcher extends Component {
       confirmModalMessage: "workforce.application.approve.message",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           try {
             const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
             await Promise.all(
@@ -2884,16 +3014,18 @@ class ApplicationProcessSearcher extends Component {
               },
             });
           } finally {
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
   handleBulkSelectedbyEisCommittee = () => {
     const { selectedApplicationIds } = this.state;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
 
     if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
@@ -2919,7 +3051,7 @@ class ApplicationProcessSearcher extends Component {
           /* -------------------------------------------------
              STEP 1: Validate Majority Approval For ALL
           ------------------------------------------------- */
-
+          this.setState({loader:true})
           const allHaveMajority = selectedApplicationIds.every((item) => {
             const approvalUserIds = item?.eisApprovalIds
               ? safeParse(item.eisApprovalIds)
@@ -3007,6 +3139,8 @@ class ApplicationProcessSearcher extends Component {
               message: "আবেদনসমূহ সফলভাবে নির্বাচন করা হয়েছে!",
             },
           });
+          //historyPush(modulesManager, history, "/home");
+              history.push("/")
           window.location.reload();
         } catch (error) {
           console.error("Bulk selection failed:", error);
@@ -3019,7 +3153,7 @@ class ApplicationProcessSearcher extends Component {
           });
         }
 
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       },
     });
   };
@@ -3035,13 +3169,14 @@ class ApplicationProcessSearcher extends Component {
   }
 
   handleApprovalByEisCommittee = (selectedItem) => {
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     let majorityApproved = false;
     this.setState({
       confirmModalOpen: true,
       confirmModalMessage: "workforce.application.forward.message.toEisCoordinator",
       confirmModalCallback: async (confirmed) => {
         if (confirmed) {
+          this.setState({loader:true})
           const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
           try {
             const approvalUserIds = selectedItem?.eisApprovalIds ? safeParse(selectedItem?.eisApprovalIds) : [];
@@ -3100,6 +3235,8 @@ class ApplicationProcessSearcher extends Component {
                 // message: majorityApproved?"নির্বাচিত আবেদনটিতে মেজরিটি অনুমোদন প্রাপ্ত হয়েছে এবং আবেদনটি অনুমোদিত হয়েছে" :"নির্বাচিত আবেদনটির অনুমোদনের জন্য আপনার সাক্ষর গৃহিত হয়েছে। অপেক্ষা করুন যতক্ষণ না কমিটির অন্যান্য সদস্যরাও তাদের অনুমোদন প্রদান করেন।",
               },
             });
+            //historyPush(modulesManager, history, "/home");
+              history.push("/")
             window.location.reload();
           } catch (error) {
             console.error("Approval failed:", error);
@@ -3111,7 +3248,7 @@ class ApplicationProcessSearcher extends Component {
             });
           }
         }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        this.setState({ confirmModalOpen: false, confirmModalCallback: null,loader:false });
       }
     });
   };
@@ -3553,7 +3690,7 @@ class ApplicationProcessSearcher extends Component {
             )}
           </Box>
         ) : null}
-        {userType === WORKFORCE_USER_TYPE.ADMIN ? (
+        {(userType === WORKFORCE_USER_TYPE.ADMIN||userType === WORKFORCE_USER_TYPE.SECRETARY||userType === WORKFORCE_USER_TYPE.MINISTER) ? (
           disableButtons !== 1 && (
             <Box
               style={{
@@ -3984,6 +4121,7 @@ class ApplicationProcessSearcher extends Component {
           open={this.state.confirmModalOpen}
           message={this.state.confirmModalMessage}
           onClose={this.handleConfirmModalClose}
+          loader={this.state.loader}
           addComment={this.handleAddComment}
           modalFlag={this.state.modalFlag}
         />

@@ -265,7 +265,7 @@ export const bnToEn = (input) => {
   if (typeof input == "number") {
     input = input.toString();
   }
-  if (empty(input)) {
+  if (isEmpty(input?.length)) {
     return input;
   }
   for (var i = 0; i < input?.length; ++i) {
@@ -281,6 +281,8 @@ export const bnToEn = (input) => {
 export const conditionalEnToBn = (num, locale, type = "") => {
   if (locale === "en") {
     return num;
+  }else if (locale ==="fr") {
+    return bnToEn(num,type)
   } else {
     return enToBn(num, type);
   }

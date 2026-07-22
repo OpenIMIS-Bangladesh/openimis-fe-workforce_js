@@ -24,12 +24,13 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, enToBn, fixBrokenUnicode, formatDynamicValue, getUserType, safeDecodeId } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, fixBrokenUnicode, formatDynamicValue, getUserType, isEisPath, safeDecodeId } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
 import ApplicationMovementStepper from "../shared/ApplicationMovementStepper";
 import CompensationFormModal from "./CompensationFormModal";
+import ApplicationPreviousHistory from "./Atoms/ApplicationPreviousHistory";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -643,6 +644,7 @@ const ApplicationViewPage = ({
   const [openAccidentInfoModal, setOpenAccidentInfoModal] = useState(false);
   const [openCompensationInfoModal, setOpenCompensationInfoModal] = useState(false);
   const [openSalaryButton, setOpenSalaryButton] = useState(false);
+  const [openHistoryModal, setOpenHistoryModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // --- Eligibility State ---
@@ -764,7 +766,7 @@ const ApplicationViewPage = ({
     setOpenSalaryButton(true);
     const updateApplicationData = {
       id: application?.id,
-      lastBaseSalary: amount,
+      lastBaseSalary: conditionalEnToBn(amount,"fr"),
     };
     dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => {
       setOpenSalaryButton(false);
@@ -872,7 +874,7 @@ const ApplicationViewPage = ({
   console.log({ view: application });
   console.log({ verificationState });
   console.log({ fileStates });
-  console.log({ filteredDocumentTypes });
+  console.log({ lastSalaryAmount });
 
   return (
     <>
@@ -896,7 +898,19 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
-          {viewedFromFlag === "view" && <ApplicationMovementStepper data={movementLogs} language={language} />}
+          {viewedFromFlag === "view" && (
+            <>
+              <ApplicationMovementStepper data={movementLogs} language={language} />
+            </>
+          )}
+
+          {viewedFromFlag === "verify" && !isEisPath() && (
+            <Box style={{ margin: 2 }}>
+              <Button variant="contained" color="primary" onClick={() => setOpenHistoryModal(true)} style={{ paddingY: 0 }}>
+                <FormattedMessage id="workforce.previous.history.button" />
+              </Button>
+            </Box>
+          )}
           {user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN && filteredDocumentTypes && filteredDocumentTypes?.length > 0 && (
             <Typography variant="h6" style={{ marginTop: 6 }}>
               <b>
@@ -910,7 +924,7 @@ const ApplicationViewPage = ({
               <Grid item xs={9}>
                 <TextInput
                   label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                  value={lastSalaryAmount || application?.lastBaseSalary || ""}
+                  value={language==="fr"?conditionalEnToBn(lastSalaryAmount,"en")|| application?.lastBaseSalary || "":lastSalaryAmount || application?.lastBaseSalary || ""}
                   onChange={(e) => setLastSalaryAmount(e)}
                 />
               </Grid>
@@ -1188,6 +1202,7 @@ const ApplicationViewPage = ({
         onClose={() => setOpenCompensationInfoModal(false)}
         entryType="factory"
       />
+      {openHistoryModal && <ApplicationPreviousHistory open={openHistoryModal} onClose={() => setOpenHistoryModal(false)} application={application} />}
     </>
   );
 };

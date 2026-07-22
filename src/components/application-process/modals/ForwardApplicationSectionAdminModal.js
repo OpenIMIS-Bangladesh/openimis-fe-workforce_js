@@ -15,7 +15,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useHistory,historyPush } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
 const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplication, selectedApplicationIds, onSubmitForward, userRights }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const modulesManager = useModulesManager();
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -118,6 +119,7 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
 
   const handleForward = async () => {
     try {
+      setSubmitting(true)
       if (!formData?.userId) {
         setServerResponse({ status: "ERROR", message: "অফিসার নির্বাচন করুন!" });
         return;
@@ -145,13 +147,17 @@ const ForwardApplicationSectionAdminModal = ({ open, onClose, selectedApplicatio
     } catch (error) {
       console.error("Forwarding error:", error);
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    }finally{
+      setSubmitting(false)
     }
   };
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
+        // historyPush(modulesManager, history, "/home")
+        history.push("/")
       }, 2000);
     }
   }, [serverResponse]);

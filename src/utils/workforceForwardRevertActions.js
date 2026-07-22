@@ -26,6 +26,8 @@ export const forwardToAssociation = async ({
   fetchWorkforceDocument,
   modulesManager,
   roles,
+  history,
+  historyPush
 }) => {
   try {
     const userType = getUserTypeFromRights(userRights);
@@ -195,6 +197,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
   setConfirmModalMessage,
   setConfirmModalCallback,
   modulesManager,
+  history,
+  setCloseLoader,
+  loader
 }) => {
   const userType = getUserTypeFromRights(userRights);
   let confirmModalMessage = "";
@@ -233,6 +238,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
     }
 
     try {
+      setCloseLoader(true)
       for (const selectedItem of selectedApplicationIds) {
         console.log({ applicationFormActions: selectedItem });
         const decodedId = safeDecodeId(selectedItem?.id);
@@ -359,10 +365,12 @@ export const handleBulkSelectedByAssociationLogic = async ({
       });
     } finally {
       setTimeout(() => {
-        window.location.reload();
+        history.push("/");
+        //window.location.reload();
       }, 200);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
+      setCloseLoader(false)
     }
   });
 };
@@ -382,6 +390,8 @@ export const handleBulkSelectedByCheckerLogic = async ({
   modulesManager,
   history,
   dispatch,
+  setCloseLoader,
+  loader
 }) => {
   const userType = getUserTypeFromRights(userRights);
   let confirmModalMessage = "";
@@ -432,7 +442,8 @@ export const handleBulkSelectedByCheckerLogic = async ({
       setConfirmModalOpen(false);
       return;
     }
-
+  let isSuccess = false;
+  setCloseLoader(true)
     try {
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
@@ -440,32 +451,32 @@ export const handleBulkSelectedByCheckerLogic = async ({
 
         const documents = res?.payload?.data?.workforceDocuments?.edges?.map((edge) => edge.node) ?? [];
 
-        // const allVerified = documents?.every((doc) => {
-        //   const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
-        //   console.log({ documentMapData }); // Keep for debugging
-        //   const status = documentMapData?.find((mapdata) => {
-        //     const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
-        //     const roleMatch = decodedRoleId === roles[0]?.roleId;
-        //     const statusMatch = isEisPath()
-        //       ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-        //       : userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-        //         ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
-        //         : userType===WORKFORCE_USER_TYPE.BLWF_CHECKER?mapdata?.status ===WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED : mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
-        //     console.log("Decoded verifiedByRole.id:", decodedRoleId);
-        //     console.log("roles[0]?.id:", roles[0]?.roleId);
-        //     console.log("Role match:", roleMatch);
-        //     console.log("Status match:", statusMatch);
-        //     console.log("Mapdata status:", mapdata?.status);
-        //     return roleMatch && statusMatch;
-        //   });
-        //   console.log({ status }); // Keep for debugging
-        //   return !!status; // Pass for other types
-        // });
-
-
         const allVerified = documents?.every((doc) => {
-          return doc?.status.includes("verified");
+          const documentMapData = parseData(doc?.workforceDocumentMapDocumentId);
+          console.log({ documentMapData }); // Keep for debugging
+          const status = documentMapData?.find((mapdata) => {
+            const decodedRoleId = safeDecodeId(mapdata?.verifiedByRole?.id);
+            const roleMatch = decodedRoleId === roles[0]?.roleId;
+            const statusMatch = isEisPath()
+              ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
+              : userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? mapdata?.status === WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+                : userType===WORKFORCE_USER_TYPE.BLWF_CHECKER?mapdata?.status ===WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED : mapdata?.status === WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED;
+            console.log("Decoded verifiedByRole.id:", decodedRoleId);
+            console.log("roles[0]?.id:", roles[0]?.roleId);
+            console.log("Role match:", roleMatch);
+            console.log("Status match:", statusMatch);
+            console.log("Mapdata status:", mapdata?.status);
+            return roleMatch && statusMatch;
+          });
+          console.log({ status }); // Keep for debugging
+          return !!status; // Pass for other types
         });
+
+
+        // const allVerified = documents?.every((doc) => {
+        //   return doc?.status.includes("verified");
+        // });
 
         if (!allVerified) {
           setServerResponse({
@@ -512,6 +523,7 @@ export const handleBulkSelectedByCheckerLogic = async ({
         status: "SUCCESS",
         message: "সফলভাবে ফরওয়ার্ড করা হয়েছে!",
       });
+      isSuccess= true
     } catch (error) {
       console.error("Bulk selection failed:", error);
       setServerResponse({
@@ -519,12 +531,16 @@ export const handleBulkSelectedByCheckerLogic = async ({
         message: "ফরওয়ার্ড ব্যর্থ হয়েছে",
       });
     } finally {
-      // history.push("/home");
-      setTimeout(() => {
-        window.location.reload();
-      }, 200);
+      // history.push("/");
+      if (isSuccess) {
+        setTimeout(() => {
+          history.push("/");
+          //window.location.reload();
+        }, 200);
+      }
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
+      setCloseLoader(false)
     }
   });
 };
@@ -542,6 +558,8 @@ export const handleApprovalByDoctor = async ({
   modulesManager,
   history,
   editedGrantMoney,
+  setCloseLoader,
+  loader
 }) => {
   const userType = getUserTypeFromRights(userRights);
 
@@ -565,6 +583,7 @@ export const handleApprovalByDoctor = async ({
     }
 
     try {
+      setCloseLoader(true)
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
 
@@ -617,9 +636,10 @@ export const handleApprovalByDoctor = async ({
         message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
       });
     } finally {
-      history.push("/home");
+      history.push("/");
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
+      setCloseLoader(false)
     }
   });
 };
@@ -641,6 +661,8 @@ export const handleApprovalByEisCommittee = async ({
   eisApprovalIds,
   eisApprovedByIds,
   history,
+  setCloseLoader,
+  loader
 }) => {
   let confirmModalMessage = "workforce.application.sign.message.toEisCoordinator";
 
@@ -662,6 +684,7 @@ export const handleApprovalByEisCommittee = async ({
     }
 
     try {
+      setCloseLoader(true)
       for (const selectedItem of selectedApplicationIds) {
         const decodedId = safeDecodeId(selectedItem?.id);
 
@@ -753,13 +776,15 @@ export const handleApprovalByEisCommittee = async ({
         message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
       });
     } finally {
-      // history.push("/home");
-      // window.location.reload();
+      // history.push("/");
+      // //window.location.reload();
       setTimeout(() => {
-        window.location.reload();
+        history.push("/");
+        //window.location.reload();
       }, 500);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
+      setCloseLoader(false)
     }
   });
 };

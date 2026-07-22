@@ -1026,6 +1026,7 @@
   "worforce.dependent.suffix":"'s",
   "workforce.login_name_already_exists":"NID/BirthCertificate number already registered",
   "workforce.phone_number_already_exists":"Phone number already registered",
+  "workforce.application.duplicate.found": "A duplicate application already exists for this worker. You will be redirected to the home page.",
 
   "workforce.accident.placeOfDeath.label": "Place of Death",
   "workforce.accident.dateOfDeath.label": "Date of Death",
@@ -1219,5 +1220,8 @@
   "workforce.application.photo.cropmessage": "You need to crop your selected image to passport size.",
   "workforce.reject.reason": "Add Reject Reason",
   "workforce.reject.reason.placeholder": "Enter reject reason...",
-  "workforce.application.rejected":"Rejected Applications"
+  "workforce.application.rejected":"Rejected Applications",
+  "workforce.previous.history.button" :"Previous application information",
+  "workforce.previous.history.list" :"List of previous applications"
+
 }

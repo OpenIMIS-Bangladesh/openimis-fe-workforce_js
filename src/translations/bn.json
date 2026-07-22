@@ -917,6 +917,7 @@
   "worforce.dependent.suffix":"র",
   "workforce.login_name_already_exists":"জাতীয় পরিচয়পত্র/জন্ম সনদ নম্বর ইতিমধ্যেই নিবন্ধিত",
   "workforce.phone_number_already_exists":"ফোন নম্বর ইতিমধ্যে নিবন্ধিত",
+  "workforce.application.duplicate.found": "এই শ্রমিকের জন্য একটি ডুপ্লিকেট আবেদন ইতিমধ্যে বিদ্যমান। আপনাকে হোম পেজে পুনর্নির্দেশিত করা হবে।",
   "workforce.rejoinDate.error":"পুনরায় যোগদানের তারিখ দুর্ঘটনার তারিখের আগে হতে পারে না।",
 
   "workforce.dashboard.overallFilters": "সার্বিক ফিল্টার",
@@ -1132,5 +1133,7 @@
   "workforce.application.photo.cropmessage": "আপনার নির্বাচনকৃত ছবিটিকে পাসপোর্ট সাইজে ক্রপ করতে হবে।",
   "workforce.reject.reason": "প্রত্যাখ্যানের কারণ যোগ করুন",
   "workforce.reject.reason.placeholder": "প্রত্যাখ্যানের কারণ লিখুন...",
-  "workforce.application.rejected":"বাতিলকৃত আবেদনসমূহ"
+  "workforce.application.rejected":"বাতিলকৃত আবেদনসমূহ",
+  "workforce.previous.history.button" :"পূর্ববর্তী আবেদনের তথ্য",
+  "workforce.previous.history.list" :"পূর্ববর্তী আবেদনের তালিকা"
 }

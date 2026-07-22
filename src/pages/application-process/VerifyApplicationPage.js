@@ -58,6 +58,7 @@ import AddDependentModal from "../../components/shared/modals/AddDependentModal"
 import GenereteEisDependentBFTN from "./GenereteEisDependentBFTN";
 import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
+import ForwardApplicationEisCoordinatorModal from "../../components/application-process/modals/ForwardApplicationEisCoordinatorModal";
 
 const styles = (theme) => ({
   paper: {
@@ -139,8 +140,10 @@ class VerifyApplicationPage extends Component {
       forwardModalOpenSA: false,
       revertModalOpen: false,
       confirmModalOpen: false,
+      forwardModalOpenEIS:false,
       confirmModalMessage: "",
       confirmModalCallback: null,
+      loader:false,
       serverResponse: "",
       selectedApplication: null,
       eisDependentBFTNModalOpen: false,
@@ -390,7 +393,7 @@ class VerifyApplicationPage extends Component {
   };
 
   handleForward = () => {
-    const { user_rights, application, loggedInUserId,roles } = this.props;
+    const { user_rights, application, loggedInUserId,roles,history } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
 
     if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
@@ -422,7 +425,11 @@ class VerifyApplicationPage extends Component {
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         history: this.props.history,
         dispatch: this.props.dispatch,
+        setCloseLoader:(l)=>this.setState({loader:l}),
+        loader:this.state.loader
       });
+    }else if (user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
+      this.setState({ forwardModalOpenEIS: true })
     } else if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
       handleApprovalByDoctor({
         selectedApplicationIds: [{ id: application?.id }],
@@ -436,7 +443,10 @@ class VerifyApplicationPage extends Component {
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        // historyPush:historyPush,
         history: this.props.history,
+        setCloseLoader:(l)=>this.setState({loader:l}),
+        loader:this.state.loader
       });
     } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
       const summaryApplicationRes = this.props.dispatch(
@@ -462,7 +472,10 @@ class VerifyApplicationPage extends Component {
         summaryId: application?.eisApplicationSummary?.id,
         eisApprovalIds: application?.eisApprovalIds,
         eisApprovedByIds: application?.eisApprovedByIds,
+        // historyPush:historyPush,
         history: this.props.history,
+        setCloseLoader:(l)=>this.setState({loader:l}),
+        loader:this.state.loader
       });
     } else {
       handleBulkSelectedByAssociationLogic({
@@ -484,12 +497,40 @@ class VerifyApplicationPage extends Component {
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+        // historyPush:historyPush,
+        history: this.props.history,
+        setCloseLoader:(l)=>this.setState({loader:l}),
+        loader:this.state.loader
       });
     }
   };
 
   handleRevert = () => {
     this.setState({ revertModalOpen: true, selectedApplication: this.props.application });
+  };
+  handleForwardSubmit = (event) => {
+    this.state.editorContent;
+    event.preventDefault();
+    const selectedUser = this.state.userList.find((user) => user.id === this.state.selectedUserId);
+    this.setState({ submitting: true });
+    setTimeout(() => {
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "SUCCESS",
+          message: "আবেদন সফলভাবে Forward করা হয়েছে!",
+        },
+      });
+      setTimeout(() => {
+        this.setState({
+          revertModalOpen: false,
+          selectedUserId: "",
+          deadline: "",
+          selectedApplication: null,
+          serverResponse: null,
+        });
+      }, 2000);
+    }, 2000);
   };
 
   render() {
@@ -601,11 +642,13 @@ class VerifyApplicationPage extends Component {
                 </Grid>
               )
             ) : (
+              !(user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.status ==="verified") && (
               <Grid item xs={2}>
                 <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
                   <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
                 </Button>
               </Grid>
+              )
             )}
             <Grid item xs={2}>
               <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
@@ -760,6 +803,18 @@ class VerifyApplicationPage extends Component {
           />
         )}
 
+        {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+          <ForwardApplicationEisCoordinatorModal
+            open={this.state.forwardModalOpenEIS}
+            onClose={() => this.setState({ forwardModalOpenEIS: false })}
+            selectedApplicationIds={[{ id: application?.id }]}
+            onSubmitForward={this.handleForwardSubmit}
+            userRights={user_rights}
+            summaryId={this.props.summaryId}
+            roleIds={["47"]}
+          />
+        )}
+
         {user_type !== WORKFORCE_USER_TYPE.APPLICANT && (
           <RevertApplicationModal
             open={this.state.revertModalOpen}
@@ -786,6 +841,7 @@ class VerifyApplicationPage extends Component {
               this.setState({ confirmModalOpen: false });
             }
           }}
+          loader={this.state.loader}
         />
       </>
     );

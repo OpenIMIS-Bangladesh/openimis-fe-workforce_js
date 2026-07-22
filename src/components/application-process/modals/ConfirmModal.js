@@ -10,7 +10,7 @@ import { isEisPath } from "../../../utils/utils";
 
 
 
-const ConfirmModal = ({ open, message, onClose }) => {
+const ConfirmModal = ({ open, message, onClose,loader }) => {
   const modulesManager = useModulesManager()
  const { formatMessage } = useTranslations("core.RegistrationPage", modulesManager);
   return (
@@ -43,11 +43,12 @@ const ConfirmModal = ({ open, message, onClose }) => {
             {<FormattedMessage id="workforce.confirm.modal.cancel" module="workforce" /> || "Are you sure?"}
           </Button>
           <Button
+            disabled={loader}
             variant="contained"
             color="primary"
             onClick={() => onClose(1)} // ok
           >
-            {<FormattedMessage id={isEisPath()?"workforce.confirm.modal.ok":"workforce.confirm.modal.ok.notEis"} module="workforce" /> || "Are you sure?"}
+            {!loader?<FormattedMessage id={isEisPath()?"workforce.confirm.modal.ok":"workforce.confirm.modal.ok.notEis"} module="workforce" /> || "Are you sure?":"Loading ..."}
           </Button>
         </Box>
       </Box>

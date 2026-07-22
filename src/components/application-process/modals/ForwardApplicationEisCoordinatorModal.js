@@ -15,13 +15,13 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage,useHistory } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import EmployeePicker from "../../../pickers/EmployeePicker";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchApplication, updateApplication, createApplicationMovement, fetchWorkforceUserRoleWiseUser, updateApplicationSummary } from "../../../actions";
 import { WORKFORCE_STATUS } from "../../../constants";
-import { getUserTypeFromRights } from "../../../utils/utils";
+import { getUserTypeFromRights, safeDecodeId } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -75,6 +75,7 @@ const ForwardApplicationEisCoordinatorModal = ({
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory()
   const modulesManager = useModulesManager();
   const [editorContent, setEditorContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -94,7 +95,7 @@ const ForwardApplicationEisCoordinatorModal = ({
       setFormData(null);
     }
     if (selectedApplication) {
-      return dispatch(fetchApplication(modulesManager, [`id: "${decodeId(selectedApplication?.id)}"`]));
+      return dispatch(fetchApplication(modulesManager, [`id: "${safeDecodeId(selectedApplication?.id)}"`]));
     }
   }, [open]);
 
@@ -107,7 +108,7 @@ const ForwardApplicationEisCoordinatorModal = ({
         roleIds = roleIds;
       }
 
-      if (roleIds.length > 0) {
+      if (roleIds?.length > 0) {
         return dispatch(
           fetchWorkforceUserRoleWiseUser(modulesManager, {
             roleIds,
@@ -133,7 +134,7 @@ const ForwardApplicationEisCoordinatorModal = ({
 
   const handleForward = async () => {
     const numericRoleIds = roleIds.map((id) => Number(id));
-
+    setSubmitting(true)
     try {
       if (!formData?.userId){
         setServerResponse({
@@ -163,7 +164,7 @@ const ForwardApplicationEisCoordinatorModal = ({
 
       for (const encodedId of selectedApplicationIds) {
         const updateApplicationData = {
-          id: decodeId(encodedId?.id),
+          id: safeDecodeId(encodedId?.id),
           status: forwardStatus,
         };
 
@@ -172,7 +173,7 @@ const ForwardApplicationEisCoordinatorModal = ({
         // for (const userId of formData.userIds) {
         const userId = formData?.userId;
           const createApplicationMovementData = {
-            applicationId: decodeId(encodedId?.id),
+            applicationId: safeDecodeId(encodedId?.id),
             applicationFromId: loggedInUserId,
             applicationToId: userId,
             status: forwardStatus,
@@ -184,7 +185,7 @@ const ForwardApplicationEisCoordinatorModal = ({
           // summary update for committee
           if (summaryId && numericRoleIds.includes(49)) {
             const updateApplicationSummaryData = {
-              id: decodeId(summaryId),
+              id: safeDecodeId(summaryId),
               status: WORKFORCE_STATUS.FORWARD_TO_COMIITEE,
             };
 
@@ -197,13 +198,17 @@ const ForwardApplicationEisCoordinatorModal = ({
     } catch (error) {
       console.error("Forwarding error:", error);
       setServerResponse({ status: "ERROR", message: "সাবমিশন ব্যর্থ হয়েছে!" });
+    }finally{
+      setSubmitting(false)
+      onClose()
     }
   };
 
   useEffect(() => {
     if (serverResponse?.status === "SUCCESS") {
       setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
+        history.push("/")
       }, 2000);
     }
   }, [serverResponse]);
