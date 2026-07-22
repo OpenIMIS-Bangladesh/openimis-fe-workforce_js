@@ -24,7 +24,7 @@ import FileUploader from "../../pickers/FileUploader";
 import DocumentReviewAccordion from "../application-process/DocumentReviewAccordion";
 import { banglaLabels, ORGANIZATION_TYPE_NAME_BN, ORGANIZATION_TYPE_NAME_EN, STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from "../../constants";
 import { useSelector, useDispatch } from "react-redux";
-import { conditionalEnToBn, enToBn, fixBrokenUnicode, formatDynamicValue, getUserType, isEisPath, safeDecodeId } from "../../utils/utils";
+import { conditionalEnToBn, enToBn, fixBrokenUnicode, formatDynamicValue, getUserType, isEisPath, normalizeNumberInput, safeDecodeId } from "../../utils/utils";
 import { updateApplication } from "../../actions";
 import DoctorsEntries from "./Atoms/DoctorsEntries";
 import EisFactoryAdminModal from "./EisFactoryAdminModal";
@@ -924,8 +924,8 @@ const ApplicationViewPage = ({
               <Grid item xs={9}>
                 <TextInput
                   label={"workforce.application.lastBaseSalary.byFactoryAdmin"}
-                  value={language==="fr"?conditionalEnToBn(lastSalaryAmount,"en")|| application?.lastBaseSalary || "":lastSalaryAmount || application?.lastBaseSalary || ""}
-                  onChange={(e) => setLastSalaryAmount(e)}
+                  value={lastSalaryAmount || application?.lastBaseSalary || ""}
+                  onChange={(e) => setLastSalaryAmount(normalizeNumberInput(e))}
                 />
               </Grid>
               <Grid item xs={3}>

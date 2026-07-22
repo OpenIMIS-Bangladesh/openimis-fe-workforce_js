@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchDependent, fetchEmployeeDependent } from "../../actions";
 import DistrictBanks from "../../pickers/DistrictBanks";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
+import { normalizeNumberInput } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -280,7 +281,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                                 id="routingNumber"
                                 label="workforce.employee.account.info.routingNumber"
                                 value={account?.branch?.routingNumber || ""}
-                                onChange={(v) => handleAccountChange(index, "routingNumber", v)}
+                                onChange={(v) => handleAccountChange(index, "routingNumber", normalizeNumberInput(v))}
                                 readOnly={false}
                                 required
                                 error={!!errors.routingNumber}
@@ -292,7 +293,7 @@ const EmployeeAccountInfoForm = ({ formdata, accounts, handleChange, addItem, re
                                 id="accountNumber"
                                 label="workforce.employee.account.info.accountNumber"
                                 value={account?.accountNumber || ""}
-                                onChange={(v) => handleAccountChange(index, "accountNumber", v)}
+                                onChange={(v) => handleAccountChange(index, "accountNumber", normalizeNumberInput(v))}
                                 required
                                 readOnly={false}
                                 error={!!errors.accountNumber}

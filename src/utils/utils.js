@@ -265,7 +265,7 @@ export const bnToEn = (input) => {
   if (typeof input == "number") {
     input = input.toString();
   }
-  if (isEmpty(input?.length)) {
+  if (empty(input)) {
     return input;
   }
   for (var i = 0; i < input?.length; ++i) {
@@ -278,11 +278,28 @@ export const bnToEn = (input) => {
   return output;
 };
 
+export const normalizeNumberInput = (value = "") => {
+  const map = {
+    "০": "0",
+    "১": "1",
+    "২": "2",
+    "৩": "3",
+    "৪": "4",
+    "৫": "5",
+    "৬": "6",
+    "৭": "7",
+    "৮": "8",
+    "৯": "9",
+  };
+
+  return value
+    .replace(/[০-৯]/g, (d) => map[d]) // Bangla → English
+    .replace(/\D/g, "");              // Keep only 0-9
+};
+
 export const conditionalEnToBn = (num, locale, type = "") => {
   if (locale === "en") {
     return num;
-  }else if (locale ==="fr") {
-    return bnToEn(num,type)
   } else {
     return enToBn(num, type);
   }

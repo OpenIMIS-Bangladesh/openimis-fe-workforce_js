@@ -26,7 +26,7 @@ import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import { getRelationForApi, isBlwfPath, isCfPath, isVerify } from "../../utils/utils";
+import { getRelationForApi, isBlwfPath, isCfPath, isVerify, normalizeNumberInput } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -363,7 +363,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                             : formatMessage("workforce.employee.percentage_of_cf_grant")
                         }
                         value={dependent.percentage_of_grant || ""}
-                        onChange={(v) => handleChange(index, "percentage_of_grant", v)}
+                        onChange={(v) => handleChange(index, "percentage_of_grant", normalizeNumberInput(v))}
                         required
                         error={!!errors.percentage_of_grant}
                         helperText={errors.percentage_of_grant}
