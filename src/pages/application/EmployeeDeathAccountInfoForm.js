@@ -74,13 +74,13 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
     if (dependent?.length > 0) {
       setExpanded(0);
       dependent?.map((dep, index) => {
-        handleChange(index, "accountHolderName", dep?.nameBn);
+        handleChange(index, "accountHolderName", dep?.nameEn);
         handleChange(index, "dependentId", dep?.id);
         handleChange(index, "dependentNid", dep?.nid);
         handleChange(index, "accountHolderType", "self");
       });
     } else {
-      handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameBn);
+      handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameEn);
       // handleChange(index, "accountHolderType", "self")
     }
   }, [dependent]);

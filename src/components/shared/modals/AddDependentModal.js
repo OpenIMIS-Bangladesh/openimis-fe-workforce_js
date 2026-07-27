@@ -35,10 +35,29 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
 
+  const safeParseJson = (val) => {
+    if (!val) return [];
+    if (typeof val === "string") {
+      try {
+        const parsed = JSON.parse(val);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch { return []; }
+    }
+    return Array.isArray(val) ? val : [];
+  };
+
   const [formData, setFormData] = useState(() => {
-    const fullyParsedDependentInfo = application?.workforceEmployeeDependentApplication?.map((dep) => {
-      const parseAttachments = JSON.parse(dep?.attachments);
-      return { ...dep, attachments: parseAttachments };
+    // 1. Parse all dependents; collect every attachment entry into a flat pool
+    const rawDependents = application?.workforceEmployeeDependentApplication ?? [];
+    const allEntries = [];
+    rawDependents.forEach((dep) => allEntries.push(...safeParseJson(dep?.attachments)));
+
+    // 2. Redistribute: each dependent keeps ONLY entries whose fieldKey starts with
+    //    "dependent_<index>_" (e.g. "dependent_0_…" for index 0)
+    const fullyParsedDependentInfo = rawDependents.map((dep, index) => {
+      const prefix = `dependent_${index}_`;
+      const ownAttachments = allEntries.filter((att) => String(att?.fieldKey ?? "").startsWith(prefix));
+      return { ...dep, attachments: ownAttachments };
     });
 
     // Map over employeeBankInfo (the main DB table with bank/branch details)
@@ -76,7 +95,9 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
       const items = prev[fieldKey] ? [...prev[fieldKey]] : [];
-      items[index] = { ...items[index], [key]: value };
+      const currentItem = items[index] || {};
+      const nextValue = typeof value === "function" ? value(currentItem[key]) : value;
+      items[index] = { ...currentItem, [key]: nextValue };
       return { ...prev, [fieldKey]: items };
     });
   };

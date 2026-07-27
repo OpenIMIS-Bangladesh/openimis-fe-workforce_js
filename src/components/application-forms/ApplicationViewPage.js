@@ -164,6 +164,8 @@ const hiddenKeys = [
   "diseaseNo",
   "minimumDonationAmount",
   "maximumDonationAmount",
+  "accountHolderType",
+  "dependant"
 ];
 
 const formatKey = (key, language) => {
