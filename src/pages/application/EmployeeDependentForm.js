@@ -211,7 +211,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
                     ) : formdata.organizationType === "eis" ? (
                       <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
-                    ) : (
+                    ) :isBlwfPath()? (
+                      <FormattedMessage id="workforce.application.subHeader.dependent.blwf" module="workforce" />
+                    ): (
                       <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
                     )}
                   </Typography>
