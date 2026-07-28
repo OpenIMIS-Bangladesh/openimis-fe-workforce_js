@@ -301,9 +301,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                               <TextInput
                                 id="accountHolderName"
                                 label="workforce.employee.account.info.accountHolderName"
-                                value={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn}
+                                value={account?.accountHolderName || dependent?.[index]?.nameEn || formdata?.workforceEmployee?.nameEn}
                                 onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
-                                readOnly={account?.accountHolderName || dependent?.[index]?.nameBn || formdata?.workforceEmployee?.nameBn}
+                                readOnly={account?.accountHolderName || dependent?.[index]?.nameEn || formdata?.workforceEmployee?.nameEn}
                                 required
                               />
                             </Grid>
