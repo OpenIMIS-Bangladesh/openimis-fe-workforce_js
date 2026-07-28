@@ -722,7 +722,7 @@ export function fetchApplication(mm, filters) {
     present_location_projection +
     permanent_location_projection +
     ",bankingInfo{id}}}}",
-    "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status,branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
+    "employeeBankingInfoApplication{edges{node{id,dateCreated,nameBn,nameEn,accountNo,accountHolderName,accountHolderType,status, routingNumber, branch{id,nameBn,nameEn,bankCode,branchCode,routingNumber,districtNameEn,districtNameBn,parent{id,nameBn,nameEn}},dependant{id},relationWithDependent}}}",
     "metadata",
     "employeeFactory{id, nameBn, nameEn,membershipNo,registrationDate,registrationExpiryDate,allAssociation{id,nameBn,nameEn,startDate}}",
     "cfApplicationSummary{id}",
