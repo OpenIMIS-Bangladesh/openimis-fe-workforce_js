@@ -364,7 +364,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                             ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
                             : formatMessage("workforce.employee.percentage_of_cf_grant")
                         }
-                        value={dependent.percentage_of_grant || ""}
+                        value={dependent?.percentageOfCfGrant||dependent?.percentage_of_grant || ""}
                         onChange={(v) => handleChange(index, "percentage_of_grant", normalizeNumberInput(v))}
                         required
                         error={!!errors.percentage_of_grant}
