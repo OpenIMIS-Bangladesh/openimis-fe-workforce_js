@@ -336,8 +336,8 @@ const BeneficiaryManagement = () => {
                   const dep = row?.workforceEmployeeDependent?.[0] || {};
                   const worker = row?.workforceApplication?.applicationType === "financialAssistance" ||
                     row?.workforceApplication?.applicationType === "deadlyGrant"
-                    ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameBn
-                    : row?.workforceApplication?.workforceEmployee?.firstNameBn;
+                    ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameEn
+                    : row?.workforceApplication?.workforceEmployee?.firstNameEn;
 
                   return (
                     <TableRow key={row.id} hover>
@@ -350,7 +350,7 @@ const BeneficiaryManagement = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameBn || "—"}</Typography>
+                        <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameEn || "—"}</Typography>
                         <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
                         <Box mt={0.5} mb={0.5}><Chip label={row.beneficiaryId} variant="outlined" style={{ height: 20 }} /></Box>
                         <Typography variant="caption" display="block" color="textSecondary">
@@ -361,10 +361,10 @@ const BeneficiaryManagement = () => {
                       <TableCell>
                         <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
                         <Typography variant="caption" display="block" color="textSecondary">
-                          {row?.workforceApplication?.employeeFactory?.nameBn}
+                          {row?.workforceApplication?.employeeFactory?.nameEn}
                         </Typography>
                         <Typography variant="caption" display="block" color="textSecondary">
-                          {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameBn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
+                          {row?.workforceApplication?.employeeFactory?.allAssociation?.shortNameEn || row?.workforceApplication?.employeeFactory?.allAssociation?.nameEn || "N/A"}
                         </Typography>
                       </TableCell>
 
