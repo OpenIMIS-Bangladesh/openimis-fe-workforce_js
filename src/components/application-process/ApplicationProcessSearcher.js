@@ -15,6 +15,7 @@ import {
   testWorkforcePayment,
   fetchRoles,
   fetchUsersByRoleId,
+  fetchWorkforceCommitteeUserMap,
 } from "../../actions";
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
@@ -1044,6 +1045,10 @@ class ApplicationProcessSearcher extends Component {
 
       if (this.props.summaryId) {
         filters.push(`cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+        if (!this.props.statusInSummary){
+          console.log("HELLOO 234")
+          filters.push(`statusIn:["forward_to_comiitee","proposed_for_rejection","selected"]`)
+        }
       }
 
       if (this.props.returnedApplications) {
@@ -1057,6 +1062,8 @@ class ApplicationProcessSearcher extends Component {
         if (loggedInUserId) {
           filters.push(`applicationTo: "${loggedInUserId}"`);
         }
+      }else if (this.props.statusInSummary) {
+        filters.push(`statusIn: ["${this.props.statusInSummary}"]`);
       }
       // this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
       this.props.fetchApplicationsSummary(this.props.modulesManager, filters);
@@ -1070,6 +1077,9 @@ class ApplicationProcessSearcher extends Component {
 
       if (this.props.summaryId) {
         filters.push(`blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+        if (!this.props.statusInSummary){
+          filters.push(`statusIn:["forward_to_comiitee","proposed_for_rejection"]`)
+        }
         if (loggedInUserId) {
           filters.push(`applicationTo: "${loggedInUserId}"`);
         }
@@ -1951,91 +1961,288 @@ class ApplicationProcessSearcher extends Component {
   };
 
   handleReject = (application) => {
-    const { selectedApplication } = this.state;
-    const {history}= this.props
-    const userType = getUserTypeFromRights(this.props.userRights);
-    this.setState({
-      // confirmModalOpen: true,
-      openRejectModal:true,
-      modalFlag:"reject",
-      // confirmModalMessage: "workforce.application.reject.message",
-      confirmModalCallback: async (confirmed) => {
-        if (confirmed) {
-          this.setState({
-            selectedApplication: {
-              ...selectedApplication,
-              isHistory: true,
-            },
-          }, async () => {
-            const { rejectComment, modalFlag } = this.state;
-            const summary =
-              application.blwfApplicationSummary ||
-              application.cfApplicationSummary ||
-              application.eisApplicationSummary;
-
-            if (summary) {
-              // applicationData is stored as a JSON string
-              const applicationIds = JSON.parse(summary.applicationData);
-
-              // Remove the current application's id
-              const updatedApplicationIds = applicationIds.filter(
-                (id) => safeDecodeId(id) !== safeDecodeId(application.id)
-              );
-
-              console.log("Before:", applicationIds);
-              console.log("After:", updatedApplicationIds);
-
-              // Payload for updating the summary
-              const updateSummaryData = {
-                id: safeDecodeId(summary?.id),
-                applicationData: JSON.stringify(updatedApplicationIds),
-              };
-              // const applicationSummeryMutation = formatMutation(
-              //         "updateWorkforceApplicationSummary",
-              //         formatApplicationSummaryGQL(updateSummaryData),
-              //         "update workforce application summary",
-              //       );
-              console.log(updateSummaryData);
-              this.props.updateApplicationSummary(updateSummaryData,"update application summary")
-            }
-            const updateApplicationData = {
-              id: decodeId(application.id),
-              status: (userType===WORKFORCE_USER_TYPE.BLWF_APPROVER||userType===WORKFORCE_USER_TYPE.APPROVER) ?WORKFORCE_STATUS.REJECTED_BY_COMMITTEE:WORKFORCE_STATUS.REJECTED,
-              committeeRemarks:rejectComment
-            };
-            console.log({rejectComment:application})
-            const createApplicationMovementData = {
-              applicationId: decodeId(application.id),
-              status: (userType===WORKFORCE_USER_TYPE.BLWF_APPROVER||userType===WORKFORCE_USER_TYPE.APPROVER) ?WORKFORCE_STATUS.REJECTED_BY_COMMITTEE:WORKFORCE_STATUS.REJECTED,
-              note: "আবেদন বাতিল করা হয়েছে",
-              action: "rejected",
-            };
-            try {
-              await this.props.updateApplication(updateApplicationData, "update workforce application");
-              await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
-              this.setState({
-                serverResponse: {
-                  status: "SUCCESS",
-                  message: "আবেদন বাতিল করা হয়েছে!",
+      const { selectedApplication } = this.state;
+      const { history, loggedInUserId } = this.props;
+      const userType = getUserTypeFromRights(this.props.userRights);
+      const isApprover = userType === WORKFORCE_USER_TYPE.BLWF_APPROVER || userType === WORKFORCE_USER_TYPE.APPROVER;
+  
+      this.setState({
+        openRejectModal: true,
+        modalFlag: "reject",
+        confirmModalCallback: async (confirmed) => {
+          if (confirmed) {
+            this.setState(
+              {
+                selectedApplication: {
+                  ...selectedApplication,
+                  isHistory: true,
                 },
-              });
-              historyPush(modulesManager, history, "/")
-              window.location.reload();
-            } catch (error) {
-              console.error("Approval failed:", error);
-              this.setState({
-                serverResponse: {
-                  status: "ERROR",
-                  message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
-                },
-              });
-            }
-          });
-        }
-        this.setState({ confirmModalOpen: false, confirmModalCallback: null });
-      }
-    });
-  };
+              },
+              async () => {
+                const { rejectComment } = this.state;
+                const summary = application.blwfApplicationSummary || application.cfApplicationSummary || application.eisApplicationSummary;
+  
+                try {
+                  if (isApprover) {
+                    // Fetch committee user mappings for quorum/representative logic
+                    const mappingsData = await this.props.fetchWorkforceCommitteeUserMap({
+                      userIds: [String(loggedInUserId)],
+                    });
+                    console.log("handle reject clicked",mappingsData)
+                    const mappings = mappingsData?.payload?.data?.workforceCommitteeUserMaps || [];
+                    const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
+                    const isRepresentative = mappings?.find(
+                      (item) =>
+                        item?.committee?.approvalType === "representative" || item?.committee?.approvalType === null || item?.committee?.approvalType === "",
+                    );
+                    const totalApprovers = mappings?.length || 1;
+  
+                    if (isRepresentative) {
+                      // Representative path: find if current user is the representative
+                      const mapItem = mappings.find((m) => m?.isRepresentative && String(safeDecodeId(m?.user?.id)) === String(loggedInUserId));
+  
+                      if (mapItem) {
+                        // Representative directly rejects with REJECTED_BY_COMMITTEE
+                        if (summary) {
+                          const applicationIds = JSON.parse(summary.applicationData);
+                          const updatedApplicationIds = applicationIds.filter((id) => safeDecodeId(id) !== safeDecodeId(application.id));
+                          console.log("handle reject console 1",{
+                              id: safeDecodeId(summary?.id),
+                              applicationData: JSON.stringify(updatedApplicationIds),
+                            })
+                          this.props.updateApplicationSummary(
+                            {
+                              id: safeDecodeId(summary?.id),
+                              applicationData: JSON.stringify(updatedApplicationIds),
+                            },
+                            "update application summary",
+                          );
+                        }
+  
+                        const updateApplicationData = {
+                          id: decodeId(application.id),
+                          status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+                          committeeRemarks: rejectComment,
+                        };
+                        const createApplicationMovementData = {
+                          applicationId: decodeId(application.id),
+                          status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+                          note: "আবেদন প্রতিনিধি দ্বারা বাতিল করা হয়েছে",
+                          action: "rejected",
+                        };
+                        console.log("handle reject console 2",updateApplicationData)
+                        console.log("handle reject console 3",createApplicationMovementData)
+                        await this.props.updateApplication(updateApplicationData, "update workforce application");
+                        await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+  
+                        this.setState({
+                          serverResponse: {
+                            status: "SUCCESS",
+                            message: "আবেদন বাতিল করা হয়েছে!",
+                          },
+                        });
+                        historyPush(modulesManager, history, "/");
+                        window.location.reload();
+                      } else {
+                        // Current user is not the representative
+                        if (!isQuorum) {
+                          // Non-quorum committee: non-representative can propose rejection
+                          // if (summary) {
+                          //   const applicationIds = JSON.parse(summary.applicationData);
+                          //   const updatedApplicationIds = applicationIds.filter((id) => safeDecodeId(id) !== safeDecodeId(application.id));
+                          // }
+
+                          const updateApplicationData = {
+                            id: decodeId(application.id),
+                            status: WORKFORCE_STATUS.PROPOSED_FOR_REJECTION,
+                            committeeRemarks: rejectComment,
+                          };
+                          const createApplicationMovementData = {
+                            applicationId: decodeId(application.id),
+                            status: WORKFORCE_STATUS.PROPOSED_FOR_REJECTION,
+                            note: "আবেদন প্রতিনিধি দ্বারা বাতিলের প্রস্তাব করা হয়েছে",
+                            action: "rejected",
+                          };
+                          console.log("handle reject console 2",updateApplicationData)
+                          console.log("handle reject console 3",createApplicationMovementData)
+                          await this.props.updateApplication(updateApplicationData, "update workforce application");
+                          await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+
+                          this.setState({
+                            serverResponse: {
+                              status: "SUCCESS",
+                              message: "বাতিলের প্রস্তাব পাঠানো হয়েছে!",
+                            },
+                          });
+                          historyPush(modulesManager, history, "/");
+                          window.location.reload();
+                        } else {
+                          // Quorum committee: only representative can reject
+                          this.setState({
+                            serverResponse: {
+                              status: "ERROR",
+                              message: "আপনি কমিটির প্রতিনিধি নন!",
+                            },
+                          });
+                        }
+                      }
+                    } else if (isQuorum) {
+                      // Quorum path: track rejections via eisRejectedByIds
+                      let rejectedUserIds = application.rejectedIds ? safeParse(application.rejectedIds) : [];
+  
+                      if (rejectedUserIds.includes(loggedInUserId)) {
+                        this.setState({
+                          serverResponse: {
+                            status: "ERROR",
+                            message: "আপনি ইতিমধ্যে বাতিল করেছেন!",
+                          },
+                        });
+                        return;
+                      }
+  
+                      rejectedUserIds.push(loggedInUserId);
+                      const majorityRejected = rejectedUserIds.length / totalApprovers >= 0.5;
+  
+                      const targetStatus = majorityRejected ? WORKFORCE_STATUS.REJECTED_BY_COMMITTEE : WORKFORCE_STATUS.PROPOSED_FOR_REJECTION;
+  
+                      // Update the application with rejected IDs and status
+                      const updateApplicationData = {
+                        id: decodeId(application.id),
+                        rejectedIds: JSON.stringify(rejectedUserIds),
+                        status: targetStatus,
+                        committeeRemarks: rejectComment,
+                      };
+                      console.log("handle reject console 4",updateApplicationData)
+  
+                      if (majorityRejected && summary) {
+                        // Majority rejected - remove from summary
+                        const applicationIds = JSON.parse(summary.applicationData);
+                        const updatedApplicationIds = applicationIds.filter((id) => safeDecodeId(id) !== safeDecodeId(application.id));
+                        console.log("handle reject console 5",{
+                            id: safeDecodeId(summary?.id),
+                            applicationData: JSON.stringify(updatedApplicationIds),
+                          })
+                        this.props.updateApplicationSummary(
+                          {
+                            id: safeDecodeId(summary?.id),
+                            applicationData: JSON.stringify(updatedApplicationIds),
+                          },
+                          "update application summary",
+                        );
+                      }
+  
+                      const createApplicationMovementData = {
+                        applicationId: decodeId(application.id),
+                        status: targetStatus,
+                        note: majorityRejected ? "আবেদন সংখ্যাগরিষ্ঠ দ্বারা বাতিল করা হয়েছে" : "আবেদন বাতিল করার ভোট দেওয়া হয়েছে",
+                        action: "rejected",
+                      };
+                      console.log("handle reject console 6",createApplicationMovementData)
+  
+                      await this.props.updateApplication(updateApplicationData, "update workforce application");
+                      await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+  
+                      this.setState({
+                        serverResponse: {
+                          status: "SUCCESS",
+                          message: majorityRejected ? "আবেদন বাতিল করা হয়েছে!" : "আপনার বাতিল ভোট রেকর্ড করা হয়েছে।",
+                        },
+                      });
+                      historyPush(modulesManager, history, "/");
+                      window.location.reload();
+                    } else {
+                      // Non-committee approver: keep existing behavior
+                      if (summary) {
+                        const applicationIds = JSON.parse(summary.applicationData);
+                        const updatedApplicationIds = applicationIds.filter((id) => safeDecodeId(id) !== safeDecodeId(application.id));
+                        this.props.updateApplicationSummary(
+                          {
+                            id: safeDecodeId(summary?.id),
+                            applicationData: JSON.stringify(updatedApplicationIds),
+                          },
+                          "update application summary",
+                        );
+                      }
+  
+                      const updateApplicationData = {
+                        id: decodeId(application.id),
+                        status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+                        committeeRemarks: rejectComment,
+                      };
+                      const createApplicationMovementData = {
+                        applicationId: decodeId(application.id),
+                        status: WORKFORCE_STATUS.REJECTED_BY_COMMITTEE,
+                        note: "আবেদন বাতিল করা হয়েছে",
+                        action: "rejected",
+                      };
+  
+                      await this.props.updateApplication(updateApplicationData, "update workforce application");
+                      await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+  
+                      this.setState({
+                        serverResponse: {
+                          status: "SUCCESS",
+                          message: "আবেদন বাতিল করা হয়েছে!",
+                        },
+                      });
+                      historyPush(modulesManager, history, "/");
+                      window.location.reload();
+                    }
+                  } else {
+                    // Non-approver user types: keep existing behavior
+                    if (summary) {
+                      const applicationIds = JSON.parse(summary.applicationData);
+                      const updatedApplicationIds = applicationIds.filter((id) => safeDecodeId(id) !== safeDecodeId(application.id));
+                      this.props.updateApplicationSummary(
+                        {
+                          id: safeDecodeId(summary?.id),
+                          applicationData: JSON.stringify(updatedApplicationIds),
+                        },
+                        "update application summary",
+                      );
+                    }
+  
+                    const updateApplicationData = {
+                      id: decodeId(application.id),
+                      status: WORKFORCE_STATUS.REJECTED,
+                      committeeRemarks: rejectComment,
+                    };
+                    const createApplicationMovementData = {
+                      applicationId: decodeId(application.id),
+                      status: WORKFORCE_STATUS.REJECTED,
+                      note: "আবেদন বাতিল করা হয়েছে",
+                      action: "rejected",
+                    };
+  
+                    await this.props.updateApplication(updateApplicationData, "update workforce application");
+                    await this.props.createApplicationMovement(createApplicationMovementData, "create workforce movement");
+  
+                    this.setState({
+                      serverResponse: {
+                        status: "SUCCESS",
+                        message: "আবেদন বাতিল করা হয়েছে!",
+                      },
+                    });
+                    historyPush(modulesManager, history, "/");
+                    window.location.reload();
+                  }
+                } catch (error) {
+                  console.error("Rejection failed:", error);
+                  this.setState({
+                    serverResponse: {
+                      status: "ERROR",
+                      message: "আবেদন বাতিল ব্যর্থ হয়েছে!",
+                    },
+                  });
+                }
+              },
+            );
+          }
+          this.setState({ confirmModalOpen: false, confirmModalCallback: null });
+        },
+      });
+    };
+              
   handleRejectByDG = async (application) => {
     const { selectedApplication } = this.state;
     const { loggedInUserId,history } = this.props;
@@ -4176,6 +4383,7 @@ const mapDispatchToProps = (dispatch) => (
         testWorkforcePayment,
         fetchUsersByRoleId,
         fetchRoles,
+        fetchWorkforceCommitteeUserMap,
         journalize,
         coreConfirm,
       },

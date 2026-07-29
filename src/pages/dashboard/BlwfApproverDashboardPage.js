@@ -222,8 +222,6 @@ const RejectedApplications = ({ disableButtons = 0 }) => {
   }, [dispatch, modulesManager]);
 
   const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
-  // Adjust the filter based on your API response
-  // const summaryData = data.filter(d => d.status === "rejected" || d.status === "forward_to_comiitee"); 
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
@@ -265,7 +263,7 @@ const RejectedApplications = ({ disableButtons = 0 }) => {
                     summaryId={item.id} 
                     loggedInUserId={loggedInUserId} 
                     disableButtons={disableButtons} 
-                    statusInSummary={"rejected_by_committee"} // Update status if needed
+                    statusInSummary={"rejected_by_committee"}
                   />
                 )}
               </CardContent>

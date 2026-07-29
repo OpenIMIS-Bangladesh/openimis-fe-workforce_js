@@ -235,7 +235,6 @@ const FiledApplications = ({ summaryData = [], disableButtons = 0, rejectedByCom
                     loggedInUserId={loggedInUserId}
                     coloredRow={true}
                     summaryData={item}
-                    statusInSummary={rejectedByCommittee ? "rejected_by_committee" : "forward_to_comiitee"}
                   />
                 )}
               </CardContent>
@@ -256,12 +255,10 @@ const RejectedApplications = ({ disableButtons = 0 }) => {
 
   useEffect(() => {
     // Adjust the fetch action/parameters for rejected applications as needed
-    dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"blwf"', 'status:"forward_to_comiitee"','applicationStatusIn:["rejected_by_committee"]']));
+    dispatch(fetchSummaryApplications(modulesManager, ['organizationType:"cf"', 'status:"forward_to_comiitee"','applicationStatusIn:["rejected_by_committee"]']));
   }, [dispatch, modulesManager]);
 
   const data = useSelector((state) => state.workforce[`applicationsSummary`] ?? []);
-  // Adjust the filter based on your API response
-  // const summaryData = data.filter(d => d.status === "rejected" || d.status === "forward_to_comiitee"); 
 
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);

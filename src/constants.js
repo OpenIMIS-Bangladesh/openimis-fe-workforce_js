@@ -115,7 +115,8 @@ export const WORKFORCE_STATUS = {
   APPROVED_BY_EIS_ADVISOR: "approved_by_eis_advisor",
   FORWARD_TO_BLWF_SECTION: "forward_to_blwf_section",
   EIS_PAYMENT_PROCESS: "eis_payment_process",
-  REJECTED_BY_COMMITTEE:"rejected_by_committee"
+  REJECTED_BY_COMMITTEE:"rejected_by_committee",
+  PROPOSED_FOR_REJECTION:"proposed_for_rejection"
 };
 
 export const STATUS_MAP_BN  = {
@@ -172,6 +173,7 @@ export const STATUS_MAP_BN  = {
   approved_by_eis_advisor: "ইআইএস উপদেষ্টা দ্বারা অনুমোদিত",
   forward_to_blwf_section: "বিএলডাব্লিউএফ শাখায় প্রেরণ",
   rejected_by_committee:"কমিটি কর্তৃক বাতিলকৃত",
+  proposed_for_rejection:"বাতিলের জন্য প্রস্তাবিত",
   forward_to_factory_admin:"ফ্যাক্টরি অ্যাডমিনের কাছে পাঠানো হয়েছে",
   approved_by_secretary:"সচিব কর্তৃক অনুমোদিত",
   approved_by_minister:"মন্ত্রী কর্তৃক অনুমোদিত"
@@ -229,6 +231,7 @@ export const STATUS_MAP_EN = {
   approved_by_eis_advisor: "Approved by Eis Advisor",
   forward_to_eis_coordinator: "Forward to Eis Coordinator",
   rejected_by_committee:"Rejected by committee",
+  proposed_for_rejection:"Proposed for Rejection",
   forward_to_factory_admin:"Forwarded to Factory Admin",
   approved_by_secretary:"Approved by Secretary",
   approved_by_minister:"Approved by Minister"

@@ -632,7 +632,8 @@ export function fetchApplicationsSummary(mm, filters) {
     "doctorsFlag",
     "doctorsRecommendedDonation",
     "doctorsDiagnosis",
-    "committeeRemarks"
+    "committeeRemarks",
+    "rejectedIds"
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS");
@@ -684,6 +685,7 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
     "deceasedWorkerInfo",
     "eisApprovalIds",
     "eisApprovedByIds",
+    "rejectedIds"
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS_DASHBOARD");
@@ -768,7 +770,8 @@ export function fetchApplication(mm, filters) {
     "doctorsFlag",
     "doctorsRecommendedDonation",
     "doctorsDiagnosis",
-    "committeeId"
+    "committeeId",
+    "rejectedIds"
   ];
   // const filterArray = filters
   //   ? Object.entries(filters).map(([key, value]) => `${key}: "${value}"`)
