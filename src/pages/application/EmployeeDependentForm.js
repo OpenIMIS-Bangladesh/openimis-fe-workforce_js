@@ -79,7 +79,7 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
   const getRelationAwareLabel = useCallback(
     (dependent, labelKey) => {
       return applicationType === "financialAssistance" && dependent?.relationType
-        ? `${formatMessage(dependent.relationType+".suffix")} ${formatMessage(labelKey)}`
+        ? `${formatMessage(dependent.relationType + ".suffix")} ${formatMessage(labelKey)}`
         : formatMessage(labelKey);
     },
     [applicationType, formatMessage],
@@ -194,10 +194,10 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
       {normalizedDependents?.map((dependent, index) => {
         const isFatherSelected = normalizedDependents.find((d) => d.relationType === "workforce.relation.father");
         const previousRelation = index > 0 && isFatherSelected != null ? "workforce.relation.father" : null;
-        const isVerified = isVerify()
-        const workerBirthDate =isVerified?formdata?.deceasedWorkerInfo?.birthDate: formdata?.workforceEmployee?.birthDate;
+        const isVerified = isVerify();
+        const workerBirthDate = isVerified ? formdata?.deceasedWorkerInfo?.birthDate : formdata?.workforceEmployee?.birthDate;
         // const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
-        const isEligible =getRelationForApi(normalizedDependents[index], workerBirthDate);
+        const isEligible = getRelationForApi(normalizedDependents[index], workerBirthDate);
         console.log("Single Beneficiary", dependent);
         console.log({ isEligible });
         const hasData = (dependent?.relationType || dependent?.relationWithWorker) && (dependent?.birthDate || dependent?.nid);
@@ -211,9 +211,9 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       <FormattedMessage id="workforce.previewDetails.dependent" module="workforce" />
                     ) : formdata.organizationType === "eis" ? (
                       <FormattedMessage id="workforce.previewDetails.eis.dependent" module="workforce" />
-                    ) :isBlwfPath()? (
+                    ) : isBlwfPath() ? (
                       <FormattedMessage id="workforce.application.subHeader.dependent.blwf" module="workforce" />
-                    ): (
+                    ) : (
                       <FormattedMessage id="workforce.application.subHeader.dependent" module="workforce" />
                     )}
                   </Typography>
@@ -226,12 +226,12 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       variant="caption"
                       style={{
                         fontWeight: "bold",
-                        color: isEligible ? "#2e7d32" : "#d32f2f", 
+                        color: isEligible ? "#2e7d32" : "#d32f2f",
                         border: `1px solid ${isEligible ? "#2e7d32" : "#d32f2f"}`,
-                        backgroundColor: isEligible ? "rgba(46, 125, 50, 0.04)" : "rgba(211, 47, 47, 0.04)", 
+                        backgroundColor: isEligible ? "rgba(46, 125, 50, 0.04)" : "rgba(211, 47, 47, 0.04)",
                         padding: "4px 8px",
                         borderRadius: "4px",
-                        display: "inline-block", 
+                        display: "inline-block",
                       }}
                     >
                       {!isEligible && <FormattedMessage id="workforce.dependent.eis.inEligible" />}
@@ -364,17 +364,23 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                             ? formatMessage("workforce.employee.eis.percentage_of_cf_grant")
                             : formatMessage("workforce.employee.percentage_of_cf_grant")
                         }
-                        value={dependent?.percentageOfCfGrant||dependent?.percentage_of_grant || ""}
+                        value={dependent?.percentageOfCfGrant || dependent?.percentage_of_grant || ""}
                         onChange={(v) => handleChange(index, "percentage_of_grant", normalizeNumberInput(v))}
                         required
                         error={!!errors.percentage_of_grant}
                         helperText={errors.percentage_of_grant}
                       />
+                      {errors.percentage_of_grant && (
+                        <FormHelperText error>
+                          <FormattedMessage id={errors.percentage_of_grant} />
+                        </FormHelperText>
+                      )}
                     </Grid>
                   )}
 
                   {formdata?.organizationType === "eis" &&
-                    ((dependent?.relationType||dependent?.relationWithWorker) === "workforce.relation.son" || (dependent?.relationType||dependent?.relationWithWorker) === "workforce.relation.daughter") && (
+                    ((dependent?.relationType || dependent?.relationWithWorker) === "workforce.relation.son" ||
+                      (dependent?.relationType || dependent?.relationWithWorker) === "workforce.relation.daughter") && (
                       <>
                         <Grid item xs={6} className={classes.item}>
                           <FormControl component="fieldset">
@@ -510,13 +516,11 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
 
       {applicationType === "financialAssistance" && (
         <Button variant="contained" color="primary" onClick={addItem} disabled={!isFirstDependentValid}>
-          {
-            isCfPath() || isBlwfPath() ? (
-              <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
-            ) : (
-              <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
-            )
-          }
+          {isCfPath() || isBlwfPath() ? (
+            <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+          ) : (
+            <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+          )}
         </Button>
       )}
     </Box>

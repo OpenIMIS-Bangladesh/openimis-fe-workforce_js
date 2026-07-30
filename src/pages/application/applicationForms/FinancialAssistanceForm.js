@@ -369,30 +369,54 @@ const FinancialAssistanceForm = ({
         metadata: parsedApplicationData?.metadata || formData?.metadata || {},
         applicantInfo: parsedApplicationData?.applicantInfo || employeeData?.metadata || {},
         deceasedWorkerInfo:
-          (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN)
+          user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
             ? {
                 ...prev.deceasedWorkerInfo,
                 nameEn: prev.deceasedWorkerInfo?.nameEn || parsedApplicationData?.deceasedWorkerInfo?.nameEn || employeeData?.firstNameEn || "",
                 nameBn: prev.deceasedWorkerInfo?.nameBn || parsedApplicationData?.deceasedWorkerInfo?.nameBn || employeeData?.firstNameBn || "",
-                fatherNameEn: prev.deceasedWorkerInfo?.fatherNameEn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameEn || employeeData?.fatherNameEn || "",
-                fatherNameBn: prev.deceasedWorkerInfo?.fatherNameBn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameBn || employeeData?.fatherNameBn || "",
-                motherNameEn: prev.deceasedWorkerInfo?.motherNameEn || parsedApplicationData?.deceasedWorkerInfo?.motherNameEn || employeeData?.motherNameEn || "",
-                motherNameBn: prev.deceasedWorkerInfo?.motherNameBn || parsedApplicationData?.deceasedWorkerInfo?.motherNameBn || employeeData?.motherNameBn || "",
-                spouseNameEn: prev.deceasedWorkerInfo?.spouseNameEn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameEn || employeeData?.spouseNameEn || "",
-                spouseNameBn: prev.deceasedWorkerInfo?.spouseNameBn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameBn || employeeData?.spouseNameBn || "",
+                fatherNameEn:
+                  prev.deceasedWorkerInfo?.fatherNameEn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameEn || employeeData?.fatherNameEn || "",
+                fatherNameBn:
+                  prev.deceasedWorkerInfo?.fatherNameBn || parsedApplicationData?.deceasedWorkerInfo?.fatherNameBn || employeeData?.fatherNameBn || "",
+                motherNameEn:
+                  prev.deceasedWorkerInfo?.motherNameEn || parsedApplicationData?.deceasedWorkerInfo?.motherNameEn || employeeData?.motherNameEn || "",
+                motherNameBn:
+                  prev.deceasedWorkerInfo?.motherNameBn || parsedApplicationData?.deceasedWorkerInfo?.motherNameBn || employeeData?.motherNameBn || "",
+                spouseNameEn:
+                  prev.deceasedWorkerInfo?.spouseNameEn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameEn || employeeData?.spouseNameEn || "",
+                spouseNameBn:
+                  prev.deceasedWorkerInfo?.spouseNameBn || parsedApplicationData?.deceasedWorkerInfo?.spouseNameBn || employeeData?.spouseNameBn || "",
                 citizenship: prev.deceasedWorkerInfo?.citizenship || parsedApplicationData?.deceasedWorkerInfo?.citizenship || employeeData?.citizenship || "",
                 phoneNumber: prev.deceasedWorkerInfo?.phoneNumber || parsedApplicationData?.deceasedWorkerInfo?.phoneNumber || employeeData?.phoneNumber || "",
                 relationWithApplicant: prev.deceasedWorkerInfo?.relationWithApplicant || parsedApplicationData?.deceasedWorkerInfo?.relationWithApplicant || "",
                 birthDate: prev.deceasedWorkerInfo?.birthDate || parsedApplicationData?.deceasedWorkerInfo?.birthDate || "",
                 gender: prev.deceasedWorkerInfo?.gender || parsedApplicationData?.deceasedWorkerInfo?.gender || "",
                 position: prev.deceasedWorkerInfo?.position || parsedApplicationData?.deceasedWorkerInfo?.position || prev.workforceEmployee?.position || "",
-                maritalStatus: prev.deceasedWorkerInfo?.maritalStatus || prev.workforceEmployee?.maritalStatus || parsedApplicationData?.deceasedWorkerInfo?.maritalStatus || "",
+                maritalStatus:
+                  prev.deceasedWorkerInfo?.maritalStatus ||
+                  prev.workforceEmployee?.maritalStatus ||
+                  parsedApplicationData?.deceasedWorkerInfo?.maritalStatus ||
+                  "",
                 nid: prev.deceasedWorkerInfo?.nid || prev.workforceEmployee?.nid || parsedApplicationData?.deceasedWorkerInfo?.nid || employeeData?.nid || "",
-                birthCertificateNo: prev.deceasedWorkerInfo?.birthCertificateNo || parsedApplicationData?.deceasedWorkerInfo?.birthCertificateNo || employeeData?.birthCertificateNo || "",
-                permanentAddress: prev.deceasedWorkerInfo?.permanentAddress || parsedApplicationData?.deceasedWorkerInfo?.permanentAddress || employeeData?.permanentAddress || "",
-                permanentLocation: prev.deceasedWorkerInfo?.permanentLocation || parsedApplicationData?.deceasedWorkerInfo?.permanentLocation || employeeData?.permanentLocation || "",
-                presentLocation: prev.deceasedWorkerInfo?.presentLocation || parsedApplicationData?.deceasedWorkerInfo?.presentLocation || employeeData?.presentLocation || "",
-                presentAddress: prev.deceasedWorkerInfo?.presentAddress || parsedApplicationData?.deceasedWorkerInfo?.presentAddress || employeeData?.presentAddress || "",
+                birthCertificateNo:
+                  prev.deceasedWorkerInfo?.birthCertificateNo ||
+                  parsedApplicationData?.deceasedWorkerInfo?.birthCertificateNo ||
+                  employeeData?.birthCertificateNo ||
+                  "",
+                permanentAddress:
+                  prev.deceasedWorkerInfo?.permanentAddress ||
+                  parsedApplicationData?.deceasedWorkerInfo?.permanentAddress ||
+                  employeeData?.permanentAddress ||
+                  "",
+                permanentLocation:
+                  prev.deceasedWorkerInfo?.permanentLocation ||
+                  parsedApplicationData?.deceasedWorkerInfo?.permanentLocation ||
+                  employeeData?.permanentLocation ||
+                  "",
+                presentLocation:
+                  prev.deceasedWorkerInfo?.presentLocation || parsedApplicationData?.deceasedWorkerInfo?.presentLocation || employeeData?.presentLocation || "",
+                presentAddress:
+                  prev.deceasedWorkerInfo?.presentAddress || parsedApplicationData?.deceasedWorkerInfo?.presentAddress || employeeData?.presentAddress || "",
               }
             : parsedApplicationData?.deceasedWorkerInfo || {},
       }));
@@ -455,6 +479,24 @@ const FinancialAssistanceForm = ({
     // 5. Assign Document Errors if the current step is a "document step"
     if (!documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
+    }
+    const isCfGrantMode = formData?.organizationType === "cf" && formData?.applicationType === "financialAssistance";
+
+    if (IS_DEPENDENT_STEP && isCfGrantMode) {
+      const totalPercentage = formData?.dependents.reduce((sum, dep) => {
+        const val = Number(dep?.percentageOfCfGrant || dep?.percentage_of_grant || 0);
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+
+      if (totalPercentage !== 100) {
+        
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          percentage_of_grant: "Total percentage must be exactly 100%",
+        }));
+        setShowErrorSnackbar(true);
+        return;
+      }
     }
 
     setErrors(newErrors);
@@ -869,11 +911,11 @@ const FinancialAssistanceForm = ({
               variant="contained"
               color="primary"
               // disabled={disableConfirmSubmit}
-              onClick={async() => {
+              onClick={async () => {
                 // setIsSubmitted(true);
                 await handleSubmit();
                 setShowVerifyNid(false);
-                setIsSubmitted(true)
+                setIsSubmitted(true);
               }}
             >
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />
