@@ -206,6 +206,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     dispatch(updateApplication(payload, "update bank info")).then((res) => {
       onClose();
+      window.location.reload()
     });
     // 2. Close Modal
     // onClose();
