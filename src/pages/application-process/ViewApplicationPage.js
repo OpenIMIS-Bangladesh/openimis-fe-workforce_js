@@ -8,7 +8,7 @@ import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
 import { conditionalEnToBn, getUserTypeFromRights, isBlwfPath, isEisPath, safeDecodeId, safeParse } from "../../utils/utils";
-import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication } from "../../actions";
+import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication, updateApplicationSummary } from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
@@ -213,10 +213,11 @@ class ViewApplicationPage extends Component {
         selectedApplicationIds: [{ id: application?.id }],
         loggedInUserId: this.props.loggedInUserId,
         userRights: this.props.user_rights,
+        modulesManager: this.props.modulesManager,
         fetchWorkforceDocument: this.props.fetchWorkforceDocument,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
-        modulesManager: this.props.modulesManager,
+        updateApplicationSummary: this.props.updateApplicationSummary,
         setServerResponse: (res) => this.setState({ serverResponse: res }),
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
         setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
@@ -224,9 +225,10 @@ class ViewApplicationPage extends Component {
         summaryId: application?.eisApplicationSummary?.id,
         eisApprovalIds: application?.eisApprovalIds,
         eisApprovedByIds: application?.eisApprovedByIds,
-        modulesManager: this.props.modulesManager,
         dispatch: this.props.dispatch,
         history: this.props.history,
+        setCloseLoader:(l)=>this.setState({loader:l}),
+        loader:this.state.loader
       });
     } else {
       handleBulkSelectedByAssociationLogic({
@@ -514,6 +516,7 @@ const mapDispatchToProps = (dispatch) =>
       updateApplication,
       createApplicationMovement,
       fetchApplicationWiseMovementList,
+      updateApplicationSummary,
       journalize,
       coreConfirm,
     },
