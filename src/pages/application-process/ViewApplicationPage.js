@@ -77,6 +77,7 @@ class ViewApplicationPage extends Component {
       open: false,
       selectedApplication: null,
       eisDependentBFTNModalOpen: false,
+      loader:false
     };
   }
 
@@ -493,6 +494,7 @@ class ViewApplicationPage extends Component {
               this.setState({ confirmModalOpen: false });
             }
           }}
+          loader={this.state.loader}
         />
       </div>
     );
