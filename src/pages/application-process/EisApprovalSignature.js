@@ -1010,7 +1010,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                             : "N/A"}
                         </td>
                       ) : null}
-                      <td style={{ textAlign: "center" }}>{Number(benefitRate * 100).toFixed(2)}%</td>
+                      <td style={{ textAlign: "center" }}>{Number(benefitRate).toFixed(2)}%</td>
                       {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type) ? null : firstData
                           ?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
                         <>
@@ -1018,6 +1018,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                           <td style={{ textAlign: "right" }}>{row?.eisApprovedAmount}</td>
                         </>
                       ) : null}
+
                       <td style={{ textAlign: "right" }}>{Number(row?.eisInitialMonthlyAmount || 0).toFixed(2)}</td>
                       <td style={{ textAlign: "right" }}>{Number(row?.eisMonthlyAmount || 0).toFixed(2)}</td>
 
