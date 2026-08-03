@@ -552,7 +552,10 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Revert">
-            <IconButton disabled={application?.isHistory} onClick={() => {component.handleOpenRevertModal(application);component.setState({ revertByChecker: true });}}>
+            <IconButton disabled={application?.isHistory} onClick={() => {
+              component.handleOpenRevertModal(application);
+              component.setState({ revertByChecker: true });
+            }}>
               <UndoIcon style={{ color: "red" }} />
             </IconButton>
           </Tooltip>
