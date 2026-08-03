@@ -4040,7 +4040,7 @@ class ApplicationProcessSearcher extends Component {
             );
           }
           else if (userType === WORKFORCE_USER_TYPE.DOCTOR || userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR || userType === WORKFORCE_USER_TYPE.CHECKER || userType === WORKFORCE_USER_TYPE.CHECKER_TWO ||userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
-            || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR
+            || userType === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR || userType === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR
             || userType === WORKFORCE_USER_TYPE.EIS_OFFICER || userType === WORKFORCE_USER_TYPE.BLWF_CHECKER || userType === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
             return (
               <RevertApplicationModal

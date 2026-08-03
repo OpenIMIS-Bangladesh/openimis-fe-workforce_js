@@ -92,6 +92,7 @@ const RevertPathSelector = ({ users, userType, selectedUser, onChange }) => (
                     WORKFORCE_USER_TYPE.BLWF_CHECKER,
                     WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,
                     WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR,
+                    WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR,
                   ].includes(userType) &&
                   ["Section Admin", "Section Admin Two", "BLWF Section Admin", "S1 Asst Deputy Director", "S2 Asst Deputy Director"].includes(row?.role),
               )
