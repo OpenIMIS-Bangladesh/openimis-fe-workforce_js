@@ -17,7 +17,7 @@ import {
 import { PublishedComponent } from "@openimis/fe-core";
 import { useModulesManager } from "@openimis/fe-core";
 import { useDispatch } from "react-redux";
-import { fetchEisPaymentProcessWithFilters, updateWorkforceEisBeneficiary } from "../../../actions";
+import { fetchEisPaymentProcessWithFilters, fetchWorkforceEisLastPaymentDate, updateWorkforceEisBeneficiary } from "../../../actions";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 
 const INITIAL_STATE = {
@@ -35,7 +35,10 @@ const INITIAL_STATE = {
 };
 
 const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
-
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        month: 'long',
+        year: 'numeric'
+    });
     const dispatch = useDispatch();
     const modulesManager = useModulesManager();
     const dep = beneficiary?.workforceEmployeeDependent?.[0];
@@ -66,6 +69,28 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
             [field]: value
         }));
     };
+
+
+    useEffect(() => {
+        const lastPayment = dispatch(fetchWorkforceEisLastPaymentDate({
+            beneficiaryId: beneficiary?.beneficiaryId ?? ""})).then(res => {
+            const data = res.payload.data.workforceEisLastPaymentDate;
+            let responseMonth= data?.monthIndex;
+            let responseYear= data?.year;
+            if (data) {
+                const lastPaymentDate = new Date(responseYear, responseMonth, 0);
+                console.log("Last Payment Date:", lastPaymentDate);
+                const selectedDate = formData.remarriageOrDeathDate!==null ? new Date(formData.remarriageOrDeathDate) : null;
+                if (selectedDate!==null && selectedDate < lastPaymentDate) {
+                    alert(`Selected date (${selectedDate.toLocaleDateString("en-BD")}) cannot be earlier than the last payment month (${formatter.format(lastPaymentDate)}).`);
+                    setFormData(prev => ({
+                        ...prev,
+                        remarriageOrDeathDate: null
+                    }));
+                }
+            }
+        });
+    }, [formData.remarriageOrDeathDate]);
 
     // Helper for updating nested adjustments for other beneficiaries
    const updateAdjustment = (beneficiaryId, field, value) => {

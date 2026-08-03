@@ -71,7 +71,7 @@ const BeneficiaryPaymentProcess = () => {
           workforceFactoryId: safeDecodeId(filters.factory) ?? "",
           allAssociationId: safeDecodeId(filters.association) ?? "",
           status: "active",
-          beneficiaryStatus: "eligible",
+          // beneficiaryStatus: "eligible",
           approved: "yes",
           notInStage: "yes"
         }, modulesManager)),
@@ -140,7 +140,7 @@ const BeneficiaryPaymentProcess = () => {
             Beneficiary Payment Processing
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Beneficary payment processing, and related details.
+            Beneficiary payment processing, and related details.
           </Typography>
         </Box>
       </Box>
@@ -251,11 +251,13 @@ const BeneficiaryPaymentProcess = () => {
                 return (
                   <TableRow key={row.id} hover>
                     <TableCell padding="checkbox" align="center">
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(row.id)}
-                        onChange={() => handleRowSelect(row.id)}
-                      />
+                      {row?.beneficiaryStatus !== "closed" && (
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(row.id)}
+                          onChange={() => handleRowSelect(row.id)}
+                        />
+                      )}
                     </TableCell>
 
                     <TableCell>
@@ -300,16 +302,28 @@ const BeneficiaryPaymentProcess = () => {
 
                     <TableCell align="center">
                       {getStatusChip(row)}
+                      {row?.beneficiaryStatus === "hold" && (
+                        <Typography variant="caption" color="success">
+                          {"Payment on hold From "+ (row?.lastLiveCheckDate)}
+                        </Typography>
+                      )}
+                      {row?.beneficiaryStatus === "closed" && (
+                        <Typography variant="caption" color="success">
+                          {"Payment closed From "+ (row?.remarriageOrDeathDate)}
+                        </Typography>
+                      )}
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleApprove([row.id])}
-                        style={{ marginLeft: 6 }}
-                      >
-                        Process
-                      </Button>
+                      {row?.beneficiaryStatus !== "closed" && (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleApprove([row.id])}
+                          style={{ marginLeft: 6 }}
+                        >
+                          Process
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 );

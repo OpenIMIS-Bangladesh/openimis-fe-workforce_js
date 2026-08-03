@@ -500,7 +500,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         row?.workforceApplication?.applicationType === "financialAssistance"
           ? row?.workforceEmployeeDependent?.[0]?.nid
           : row?.workforceApplication?.workforceEmployee?.nid || "",
-        `${benefitRate * 100}%`,
+        `${Number(benefitRate * 100).toFixed(2)}%`,
         Number(row?.eisInitialMonthlyAmount || 0).toFixed(2),
         Number(row?.eisMonthlyAmount || 0).toFixed(2),
         // row?.eisCalculatedAmount || 0,
@@ -756,7 +756,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         (typeof RELATION_LABEL_MAP !== "undefined"
           ? RELATION_LABEL_MAP[row?.workforceEmployeeDependent?.[0]?.relationWithWorker]
           : row?.workforceEmployeeDependent?.[0]?.relationWithWorker) || "",
-        `${benefitRate * 100}%`,
+        `${Number(benefitRate * 100).toFixed(2)}%`,
         Number(row?.eisInitialMonthlyAmount || 0).toFixed(2),
         Number(row?.eisMonthlyAmount || 0).toFixed(2),
         // row?.eisCalculatedAmount || 0,
@@ -1010,7 +1010,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
                             : "N/A"}
                         </td>
                       ) : null}
-                      <td style={{ textAlign: "center" }}>{benefitRate}%</td>
+                      <td style={{ textAlign: "center" }}>{Number(benefitRate * 100).toFixed(2)}%</td>
                       {[WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE, WORKFORCE_USER_TYPE.EIS_COMMITTEE].includes(user_type) ? null : firstData
                           ?.workforceApplication?.status && firstData?.workforceApplication?.status != "approved_by_committee" ? (
                         <>

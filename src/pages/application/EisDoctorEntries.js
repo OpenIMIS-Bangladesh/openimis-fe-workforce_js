@@ -153,11 +153,25 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
   // });
 
   const meetingData = summaryData?.filter((m) => {
-    const parsedApplicationData = safeParse(m?.applicationData);
-    console.log({ parsedApplicationData });
-    // const decodedApplicationData = safeDecodeId(parsedApplicationData)
-    return parsedApplicationData?.includes(formData?.id);
+      const parsedApplicationData = safeParse(m?.applicationData);
+
+      if (Array.isArray(parsedApplicationData)) {
+          return parsedApplicationData.includes(formData?.id);
+      }
+
+      if (parsedApplicationData && typeof parsedApplicationData === "object") {
+          return Object.values(parsedApplicationData).includes(formData?.id);
+      }
+
+      return false;
   });
+  // const meetingData = summaryData?.filter((m) => {
+  //   const parsedApplicationData = safeParse(m?.applicationData);
+  //   console.log({ parsedApplicationData });
+  //   // const decodedApplicationData = safeDecodeId(parsedApplicationData)
+  //   return parsedApplicationData?.includes(formData?.id);
+  // });
+
   console.log("Final meetingData:", meetingData);
   console.log({ fromDoctor: meetingData });
 

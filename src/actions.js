@@ -3565,3 +3565,27 @@ export function fetchPrevApplicationHistory(filters){
   // const payload = formatPageQueryWithCount("workforceCheckApplicationDuplicacy", filters, projections);
   return graphql(payload, "WORKFORCE_NOTIFICATION_DATA");
 }
+
+
+
+export function fetchWorkforceEisLastPaymentDate(filters) {
+  const payload = `
+    {
+      workforceEisLastPaymentDate(
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+      ) {
+        id
+        monthIndex
+        year
+        eisMonthlyAmount
+        eisInitialMonthlyAmount
+        eisPaymentType
+        eisApprovedAmount
+        eisCalculatedAmount
+        eisInitialReplacementRate
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_LAST_PAYMENT_DATE");
+}
