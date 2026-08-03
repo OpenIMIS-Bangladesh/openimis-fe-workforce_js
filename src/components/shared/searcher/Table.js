@@ -34,9 +34,9 @@ import {
   useTranslations,
   ProgressOrError,
 } from "@openimis/fe-core";
-
-import { getUserType } from "../../../utils/utils";
-import {roleMaxDayCount} from "../../../constants";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserType, safeParse } from "../../../utils/utils";
+import {roleMaxDayCount, WORKFORCE_USER_TYPE} from "../../../constants";
 import {colorCode} from "../../../constants";
 import ColoredRowLegends from "./ColoredRowLegends";
 
@@ -123,6 +123,7 @@ function Table({
   const { formatMessage, formatMessageWithValues } = useTranslations(
     "workforce" || "core"
   );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   // Use selection from props directly instead of maintaining separate state
   const [ordinalNumberFrom, setOrdinalNumberFrom] = useState(null);
@@ -387,33 +388,54 @@ function Table({
   const user_type = getUserType();
 
   items.forEach(item => {
-    if(item?.trackingNumber && item?.dateUpdated){
-      const currentDate= new Date();
-      const updatedDate= new Date(item?.dateUpdated);
-      const timeDiff= currentDate.getTime() - updatedDate.getTime();
-      const dayCount= Math.floor(timeDiff / (1000 * 3600 * 24));
-      let duePercentage= dayCount*100/roleMaxDayCount[user_type];
-      item.dueDayCount= dayCount;
-      if(duePercentage>=0 && duePercentage<=20){
-        item.rowColorCode= colorCode[0];
-      }
-      else if(duePercentage>20 && duePercentage<=40){
-        item.rowColorCode= colorCode[20];
-      }
-      else if(duePercentage>40 && duePercentage<=60){
-        item.rowColorCode= colorCode[40];
-      }
-      else if(duePercentage>60 && duePercentage<=80){
-        item.rowColorCode= colorCode[60];
-      }
-      else if(duePercentage>80 && duePercentage<=100){
-        item.rowColorCode= colorCode[80];
-      }
-      else if(duePercentage>100){
-        item.rowColorCode= colorCode[100];
+  if (item?.trackingNumber && item?.dateUpdated) {
+    const currentDate = new Date();
+    const updatedDate = new Date(item?.dateUpdated);
+    const timeDiff = currentDate.getTime() - updatedDate.getTime();
+    const dayCount = Math.floor(timeDiff / (1000 * 3600 * 24));
+    let duePercentage = (dayCount * 100) / roleMaxDayCount[user_type];
+    item.dueDayCount = dayCount;
+
+    if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) {
+      const isApproved = safeParse(item?.eisApprovedByIds)?.includes(loggedInUserId);
+      const isRejected = safeParse(item?.rejectedIds)?.includes(loggedInUserId);
+
+      if (isApproved) {
+        item.rowColorCode = colorCode[20];
+      } else if (isRejected) {
+        item.rowColorCode = colorCode[60];
+      }else if (item?.status ==="revert") {
+        item.rowColorCode = colorCode[40];
+      } else if (duePercentage >= 0 && duePercentage <= 20) {
+        item.rowColorCode = colorCode[0];
+      }else if (duePercentage > 20 && duePercentage <= 40) {
+        item.rowColorCode = colorCode[20];
+      } else if (duePercentage > 40 && duePercentage <= 60) {
+        item.rowColorCode = colorCode[40];
+      } else if (duePercentage > 60 && duePercentage <= 80) {
+        item.rowColorCode = colorCode[60];
+      } else if (duePercentage > 80 && duePercentage <= 100) {
+        item.rowColorCode = colorCode[80];
+      } else if (duePercentage > 100) {
+        item.rowColorCode = colorCode[100];
+      } 
+    } else {
+      if (duePercentage >= 0 && duePercentage <= 20) {
+        item.rowColorCode = colorCode[0];
+      } else if (duePercentage > 20 && duePercentage <= 40) {
+        item.rowColorCode = colorCode[20];
+      } else if (duePercentage > 40 && duePercentage <= 60) {
+        item.rowColorCode = colorCode[40];
+      } else if (duePercentage > 60 && duePercentage <= 80) {
+        item.rowColorCode = colorCode[60];
+      } else if (duePercentage > 80 && duePercentage <= 100) {
+        item.rowColorCode = colorCode[80];
+      } else if (duePercentage > 100) {
+        item.rowColorCode = colorCode[100];
       }
     }
-  });
+  }
+});
 
   return (
     <Box position="relative" overflow="auto">

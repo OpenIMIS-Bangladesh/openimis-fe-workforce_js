@@ -1,27 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import {
-  Modal,
-  Box,
-  Typography,
-  Button,
-  Divider,
-  Paper,
-  Breadcrumbs,
-  Radio,
-  FormControlLabel,
-  CircularProgress,
-} from "@material-ui/core";
+import { Modal, Box, Typography, Button, Divider, Paper, Breadcrumbs, Radio, FormControlLabel, CircularProgress } from "@material-ui/core";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import { useSelector, useDispatch } from "react-redux";
 import { useModulesManager, decodeId, FormattedMessage, useHistory } from "@openimis/fe-core";
 import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
-import {
-  fetchApplication,
-  updateApplication,
-  createApplicationMovement,
-  fetchApplicationWiseMovementList,
-} from "../../../actions";
+import { fetchApplication, updateApplication, createApplicationMovement, fetchApplicationWiseMovementList } from "../../../actions";
 import { blwfApplicationTypeOptions, cfApplicationTypeOptions, eisApplicationTypeOptions, WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
 import { safeDecodeId, getUserType, isBlwfPath, isEisPath, safeParse } from "../../../utils/utils";
 
@@ -47,15 +31,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5, 1),
     fontSize: "1.2rem",
   },
-  sectionPaper: { 
-    padding: theme.spacing(2), 
-    marginBottom: theme.spacing(3), 
-    borderRadius: theme.spacing(1), 
+  sectionPaper: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+    borderRadius: theme.spacing(1),
     backgroundColor: theme.palette.grey[50],
-    minHeight: '100px', // Give it a min-height to avoid layout shifts
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    minHeight: "100px", // Give it a min-height to avoid layout shifts
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonGroup: { marginTop: theme.spacing(3), display: "flex", justifyContent: "flex-end", gap: theme.spacing(2) },
   responseMessage: { marginBottom: theme.spacing(2), fontWeight: 600 },
@@ -67,26 +51,22 @@ const filterUsersByType = (users) => {
   if (user_type === WORKFORCE_USER_TYPE.CHECKER || user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR) {
     // CHECKER can only revert to users with role "section_admin"
     return users.filter(
-      (user) =>
-        user.role === "section_admin" ||
-        user.role === "Section Admin" ||
-        user.role === "Applicant" // Keep applicant option
+      (user) => user.role === "section_admin" || user.role === "Section Admin" || user.role === "Applicant", // Keep applicant option
     );
   } else if (user_type === WORKFORCE_USER_TYPE.CHECKER_TWO || user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR) {
     // CHECKER_TWO can only revert to users with role "section_admin_two"
     return users.filter(
-      (user) =>
-        user.role === "section_admin_two" ||
-        user.role === "Section Admin Two" ||
-        user.role === "Applicant" // Keep applicant option
+      (user) => user.role === "section_admin_two" || user.role === "Section Admin Two" || user.role === "Applicant", // Keep applicant option
     );
   } else if (user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER) {
     // BLWF_CHECKER can only revert to users with role "blwf_section_admin"
     return users.filter(
-      (user) =>
-        user.role === "blwf_section_admin" ||
-        user.role === "BLWF Section Admin" ||
-        user.role === "Applicant" // Keep applicant option
+      (user) => user.role === "blwf_section_admin" || user.role === "BLWF Section Admin" || user.role === "Applicant", // Keep applicant option
+    );
+  } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
+    return users.filter(
+      (user) => user.role === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user.role === "Eis Coordinator",
+      // user.role === "Applicant" // Keep applicant option
     );
   }
   // For all other user types, return all users (existing logic)
@@ -94,40 +74,91 @@ const filterUsersByType = (users) => {
 };
 
 // No changes to RevertPathSelector needed
-const RevertPathSelector = ({ users,userType, selectedUser, onChange }) => (
+const RevertPathSelector = ({ users, userType, selectedUser, onChange }) => (
   <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
     <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold" }}>
       আবেদন কাকে ফেরত পাঠাতে চান নির্বাচন করুন:
     </Typography>
     {users.length > 0 ? (
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        {
-          isBlwfPath()?
-          (
-            users.filter(row => (isBlwfPath()&& ([WORKFORCE_USER_TYPE.CHECKER, WORKFORCE_USER_TYPE.CHECKER_TWO,WORKFORCE_USER_TYPE.BLWF_CHECKER,WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR].includes(userType)) && 
-            ["Section Admin","Section Admin Two","BLWF Section Admin","S1 Asst Deputy Director","S2 Asst Deputy Director"].includes(row?.role))).map((user) => (
-              <FormControlLabel
-                key={user.id}
-                value={user.id}
-                control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
-                label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
-              />
-            ))
-          ):
-          (
-            users.map((user) => (
-              <FormControlLabel
-                key={user.id}
-                value={user.id}
-                control={<Radio checked={selectedUser === user.id} onChange={() => onChange(user.id)} style={{ color: selectedUser === user.id ? "#1976d2" : "black" }} />}
-                label={<Typography color={selectedUser === user.id ? "primary" : "inherit"}>{user.name} ({user.role})</Typography>}
-              />
-            ))
-          )
-        }
+        {isBlwfPath()
+          ? users
+              .filter(
+                (row) =>
+                  isBlwfPath() &&
+                  [
+                    WORKFORCE_USER_TYPE.CHECKER,
+                    WORKFORCE_USER_TYPE.CHECKER_TWO,
+                    WORKFORCE_USER_TYPE.BLWF_CHECKER,
+                    WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,
+                    WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR,
+                  ].includes(userType) &&
+                  ["Section Admin", "Section Admin Two", "BLWF Section Admin", "S1 Asst Deputy Director", "S2 Asst Deputy Director"].includes(row?.role),
+              )
+              .map((user) => (
+                <FormControlLabel
+                  key={user.id}
+                  value={user.id}
+                  control={
+                    <Radio
+                      checked={selectedUser === user.id}
+                      onChange={() => onChange(user.id)}
+                      style={{ color: selectedUser === user.id ? "#1976d2" : "black" }}
+                    />
+                  }
+                  label={
+                    <Typography color={selectedUser === user.id ? "primary" : "inherit"}>
+                      {user.name} ({user.role})
+                    </Typography>
+                  }
+                />
+              ))
+          : isEisPath() && (userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE)
+            ? users
+                .filter((user) => user.role === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user.role === "Eis Coordinator")
+                .map((user) => (
+                  <FormControlLabel
+                    key={user.id}
+                    value={user.id}
+                    control={
+                      <Radio
+                        checked={selectedUser === user.id}
+                        onChange={() => onChange(user.id)}
+                        style={{
+                          color: selectedUser === user.id ? "#1976d2" : "black",
+                        }}
+                      />
+                    }
+                    label={
+                      <Typography color={selectedUser === user.id ? "primary" : "inherit"}>
+                        {user.name} ({user.role})
+                      </Typography>
+                    }
+                  />
+                ))
+            : users.map((user) => (
+                <FormControlLabel
+                  key={user.id}
+                  value={user.id}
+                  control={
+                    <Radio
+                      checked={selectedUser === user.id}
+                      onChange={() => onChange(user.id)}
+                      style={{ color: selectedUser === user.id ? "#1976d2" : "black" }}
+                    />
+                  }
+                  label={
+                    <Typography color={selectedUser === user.id ? "primary" : "inherit"}>
+                      {user.name} ({user.role})
+                    </Typography>
+                  }
+                />
+              ))}
       </Breadcrumbs>
     ) : (
-      <Typography variant="body2" color="textSecondary">No revert path available.</Typography>
+      <Typography variant="body2" color="textSecondary">
+        No revert path available.
+      </Typography>
     )}
   </Paper>
 );
@@ -148,9 +179,12 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
 
   const hasFetchedRef = useRef(false);
 
-  const appIdDecoded = useMemo(() => selectedApplication?.id ? safeDecodeId(selectedApplication.id) : null, [selectedApplication?.id]);
-  const applicantName = useMemo(() => selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী", [selectedApplication?.workforceEmployee?.firstNameBn]);
-  const history = useHistory()
+  const appIdDecoded = useMemo(() => (selectedApplication?.id ? safeDecodeId(selectedApplication.id) : null), [selectedApplication?.id]);
+  const applicantName = useMemo(
+    () => selectedApplication?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+    [selectedApplication?.workforceEmployee?.firstNameBn],
+  );
+  const history = useHistory();
 
   useEffect(() => {
     if (!open) {
@@ -172,8 +206,8 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
         .then((res) => {
           const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
           const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
-          console.log("reverted",res)
-          
+          console.log("reverted", res);
+
           const users = [
             {
               id: "applicant001",
@@ -186,8 +220,8 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
               role: u?.userRoles?.[0]?.role?.name || "User",
             })),
           ];
-          
-          console.log({users})
+
+          console.log({ users });
           // Apply user type-based filtering
           // const filteredUsers = filterUsersByType(users);
           setMovementUsers(users);
@@ -197,11 +231,10 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
           setServerResponse({ status: "ERROR", message: "Failed to load user path." });
         })
         .finally(() => {
-            setIsLoadingPath(false);
+          setIsLoadingPath(false);
         });
     }
   }, [open, appIdDecoded, applicantName, dispatch, modulesManager]);
-
 
   const handleRevert = async () => {
     if (!selectedRevertUser) {
@@ -210,7 +243,7 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
     }
 
     setSubmitting(true);
-    
+
     if (!appIdDecoded) {
       setServerResponse({ status: "ERROR", message: "Application ID is missing." });
       setSubmitting(false);
@@ -218,8 +251,8 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
     }
 
     const updateApplicationData = { id: appIdDecoded, status: WORKFORCE_STATUS.REVERT };
-        
-    const createApplicationMovementData = {     
+
+    const createApplicationMovementData = {
       applicationId: appIdDecoded,
       status: WORKFORCE_STATUS.REVERT,
       note: "আবেদন ফেরত পাঠানো হয়েছে",
@@ -229,14 +262,14 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       applicationToId: safeDecodeId(selectedRevertUser),
     };
 
-    console.log({createApplicationMovementData})
+    console.log({ createApplicationMovementData });
 
     try {
       await dispatch(updateApplication(updateApplicationData, `update workforce application`));
       await dispatch(createApplicationMovement(createApplicationMovementData, `create workforce movement`));
       setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
       setTimeout(() => {
-        window.location.href='/';
+        window.location.href = "/";
       }, 1000);
       // setTimeout(() => {
       //   onClose();
@@ -249,32 +282,31 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
       setSubmitting(false);
     }
   };
-  
+
   console.log("RevertModal rendering with:", { selectedApplication, movementUsers });
-  console.log({selectedRevertUser})
+  console.log({ selectedRevertUser });
 
-  const applicantInfo = ["financialAssistance", "deadlyGrant"].includes(selectedApplication?.applicationType) ? safeParse(selectedApplication?.applicantInfo) : null;
-  let applicationTypeString= "";
-  if (isBlwfPath()){
-    let chosenApplicationType= blwfApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
+  const applicantInfo = ["financialAssistance", "deadlyGrant"].includes(selectedApplication?.applicationType)
+    ? safeParse(selectedApplication?.applicantInfo)
+    : null;
+  let applicationTypeString = "";
+  if (isBlwfPath()) {
+    let chosenApplicationType = blwfApplicationTypeOptions.find((option) => option.value === selectedApplication?.applicationType);
+    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
+  } else if (isEisPath()) {
+    let chosenApplicationType = eisApplicationTypeOptions.find((option) => option.value === selectedApplication?.applicationType);
+    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
+  } else {
+    let chosenApplicationType = cfApplicationTypeOptions.find((option) => option.value === selectedApplication?.applicationType);
     applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
   }
-  else if (isEisPath()){
-    let chosenApplicationType= eisApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
-    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
-  }
-  else
-  {
-    let chosenApplicationType= cfApplicationTypeOptions.find(option => option.value === selectedApplication?.applicationType);
-    applicationTypeString = chosenApplicationType ? chosenApplicationType.label : "";
-  }
-
-
 
   return (
     <Modal open={open} onClose={onClose}>
       <form className={classes.modalContainer}>
-        <Button onClick={onClose} className={classes.closeButton}>✕</Button>
+        <Button onClick={onClose} className={classes.closeButton}>
+          ✕
+        </Button>
         <Typography variant="h5" gutterBottom style={{ fontWeight: "bold", marginTop: 3, textAlign: "center" }}>
           আবেদন ফেরত পাঠান
         </Typography>
@@ -289,21 +321,20 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
 
         <Paper className={classes.sectionPaper} elevation={1}>
           {selectedApplication ? (
-            <Typography variant="subtitle1" gutterBottom style={{width: '100%'}}>
-              {applicantInfo!==null ? (
+            <Typography variant="subtitle1" gutterBottom style={{ width: "100%" }}>
+              {applicantInfo !== null ? (
                 <>
-                  <b>আবেদনকারীর নাম :</b> {applicantInfo.nameBn || 'N/A'} <br />
-                  <b>আবেদনের ধরন :</b> {applicationTypeString || 'N/A'} <br />
-                  <b>জাতীয় পরিচয়পত্র :</b> {applicantInfo?.nid || 'N/A'} <br />
-                  <b>ফোন নম্বর :</b> {applicantInfo?.phoneNumber || 'N/A'} <br />
+                  <b>আবেদনকারীর নাম :</b> {applicantInfo.nameBn || "N/A"} <br />
+                  <b>আবেদনের ধরন :</b> {applicationTypeString || "N/A"} <br />
+                  <b>জাতীয় পরিচয়পত্র :</b> {applicantInfo?.nid || "N/A"} <br />
+                  <b>ফোন নম্বর :</b> {applicantInfo?.phoneNumber || "N/A"} <br />
                 </>
-
-              ):(
+              ) : (
                 <>
-                  <b>আবেদনকারীর নাম :</b> {selectedApplication?.workforceEmployee?.firstNameBn || 'N/A'} <br />
-                  <b>আবেদনের ধরন :</b> {applicationTypeString || 'N/A'} <br />
-                  <b>জাতীয় পরিচয়পত্র :</b> {selectedApplication?.workforceEmployee?.nid || 'N/A'} <br />
-                  <b>ফোন নম্বর :</b> {selectedApplication?.workforceEmployee?.phoneNumber || 'N/A'} <br />
+                  <b>আবেদনকারীর নাম :</b> {selectedApplication?.workforceEmployee?.firstNameBn || "N/A"} <br />
+                  <b>আবেদনের ধরন :</b> {applicationTypeString || "N/A"} <br />
+                  <b>জাতীয় পরিচয়পত্র :</b> {selectedApplication?.workforceEmployee?.nid || "N/A"} <br />
+                  <b>ফোন নম্বর :</b> {selectedApplication?.workforceEmployee?.phoneNumber || "N/A"} <br />
                 </>
               )}
             </Typography>
@@ -313,13 +344,13 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
         </Paper>
 
         {isLoadingPath ? (
-            <Box display="flex" justifyContent="center" my={4}>
-                <CircularProgress />
-            </Box>
+          <Box display="flex" justifyContent="center" my={4}>
+            <CircularProgress />
+          </Box>
         ) : (
-            <RevertPathSelector users={movementUsers} userType={userType} selectedUser={selectedRevertUser} onChange={setSelectedRevertUser} />
+          <RevertPathSelector users={movementUsers} userType={userType} selectedUser={selectedRevertUser} onChange={setSelectedRevertUser} />
         )}
-        
+
         <Typography variant="subtitle1" gutterBottom style={{ fontWeight: "bold", marginTop: 1, textAlign: "center" }}>
           <FormattedMessage module="workforce" id="workforce.application.revert.reasons.addComment" />
         </Typography>
@@ -329,7 +360,9 @@ const RevertApplicationModal = ({ open, onClose, selectedApplication }) => {
         </Box>
 
         <div className={classes.buttonGroup}>
-          <Button onClick={onClose} variant="outlined" color="secondary">বাতিল করুন</Button>
+          <Button onClick={onClose} variant="outlined" color="secondary">
+            বাতিল করুন
+          </Button>
           <Button variant="contained" color="primary" disabled={submitting || !selectedApplication || isLoadingPath} onClick={handleRevert}>
             {submitting ? "ফেরত পাঠানো হচ্ছে..." : "ফেরত পাঠান"}
           </Button>

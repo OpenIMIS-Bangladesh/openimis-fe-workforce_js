@@ -1,18 +1,27 @@
 import React from "react";
-import { colorCode } from "../../../constants"; 
+import { colorCode, WORKFORCE_USER_TYPE } from "../../../constants"; 
 import { useSelector } from "react-redux";
+import { getUserType } from "../../../utils/utils";
 
 const ColoredRowLegends = () => {
+  const userType = getUserType();
   const locale = useSelector((state) => state.core?.user?.i_user?.language  ?? "en");
   // প্রতিটি শতাংশের সঙ্গে টেক্সট মেপ করছি
-  const legends = [
-    { percent: 0, label: locale === "fr" ? "সম্প্রতি প্রাপ্ত" : "Recently Received" },
-    { percent: 20, label: locale === "fr" ? "পর্যাপ্ত সময়" : "Sufficient Time" },
-    { percent: 40, label: locale === "fr" ? "জরুরী" : "Urgent" },
-    { percent: 60, label: locale === "fr" ? "অগ্রাধিকার" : "Priority" },
-    { percent: 80, label: locale === "fr" ? "সর্বোচ্চ অগ্রাধিকার" : "Highest Priority" },
-    { percent: 100, label: locale === "fr" ? "সময় শেষ" : "Time Expired" },
-  ];
+  const legends = userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE
+    ? [
+        { percent: 0, label: locale === "fr" ? "সম্প্রতি প্রাপ্ত" : "Recently Received" },
+        { percent: 20, label: locale === "fr" ? "অনুমোদিত" : "Approved" },
+        { percent: 40, label: locale === "fr" ? "পুন নিরীক্ষণ" : "Review" },
+        { percent: 60, label: locale === "fr" ? "রিজেক্টেড" : "Rejected" },
+      ]
+    : [
+        { percent: 0, label: locale === "fr" ? "সম্প্রতি প্রাপ্ত" : "Recently Received" },
+        { percent: 20, label: locale === "fr" ? "পর্যাপ্ত সময়" : "Sufficient Time" },
+        { percent: 40, label: locale === "fr" ? "জরুরী" : "Urgent" },
+        { percent: 60, label: locale === "fr" ? "অগ্রাধিকার" : "Priority" },
+        { percent: 80, label: locale === "fr" ? "সর্বোচ্চ অগ্রাধিকার" : "Highest Priority" },
+        { percent: 100, label: locale === "fr" ? "সময় শেষ" : "Time Expired" },
+      ];
 
   return (
     <div
