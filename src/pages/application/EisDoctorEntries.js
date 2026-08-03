@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import { useTranslations, useModulesManager, TextInput, FormattedMessage, PublishedComponent } from "@openimis/fe-core";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
-import { getUserType, safeDecodeId } from "../../utils/utils";
+import { getUserType, safeDecodeId, safeParse } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import { fetchApplicationWiseMovementList, fetchWorkforceSignatures } from "../../actions";
 
@@ -153,7 +153,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
   // });
 
   const meetingData = summaryData?.filter((m) => {
-    const parsedApplicationData = JSON.parse(m?.applicationData);
+    const parsedApplicationData = safeParse(m?.applicationData);
     console.log({ parsedApplicationData });
     // const decodedApplicationData = safeDecodeId(parsedApplicationData)
     return parsedApplicationData?.includes(formData?.id);
