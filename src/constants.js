@@ -753,7 +753,8 @@ export const banglaLabels = {
   lastCheckupDate:"শেষ চেকআপের তারিখ",
   donationReason:"অনুদানের  কারণ",
   otherDisease:"অন্যান্য রোগ",
-  percentageOfCfGrant:"সিএফ (CF) অনুদানের হার"
+  percentageOfCfGrant:"সিএফ (CF) অনুদানের হার",
+  CommitteeRemarks:"কমিটির মন্তব্য"
 };
 
 export const roleMaxDayCount = {

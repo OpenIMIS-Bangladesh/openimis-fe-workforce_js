@@ -771,6 +771,7 @@ export function fetchApplication(mm, filters) {
     "doctorsRecommendedDonation",
     "doctorsDiagnosis",
     "committeeId",
+    "committeeRemarks",
     "rejectedIds"
   ];
   // const filterArray = filters

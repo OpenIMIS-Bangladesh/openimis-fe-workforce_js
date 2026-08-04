@@ -270,6 +270,6 @@ export const headerApprover = (component) => [
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
-  ...(component?.props?.summaryId ?  ["workforce.compensation.remarks"]:[]),
+  // ...(component?.props?.summaryId ?  ["workforce.compensation.remarks"]:[]),
   component.isShowHistory() ? "workforce.version" : "",
 ];

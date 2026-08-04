@@ -165,7 +165,7 @@ const hiddenKeys = [
   "minimumDonationAmount",
   "maximumDonationAmount",
   "accountHolderType",
-  "dependant"
+  "dependant",
 ];
 
 const formatKey = (key, language) => {
@@ -768,7 +768,7 @@ const ApplicationViewPage = ({
     setOpenSalaryButton(true);
     const updateApplicationData = {
       id: application?.id,
-      lastBaseSalary: conditionalEnToBn(amount,"fr"),
+      lastBaseSalary: conditionalEnToBn(amount, "fr"),
     };
     dispatch(updateApplication(updateApplicationData, "update workforce application")).then(() => {
       setOpenSalaryButton(false);
@@ -822,6 +822,11 @@ const ApplicationViewPage = ({
       CreatedDate: conditionalEnToBn(application?.dateCreated?.split("T")[0] || "—", language),
       ApplicationFor:
         application?.applicationFor == "self" ? (language === "en" ? "Self" : "নিজের জন্য") : language === "en" ? "Dependent" : "নির্ভরশীলের জন্য",
+      ...((user_type === WORKFORCE_USER_TYPE.APPROVER ||
+        user_type === WORKFORCE_USER_TYPE.BLWF_APPROVER ||
+        user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE) && {
+        CommitteeRemarks: application?.committeeRemarks,
+      }),
     }),
     [application],
   );
