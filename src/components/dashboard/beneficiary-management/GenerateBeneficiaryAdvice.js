@@ -184,6 +184,8 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       const monthIndex = row?.monthIndex || "";
       const monthFormatted = String(monthIndex).padStart(2, "0");
       const lastDay = new Date(rowYear, monthIndex, 0).getDate();
+      let printPayFrom = row?.payFromDate ? new Date(row?.payFromDate).toLocaleDateString() : `01.${monthFormatted}.${rowYear}`;
+      let printPayTo = row?.payToDate ? new Date(row?.payToDate).toLocaleDateString() : `${lastDay}.${monthFormatted}.${rowYear}`;
 
       dataRowsHTML += `<tr>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: center;">${index + 1}</td>
@@ -195,8 +197,8 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       <td style="border: 1px solid #000; padding: 3px 4px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${Number(row?.paidAmount?.toFixed(2)) || "0.00"}</td>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${row?.beneficiaryId || ""}</td>
-      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
-      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${lastDay}.${monthFormatted}.${rowYear}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayFrom}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayTo}</td>
     </tr>`;
     });
 
@@ -344,9 +346,9 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       let rowYear = row?.year || "";
       let monthIndex = row?.monthIndex || "";
       let monthFormatted = String(monthIndex).padStart(2, "0");
-      let payFrom = `01.${monthFormatted}.${rowYear}`;
+      let payFrom = row?.payFromDate? new Date(row?.payFromDate).toLocaleDateString() : `01.${monthFormatted}.${rowYear}`;
       let lastDay = new Date(rowYear, monthIndex, 0).getDate();
-      let payTo = `${lastDay}.${monthFormatted}.${rowYear}`;
+      let payTo = row?.payToDate ? new Date(row?.payToDate).toLocaleDateString() : `${lastDay}.${monthFormatted}.${rowYear}`;
 
       sheet.addRow([
         index + 1, row?.bankAccountHolderName || "", row?.bankAccountNo || "", row?.bank?.parent?.nameEn || "",
@@ -496,8 +498,20 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                       <TableCell align="left">{(row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber)}</TableCell>
                       <TableCell align="left">{Number(row?.paidAmount).toFixed(2)}</TableCell>
                       <TableCell align="left">{row?.beneficiaryId}</TableCell>
-                      <TableCell align="left">01.{monthFormatted}.{rowYear}</TableCell>
-                      <TableCell align="left">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                      {
+                        row?.payFromDate ? (
+                          <TableCell align="left">{new Date(row?.payFromDate).toLocaleDateString()}</TableCell>
+                        ) : (
+                          <TableCell align="left">01.{monthFormatted}.{rowYear}</TableCell>
+                        )
+                      }
+                      {
+                        row?.payFromDate ? (
+                          <TableCell align="left">{new Date(row?.payToDate).toLocaleDateString()}</TableCell>
+                        ) : (
+                          <TableCell align="left">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                        )
+                      }
                     </TableRow>
                   );
                 })}
