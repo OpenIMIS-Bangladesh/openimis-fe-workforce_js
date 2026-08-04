@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#fff",
     padding: theme.spacing(4),
     "@media print": {
-      padding: "0px !important",
+      padding: "8px !important",
       overflow: "visible !important",
     },
   },
@@ -71,10 +71,29 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         top: 0,
         width: "100%",
+        maxWidth: "100%",
+        margin: 0,
+        padding: 0,
       },
       "html, body": {
         height: "100%",
         overflow: "hidden",
+        margin: 0,
+        padding: 0,
+      },
+      // Force the table to fit the page width in portrait
+      "table": {
+        width: "100% !important",
+        tableLayout: "fixed !important",   // critical
+        fontSize: "9px !important",        // smaller font so columns fit
+        borderCollapse: "collapse",
+      },
+      "th, td": {
+        padding: "3px 4px !important",
+        wordWrap: "break-word",
+        overflowWrap: "break-word",
+        whiteSpace: "normal",
+        fontSize: "9px !important",
       },
     },
   },
@@ -167,17 +186,17 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       const lastDay = new Date(rowYear, monthIndex, 0).getDate();
 
       dataRowsHTML += `<tr>
-      <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bankAccountHolderName || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bankAccountNo || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.parent?.nameEn || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.nameEn || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${row?.bank?.districtNameEn || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${Number(row?.paidAmount?.toFixed(2)) || "0.00"}</td>
-      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row?.beneficiaryId || ""}</td>
-      <td style="border: 1px solid #000; padding: 8px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
-      <td style="border: 1px solid #000; padding: 8px; text-align: right;">${lastDay}.${monthFormatted}.${rowYear}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: center;">${index + 1}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${row?.bankAccountHolderName || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${row?.bankAccountNo || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${row?.bank?.parent?.nameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${row?.bank?.nameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${row?.bank?.districtNameEn || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${Number(row?.paidAmount?.toFixed(2)) || "0.00"}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${row?.beneficiaryId || ""}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">01.${monthFormatted}.${rowYear}</td>
+      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${lastDay}.${monthFormatted}.${rowYear}</td>
     </tr>`;
     });
 
@@ -205,20 +224,20 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
     } else {
       // Build full table
       const headerRow = `<tr style="background-color: #92D050;">
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">SL</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account Title</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Account No</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Bank</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Branch</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">District</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Routing</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Amount</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Beneficiary ID</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay From</th>
-      <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Pay To</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">SL</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Account Title</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Account No</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Bank</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Branch</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">District</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Routing</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Amount</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Beneficiary ID</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Pay From</th>
+      <th style="border: 1px solid #000; padding: 3px 4px; text-align: center; font-weight: bold;">Pay To</th>
     </tr>`;
 
-      const fullTable = `<table style="width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #000;">
+      const fullTable = `<table style="width: 100%; table-layout: fixed; border-collapse: collapse; margin: 10px 0; border: 1px solid #000; font-size: 9px;">
           <thead>${headerRow}</thead>
           <tbody>${dataRowsHTML}</tbody>
         </table>`;
@@ -436,17 +455,17 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>SL</TableCell>
-                  <TableCell>Account Title</TableCell>
-                  <TableCell>Account No</TableCell>
-                  <TableCell>Bank</TableCell>
-                  <TableCell>Branch</TableCell>
-                  <TableCell>District</TableCell>
-                  <TableCell>Routing</TableCell>
-                  <TableCell align="right">Amount</TableCell>
-                  <TableCell align="right">Beneficiary ID</TableCell>
-                  <TableCell align="right">Pay From</TableCell>
-                  <TableCell align="right">Pay To</TableCell>
+                  <TableCell align="left">SL</TableCell>
+                  <TableCell align="left">Account Title</TableCell>
+                  <TableCell align="left">Account No</TableCell>
+                  <TableCell align="left">Bank</TableCell>
+                  <TableCell align="left">Branch</TableCell>
+                  <TableCell align="left">District</TableCell>
+                  <TableCell align="left">Routing</TableCell>
+                  <TableCell align="left">Amount</TableCell>
+                  <TableCell align="left">Beneficiary ID</TableCell>
+                  <TableCell align="left">Pay From</TableCell>
+                  <TableCell align="left">Pay To</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -468,17 +487,17 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
 
                   return (
                     <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row?.bankAccountHolderName} {onBehalfOf!=="" && `(${onBehalfOf})`}</TableCell>
-                      <TableCell>{row?.bankAccountNo}</TableCell>
-                      <TableCell>{row?.bank?.parent?.nameEn}</TableCell>
-                      <TableCell>{row?.bank?.nameEn}</TableCell>
-                      <TableCell>{row?.bank?.districtNameEn}</TableCell>
-                      <TableCell>{(row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber)}</TableCell>
-                      <TableCell align="right">{Number(row?.paidAmount).toFixed(2)}</TableCell>
-                      <TableCell align="right">{row?.beneficiaryId}</TableCell>
-                      <TableCell align="right">01.{monthFormatted}.{rowYear}</TableCell>
-                      <TableCell align="right">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                      <TableCell align="left">{index + 1}</TableCell>
+                      <TableCell align="left">{row?.bankAccountHolderName} {onBehalfOf!=="" && `(${onBehalfOf})`}</TableCell>
+                      <TableCell align="left">{row?.bankAccountNo}</TableCell>
+                      <TableCell align="left">{row?.bank?.parent?.nameEn}</TableCell>
+                      <TableCell align="left">{row?.bank?.nameEn}</TableCell>
+                      <TableCell align="left">{row?.bank?.districtNameEn}</TableCell>
+                      <TableCell align="left">{(row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber)}</TableCell>
+                      <TableCell align="left">{Number(row?.paidAmount).toFixed(2)}</TableCell>
+                      <TableCell align="left">{row?.beneficiaryId}</TableCell>
+                      <TableCell align="left">01.{monthFormatted}.{rowYear}</TableCell>
+                      <TableCell align="left">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
                     </TableRow>
                   );
                 })}
