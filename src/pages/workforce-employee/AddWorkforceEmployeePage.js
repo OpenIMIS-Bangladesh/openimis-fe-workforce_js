@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Grid, Paper, Typography, Divider, IconButton } from "@material-ui/core";
+import { Grid, Paper, Typography, Divider, IconButton, Button } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId, encodeId } from "@openimis/fe-core";
 import { createWorkforceEmployee, fetchFactoryEmployee } from "../../actions";
@@ -101,7 +101,12 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
     setIsSaved(false);
   };
 
-  const isSaveDisabled = false;
+  const isSaveDisabled =
+    !stateEdited.nid ||
+    !stateEdited.firstNameEn ||
+    !stateEdited.firstNameBn ||
+    !stateEdited.phoneNumber ||
+    !(stateEdited.factory?.id || workforceEmployee?.workforceFactory?.id);
   return (
     <div className={classes.page}>
       <Grid container>
@@ -442,9 +447,9 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
 
               <Grid item xs={11} className={classes.item} />
               <Grid item xs={1} className={classes.item}>
-                <IconButton variant="contained" component="label" color="primary" onClick={() => save()} disabled={isSaveDisabled || isSaved}>
-                  <Save />
-                </IconButton>
+                <Button variant="primary" component="label" color="primary" onClick={() => save()} disabled={isSaveDisabled || isSaved}  title={isSaveDisabled ? "Please Check all the required fields" : "Save"}>
+                  <Save /> Save
+                </Button>
               </Grid>
             </Grid>
             <Divider />

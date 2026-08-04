@@ -2663,6 +2663,8 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         phoneNumber
         userConfirmed
         routingNumber
+        payFromDate
+        payToDate
         workforceEisBankAdvice{
         id
         isConfirmed
