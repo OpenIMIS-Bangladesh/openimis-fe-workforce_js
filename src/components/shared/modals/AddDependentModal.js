@@ -41,7 +41,9 @@ const AddDependentModal = ({ open, onClose, application }) => {
       try {
         const parsed = JSON.parse(val);
         return Array.isArray(parsed) ? parsed : [];
-      } catch { return []; }
+      } catch {
+        return [];
+      }
     }
     return Array.isArray(val) ? val : [];
   };
@@ -62,20 +64,15 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     // Map over employeeBankInfo (the main DB table with bank/branch details)
     const fullyParsedBankInfo = application?.employeeBankInfo?.map((bank) => {
-      
       // Match using the Account Number instead of NID!
-      const matched = application?.employeeBankingInfoApplication?.find(
-        (appBank) => String(appBank?.dependentNid) === String(bank?.dependentNid)
-      );
+      const matched = application?.employeeBankingInfoApplication?.find((appBank) => String(appBank?.dependentNid) === String(bank?.dependentNid));
 
       // Safely grab attachments from the matched object
       const rawAttachments = matched?.attachments || bank?.attachments;
 
       let parsedAttachments = [];
       if (rawAttachments) {
-        parsedAttachments = typeof rawAttachments === "string" 
-            ? JSON.parse(rawAttachments) 
-            : rawAttachments;
+        parsedAttachments = typeof rawAttachments === "string" ? JSON.parse(rawAttachments) : rawAttachments;
       }
 
       return {
@@ -90,7 +87,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
       employeeDependentInfo: fullyParsedDependentInfo,
       employeeBankInfo: fullyParsedBankInfo,
     };
-});
+  });
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {
@@ -161,7 +158,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
             return dispatch(
               createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
             );
-          })
+          }),
         );
       }
 
@@ -206,7 +203,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
     dispatch(updateApplication(payload, "update bank info")).then((res) => {
       onClose();
-      window.location.reload()
+      window.location.reload();
     });
     // 2. Close Modal
     // onClose();
@@ -248,11 +245,11 @@ const AddDependentModal = ({ open, onClose, application }) => {
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           {activeStep === 0 ? (
-              isCfPath() || isBlwfPath() ? (
-                <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
-              ) : (
-                <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
-              )
+            isCfPath() || isBlwfPath() ? (
+              <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+            ) : (
+              <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+            )
           ) : (
             <FormattedMessage id="workforce.application.steps.bankInfo" defaultMessage="Bank Account Info" />
           )}

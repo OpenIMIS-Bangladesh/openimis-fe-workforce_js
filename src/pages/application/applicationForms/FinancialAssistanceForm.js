@@ -20,6 +20,7 @@ import {
   updateApplication,
   updateWorkforceEmployee,
   createApplicationMovement,
+  setUploadedFiles,
 } from "../../../actions";
 import EmployeeAccountInfoForm from "../EmployeeAccountInfoForm";
 import { formatApplicationeGQL } from "../../../utils/format_gql";
@@ -423,6 +424,25 @@ const FinancialAssistanceForm = ({
     }
   }, [employeeData?.id, parsedApplicationData, user_type]);
 
+  // 2. Add the useEffect inside the FinancialAssistanceForm component
+  useEffect(() => {
+    const prefillReduxFiles = (dataArray) => {
+      dataArray?.forEach((item) => {
+        const attachments = typeof item?.attachments === "string" ? JSON.parse(item.attachments) : item?.attachments;
+        attachments?.forEach((att) => {
+          if (att?.files?.length > 0 && att?.fieldKey) {
+            dispatch(setUploadedFiles(att.fieldKey, att.files));
+          }
+        });
+      });
+    };
+
+    if (parsedApplicationData) {
+      prefillReduxFiles(parsedApplicationData?.employeeDependentInfo || []);
+      prefillReduxFiles(parsedApplicationData?.employeeBankInfo || []);
+    }
+  }, [dispatch, parsedApplicationData]);
+
   // Handle form input changes
   const handleChange = (key, value, parent = null) => {
     setFormData((prev) => {
@@ -489,7 +509,6 @@ const FinancialAssistanceForm = ({
       }, 0);
 
       if (totalPercentage !== 100) {
-        
         setErrors((prevErrors) => ({
           ...prevErrors,
           percentage_of_grant: "Total percentage must be exactly 100%",

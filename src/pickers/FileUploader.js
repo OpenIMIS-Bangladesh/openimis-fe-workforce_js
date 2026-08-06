@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, documentType, documentProp, uploadedBy }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  
+
   // Webcam States
   const [webcamOpen, setWebcamOpen] = useState(false);
   const webcamRef = useRef(null);
@@ -221,14 +221,10 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         documentId,
       };
 
-      const nextUploadList = mergeUploadEntries(
-        uploadedBy === "dependent"
-          ? globalDependentFile
-          : uploadedBy === "bank"
-            ? globalBankFile
-            : globalUploadFile,
-        { ...createDocumentData, holderType: "applicant" },
-      );
+      const nextUploadList = mergeUploadEntries(uploadedBy === "dependent" ? globalDependentFile : uploadedBy === "bank" ? globalBankFile : globalUploadFile, {
+        ...createDocumentData,
+        holderType: "applicant",
+      });
 
       if (uploadedBy === "dependent") {
         dispatch({
@@ -248,7 +244,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       }
 
       updateGlobalUploadState(nextUploadList);
-      
+
       if (applicationId && uploadedBy === "factoryAdmin") {
         console.log("create document data", createDocumentData);
         dispatch(
@@ -290,7 +286,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
           setCropDialogOpen(true);
         };
         reader.readAsDataURL(file);
-        return; 
+        return;
       }
 
       setIsUploading(true);
@@ -323,38 +319,42 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const handleCropSave = () => {
     const imageElement = cropperRef?.current;
     const cropper = imageElement?.cropper;
-    
+
     if (cropper) {
       setIsUploading(true);
-      cropper.getCroppedCanvas().toBlob(async (blob) => {
-        if (!blob) {
-          console.error("Canvas is empty");
-          setIsUploading(false);
-          return;
-        }
-        
-        const croppedFile = new File([blob], pendingFileMeta.name, { type: pendingFileMeta.type });
-        
-        setCropDialogOpen(false);
-        setImageToCrop(null);
-        
-        try {
-          const uploadedFile = await uploadFileToApi(croppedFile);
-          if (uploadedFile) {
-            const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
-            if (onFileChange) {
-              onFileChange(fieldKey, {
-                files: mergedFiles,
-                documentType,
-                documentPropId: documentProp?.id,
-                documentId,
-              });
-            }
+      cropper.getCroppedCanvas().toBlob(
+        async (blob) => {
+          if (!blob) {
+            console.error("Canvas is empty");
+            setIsUploading(false);
+            return;
           }
-        } finally {
-          setIsUploading(false);
-        }
-      }, pendingFileMeta.type, 1);
+
+          const croppedFile = new File([blob], pendingFileMeta.name, { type: pendingFileMeta.type });
+
+          setCropDialogOpen(false);
+          setImageToCrop(null);
+
+          try {
+            const uploadedFile = await uploadFileToApi(croppedFile);
+            if (uploadedFile) {
+              const mergedFiles = syncFilesWithState([...(filesRef.current || []), uploadedFile]);
+              if (onFileChange) {
+                onFileChange(fieldKey, {
+                  files: mergedFiles,
+                  documentType,
+                  documentPropId: documentProp?.id,
+                  documentId,
+                });
+              }
+            }
+          } finally {
+            setIsUploading(false);
+          }
+        },
+        pendingFileMeta.type,
+        1,
+      );
     }
   };
 
@@ -373,11 +373,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
 
       dispatch({ type: removeType, payload: identifier });
 
-      const currentUploadList = uploadedBy === "dependent"
-        ? globalDependentFile
-        : uploadedBy === "bank"
-          ? globalBankFile
-          : globalUploadFile;
+      const currentUploadList = uploadedBy === "dependent" ? globalDependentFile : uploadedBy === "bank" ? globalBankFile : globalUploadFile;
       const nextUploadList = (currentUploadList || []).filter((item) => getUploadIdentity(item) !== identifier);
       updateGlobalUploadState(nextUploadList);
 
@@ -514,30 +510,30 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
         <DialogContent style={{ padding: 0 }}>
           <Paper style={{ padding: "8px", backgroundColor: "#fff", color: "#005f67" }}>
             <Typography variant="body2" style={{ textAlign: "center" }}>
-              <FormattedMessage module="workforce" id="workforce.application.photo.cropmessage"/>
+              <FormattedMessage module="workforce" id="workforce.application.photo.cropmessage" />
             </Typography>
           </Paper>
           {imageToCrop && (
-             <Cropper
-               src={imageToCrop}
-               className={classes.cropContainer}
-               ref={cropperRef}
-               aspectRatio={3 / 4} 
-               viewMode={1} 
-               dragMode="move"
-               cropBoxResizable={false}
-               cropBoxMovable={false}
-               toggleDragModeOnDblclick={false}
-               guides={true}
-             />
+            <Cropper
+              src={imageToCrop}
+              className={classes.cropContainer}
+              ref={cropperRef}
+              aspectRatio={3 / 4}
+              viewMode={1}
+              dragMode="move"
+              cropBoxResizable={false}
+              cropBoxMovable={false}
+              toggleDragModeOnDblclick={false}
+              guides={true}
+            />
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCropDialogOpen(false)} variant="outlined" color="error">
-            <FormattedMessage module="workforce" id="workforce.confirm.modal.cancel"/>
+            <FormattedMessage module="workforce" id="workforce.confirm.modal.cancel" />
           </Button>
           <Button onClick={handleCropSave} variant="contained" color="primary" disabled={isUploading}>
-            {isUploading ? <CircularProgress size={24} /> : <FormattedMessage module="workforce" id="workforce.application.photo.cropandupload"/>}
+            {isUploading ? <CircularProgress size={24} /> : <FormattedMessage module="workforce" id="workforce.application.photo.cropandupload" />}
           </Button>
         </DialogActions>
       </Dialog>
