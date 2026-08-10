@@ -159,7 +159,7 @@ export const STATUS_MAP_BN  = {
   forward_to_cf_section: "সিএফ শাখায় প্রেরণ",
   forward_for_verification: "যাচাইয়ের জন্য প্রেরণ",
   verified: "যাচাইকৃত",
-  verified_by_dol_dife: "শ্রম অধিদপ্তর এবং কল-কারখানা ও প্রতিষ্ঠান পরিদর্শন অধিদপ্তর দ্বারা যাচাইকৃত",
+  verified_by_dol_dife: "ডল/ডাইফি দ্বারা যাচাইকৃত",
   forward_to_cf_section_one: "সিএফ শাখা-১ এ প্রেরণ",
   forward_to_cf_section_two: "সিএফ শাখা-২ এ প্রেরণ",
   forward_to_doctor: "ডক্টরের কাছে প্রেরণ",

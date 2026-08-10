@@ -292,6 +292,7 @@ const RevertApplication = () => {
         revertedApplication={true}
         loggedInUserId= {loggedInUserId}
         dynamicTableTitle= {"workforce.application.reverted"}
+        revertedApplication={true}
       />
 
       {/* Pagination */}
