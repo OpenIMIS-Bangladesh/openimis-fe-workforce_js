@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ReactQuill from "react-quill";
 import { fetchApplication, updateApplication, createApplicationMovement, fetchApplicationWiseMovementList } from "../../../actions";
 import { blwfApplicationTypeOptions, cfApplicationTypeOptions, eisApplicationTypeOptions, WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../../constants";
-import { safeDecodeId, getUserType, isBlwfPath, isEisPath, safeParse } from "../../../utils/utils";
+import { safeDecodeId, getUserType, isBlwfPath, isEisPath, safeParse, isCfPath } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -81,7 +81,15 @@ const RevertPathSelector = ({ users, userType, selectedUser, onChange }) => (
     </Typography>
     {users.length > 0 ? (
       <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-        {isBlwfPath()
+        {isBlwfPath() &&
+        [
+          WORKFORCE_USER_TYPE.CHECKER,
+          WORKFORCE_USER_TYPE.CHECKER_TWO,
+          WORKFORCE_USER_TYPE.BLWF_CHECKER,
+          WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR,
+          WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR,
+          WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR,
+        ].includes(userType)
           ? users
               .filter(
                 (row) =>
