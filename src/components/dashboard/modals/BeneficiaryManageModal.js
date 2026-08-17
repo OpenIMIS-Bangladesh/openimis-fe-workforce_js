@@ -14,10 +14,10 @@ import {
     Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Grid
 } from "@material-ui/core";
-import { PublishedComponent } from "@openimis/fe-core";
+import { PublishedComponent,parseData } from "@openimis/fe-core";
 import { useModulesManager } from "@openimis/fe-core";
 import { useDispatch } from "react-redux";
-import { fetchEisPaymentProcessWithFilters, fetchWorkforceEisLastPaymentDate, updateWorkforceEisBeneficiary } from "../../../actions";
+import { fetchEisPaymentProcessWithFilters, fetchWorkforceEisLastPaymentDate, sendSmsNotification, updateWorkforceEisBeneficiary } from "../../../actions";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 
 const INITIAL_STATE = {
@@ -33,6 +33,14 @@ const INITIAL_STATE = {
     // Other Beneficiaries Adjustments (Nested Object)
     adjustments: {}
 };
+
+const PHOTO_TYPES = [
+    "nominee's photo",
+    "nominee photo",
+    "employee photo",
+    "workers photo",
+    "photo of worker"
+];
 
 const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
     const formatter = new Intl.DateTimeFormat('en-US', {
@@ -176,11 +184,54 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiary }) => {
         }
     };
 
+    /*---------------------SEND SMS---------------*/
+    const handleSendSms = async () => {
+        try {
+            console.log("hello")
+            const appType = beneficiary?.workforceApplication?.applicationType;
+            const docs = parseData(beneficiary?.workforceApplication?.workforceDocumentApplication) || [];
+            console.log("handle send sms",appType)
+            console.log("handle send sms",docs)
+            let targetDoc = null;
+
+            if (appType === "financialAssistance") {
+                targetDoc = docs.find(d => 
+                    PHOTO_TYPES.includes(d.documentType) && 
+                    d.workforceDependent?.id === dep?.id // Adjust dependent ID field based on your schema
+                );
+            } else if (appType === "disabilityAssistance") {
+                targetDoc = docs.find(d => 
+                    PHOTO_TYPES.includes(d.documentType)
+                );
+            }
+
+            if (!targetDoc?.id) return alert("No matching photo document found.");
+
+            const docId = safeDecodeId(targetDoc.id);
+            const link = `${window.location.origin}/front/biometric/verify/${docId}`;
+            const name = dep?.nameBn || dep?.nameEn || "Beneficiary";
+            const message = `Hi, ${name}, Please verify your identity at ${link}`;
+            console.log({targetDoc})
+            console.log({message})
+            // Ensure sendSmsNotification is imported at the top
+            // await dispatch(sendSmsNotification("01537457083", message)); 
+            await dispatch(sendSmsNotification(beneficiary?.phoneNumber, message)); 
+            alert("Message Sent!");
+        } catch (error) {
+            console.error(error);
+            alert("Failed to send SMS");
+        }
+    };
+    console.log({beneficiary})
     /* -------------------- SAVE -------------------- */
-    const handleSave = () => {
+    const handleSave =async () => {
         // You can now access all data from 'formData'
         console.log("Submitting Complete Form Data:", formData);
         if (formData.incrementAmount > 0 || formData.decrementAmount > 0 || (formData.reason && formData.status)) {
+            // --- ADDED LOGIC HERE ---
+            if (formData.reason === "live_check_denial" && formData.status === "hold") {
+                await handleSendSms();
+            }
             const payload = {
                 beneficiaryId: beneficiary.beneficiaryId || null,
                 reason: formData.reason || null,

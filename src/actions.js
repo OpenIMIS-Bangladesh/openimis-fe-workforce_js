@@ -2503,6 +2503,7 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
         bankAccountNo
         bankAccountHolderName
         workforceEmployeeDependent{
+          id
           status
           nameEn
           nameBn
@@ -2543,6 +2544,16 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
           status
           eisApprovalIds
           eisApprovedByIds
+          workforceDocumentApplication {
+            edges {
+              node {
+                id
+                documentType
+                workforceDependent {id}
+                workforceEmployeeBankingInfo {id}
+              }
+            }
+          }
           workforceEmployee {         
             id
             firstNameBn
