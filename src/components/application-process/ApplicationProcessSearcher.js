@@ -3739,7 +3739,7 @@ class ApplicationProcessSearcher extends Component {
               <Button
                   variant="contained"
                   color="primary"
-                  disabled={this.props.summaryData !== "meeting_created" }
+                  disabled={this.props.summaryData?.status !== "meeting_created" }
                   onClick={this.handleForwardPendingMeetingSheet}
                 >
                   <FormattedMessage

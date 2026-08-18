@@ -302,7 +302,7 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
       status:
         userType === WORKFORCE_USER_TYPE.SECTION_ADMIN || userType === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO || userType === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
           ? WORKFORCE_STATUS.MEETING_CREATED
-          : WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR,
+          : WORKFORCE_STATUS.MEETING_CREATED,
       name: formData?.meetingName,
       meetingDate: formData?.meetingDate,
       year: Number(formData?.year),
