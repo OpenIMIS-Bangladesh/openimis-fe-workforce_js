@@ -1764,11 +1764,13 @@ export function eisPaymentProcess(eisPaymentData) {
   return graphql(mutation, "WORKFORCE_EIS_PAYMENT_PROCESS");
 }
 
-export function eisPaymentProcessWithoutDate(eisPaymentData, recall = "no") {
+export function eisPaymentProcessWithoutDate(applicationIds, recall = "no") {
+  const idsArray = Array.isArray(applicationIds) ? applicationIds : [applicationIds];
+  const idsString = idsArray.map((id) => `"${id}"`).join(",");
   const mutation = `
     mutation {
       createWorkforceEisPaymentProcess(
-        workforceApplicationId: "${eisPaymentData?.workforceApplicationId}"
+        workforceApplicationIds: [${idsString}]
         recall: "${recall}"
       ) {
         success

@@ -243,22 +243,14 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         };
       });
       setPaymentTypeMap(initialMap);
-
-      setLoading(true);
-      // Create payment process if needed
-      for (const encodedId of selectedApplicationIds) {
-        const eisPaymentData = {
-          workforceApplicationId: decodeId(encodedId?.id),
-        };
-        await dispatch(eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process"));
-      }
-      setLoading(false);
+      
       const applicationIds = selectedApplicationIds.map((x) => decodeId(x.id));
       await dispatch(fetchEisPaymentProcess(applicationIds, modulesManager)).then((res) => {
         const fetchedData = res?.payload?.data?.workforceEisPaymentProcess;
         setEisPayments(fetchedData);
         setPaymentTypeMap(eisPayments);
       });
+      setLoading(false);
     }
     fetchApplicationMovement();
   }, [open]);
