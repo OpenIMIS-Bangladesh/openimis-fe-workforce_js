@@ -29,7 +29,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
 import { getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
-import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN } from "../../constants";
+import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN, STATUS_MAP_EN, STATUS_MAP_BN } from "../../constants";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import RestorePageIcon from "@material-ui/icons/RestorePage";
 import AgingReportModal from "../reports/modals/AgingReportModal";
@@ -1283,6 +1283,8 @@ const RejectApplication = () => {
 const PendingMeetingSheet = ({ summaryData = [] }) => {
   console.log("summary data", summaryData);
   const classes = useStyles();
+  const reduxState = useSelector((state) => state);
+  const locale = reduxState?.core?.user?.i_user?.language || "en";
   return (
     <>
       {/* Render each summaryData item as an accordion */}
@@ -1293,7 +1295,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
               <strong>{item.name}</strong>
             </Typography>
             <Typography variant="body2" color="textSecondary" style={{ marginLeft: "auto" }}>
-              {item.meetingDate} | {item.month} {item.year}
+              {locale==="en"?STATUS_MAP_EN[item?.status] :STATUS_MAP_BN[item?.status]} |{item.meetingDate} | {item.month} {item.year}
             </Typography>
           </AccordionSummary>
           <AccordionDetails className={classes.AccordionDetails}>

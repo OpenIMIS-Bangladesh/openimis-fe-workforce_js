@@ -293,6 +293,7 @@
     "workforce.employee.application.provideMeetingInfo":"Provide meeting information",
     "workforce.employee.application.preMeetingList":"Previous meeting list",
     "workforce.employee.application.createMeetingSheet":"Create Meeting Sheet",
+    "workforce.employee.application.forwardPendingMeetingSheet": "Forward pending meetings",
     "workforce.employee.application.bulkForward":"Bulk Forward",
     "workforce.employee.application.pendingMeetingSheet":"Pending Meeting Sheet",
     "workforce.employee.application.forwardedMeetingSheet": "Forwarded Meeting Sheet",

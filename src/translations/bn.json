@@ -169,6 +169,7 @@
   "workforce.employee.application.provideMeetingInfo": "মিটিং এর তথ্য দিন",
   "workforce.employee.application.preMeetingList": "পূর্ববর্তী মিটিং তালিকা",
   "workforce.employee.application.createMeetingSheet": "মিটিং পত্র তৈরি করুন",
+  "workforce.employee.application.forwardPendingMeetingSheet": "অনিষ্পন্ন মিটিংগুলো ফরোয়ার্ড করুন",
   "workforce.employee.application.bulkForward": "বাল্ক ফরওয়ার্ড করুন",
   "workforce.employee.application.pendingMeetingSheet": "অনিষ্পন্ন মিটিং কার্যতালিকা",
   "workforce.employee.application.forwardedMeetingSheet": "প্রেরিত মিটিং কার্যতালিকা",
