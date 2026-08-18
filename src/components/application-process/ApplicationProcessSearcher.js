@@ -2538,6 +2538,93 @@ class ApplicationProcessSearcher extends Component {
     });
   };
 
+  handleForwardPendingMeetingSheet = async () => {
+    const {selectedApplicationIds} = this.state
+    const {  summaryId, loggedInUserId } = this.props;
+    console.log({fromMeetingSheet:selectedApplicationIds})
+    if (!summaryId) {
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "ফরওয়ার্ডের জন্য একটি সেভ করা মিটিং শিট নির্বাচন করুন।",
+        },
+      });
+      return;
+    }
+
+    if (!selectedApplicationIds || selectedApplicationIds.length === 0) {
+      this.setState({
+        serverResponse: {
+          status: "ERROR",
+          message: "দয়া করে অন্তত একটি আবেদন নির্বাচন করুন।",
+        },
+      });
+      return;
+    }
+
+    this.setState({ submitting: true, serverResponse: null });
+
+    try {
+      const forwardStatus = WORKFORCE_STATUS.FORWARD_TO_EIS_ADVISOR;
+      const normalizedSummaryId = safeDecodeId(summaryId);
+
+      await this.props.updateApplicationSummary(
+        {
+          id: normalizedSummaryId,
+          status: forwardStatus,
+        },
+        "update application summary",
+      );
+
+      for (const item of selectedApplicationIds) {
+        const appId = decodeId(item?.id || item);
+
+        await this.props.updateApplication(
+          {
+            id: appId,
+            eisApplicationSummaryId: normalizedSummaryId,
+            status: forwardStatus,
+          },
+          "update workforce application",
+        );
+
+        await this.props.createApplicationMovement(
+          {
+            applicationId: appId,
+            applicationFromId: loggedInUserId,
+            applicationToId: 196,
+            toRoleId: 48,
+            status: forwardStatus,
+            note: "মিটিং শিট ইআইএস উপদেষ্টার কাছে প্রেরণ করা হয়েছে",
+            action: "forward_to_eis_advisor",
+          },
+          "create workforce movement",
+        );
+      }
+
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "SUCCESS",
+          message: "মিটিং শিট ও আবেদনসমূহ ইআইএস উপদেষ্টার কাছে সফলভাবে পাঠানো হয়েছে!",
+        },
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error("Pending meeting sheet forward failed:", error);
+      this.setState({
+        submitting: false,
+        serverResponse: {
+          status: "ERROR",
+          message: "মিটিং শিট ফরওয়ার্ড ব্যর্থ হয়েছে!",
+        },
+      });
+    }
+  };
+
   handleForwardSubmit = (event) => {
     this.state.editorContent;
     event.preventDefault();
@@ -3648,7 +3735,19 @@ class ApplicationProcessSearcher extends Component {
                 </>
               )}
 
-
+            {this.props.pendingMeetingSheet && (
+              <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={this.props.summaryData !== "meeting_created" }
+                  onClick={this.handleForwardPendingMeetingSheet}
+                >
+                  <FormattedMessage
+                    module="workforce"
+                    id="workforce.employee.application.forwardPendingMeetingSheet"
+                  />
+                </Button>
+            )}
 
             {disableButtons == 1 ? (
               <>

@@ -51,7 +51,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // Local Utilities & Components
-import { getUserType, getUserTypeFromRights } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import ApplicationSummaryPage from "../application-process/ApplicationSummaryPage";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import AgingReportModal from "../reports/modals/AgingReportModal";
@@ -481,10 +481,10 @@ const Dashboard = () => {
 
           return {
             ...application,
-            applicantInfo: JSON.parse(parsedApplicantInfo),
-            metadata: JSON.parse(parsedMetadata),
-            deceasedWorkerInfo: JSON.parse(parsedDeceasedWorkerInfo),
-            employeeAccidentInfo: JSON.parse(parsedEmployeeAccidentInfo),
+            applicantInfo: safeParse(parsedApplicantInfo),
+            metadata: safeParse(parsedMetadata),
+            deceasedWorkerInfo: safeParse(parsedDeceasedWorkerInfo),
+            employeeAccidentInfo: safeParse(parsedEmployeeAccidentInfo),
             // employeeDependentInfo:JSON.parse(parsedEmployeeDependentInfo),
             // employeeBankInfo:JSON.parse(parsedEmployeeBankInfo)
           };

@@ -1299,7 +1299,7 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
           <AccordionDetails className={classes.AccordionDetails}>
             <Card style={{ width: "100%" }}>
               <CardContent>
-                <ApplicationProcessSearcher summaryId={item.id} />
+                <ApplicationProcessSearcher summaryId={item.id} pendingMeetingSheet={true} summaryData={item}/>
               </CardContent>
             </Card>
           </AccordionDetails>

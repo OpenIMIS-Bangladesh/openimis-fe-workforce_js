@@ -259,9 +259,9 @@ const BeneficiaryBankAdviceList = () => {
                       <Typography variant="body2">{new Date(row?.adviceDate).toLocaleDateString("BD-en") || "N/A"}</Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography variant="body2">{`${new Date(row?.adviceDate).toLocaleString("en-US", {
+                      <Typography variant="body2">{`${new Date(2000,row?.month-1).toLocaleString("en-US", {
                         month: "long",
-                      })},${new Date(row?.adviceDate).getFullYear()}`}</Typography>
+                      })},${row?.year}`}</Typography>
                     </TableCell>
 
                     <TableCell align="center">
