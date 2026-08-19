@@ -28,7 +28,7 @@ import {
   eisPaymentProcess,
   eisPaymentProcessWithoutDate
 } from "../../../actions";
-import { getUserTypeFromRights } from "../../../utils/utils";
+import { getUserTypeFromRights, isBase64Encoded } from "../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
@@ -106,17 +106,13 @@ const ForwardEisPaymentProcessModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    let sendApplicationIds = [];
     for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-          workforceApplicationId: decodeId(encodedId?.id)
-          // year: formData?.year,
-          // month: formData?.month,
-      };
-    
-      const response= await dispatch(
-        eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
-      );
+      sendApplicationIds.push(isBase64Encoded(encodedId?.id) ? decodeId(encodedId?.id) : encodedId?.id);
     }
+    const response = await dispatch(
+      eisPaymentProcessWithoutDate(sendApplicationIds, "Create Payment Process")
+    );
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
 
@@ -128,17 +124,14 @@ const ForwardEisPaymentProcessModal = ({
     //   });
     //   return;
     // }
+    let sendApplicationIds = [];
     for (const encodedId of selectedApplicationIds) {
-          const eisPaymentData = {
-          workforceApplicationId: decodeId(encodedId?.id)
-          // year: formData?.year,
-          // month: formData?.month,
-      };
-    
-      const response= await dispatch(
-        eisPaymentProcessWithoutDate(eisPaymentData, "Create Payment Process")
-      );
+      sendApplicationIds.push(isBase64Encoded(encodedId?.id) ? decodeId(encodedId?.id) : encodedId?.id);
     }
+    const response = await dispatch(
+      eisPaymentProcessWithoutDate(sendApplicationIds, "Create Payment Process")
+    );
+
     setServerResponse({ status: "SUCCESS", message: "সাবমিশন সফল হয়েছে!" });
   };
 

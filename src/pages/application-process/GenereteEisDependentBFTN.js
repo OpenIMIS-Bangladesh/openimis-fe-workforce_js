@@ -105,16 +105,16 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
     if (selectedApplicationIds?.length > 0) {
       setLoading(true);
       // setDataCreated(false);
+      let sendApplicationIds = [];
+      
 
       for (const encodedId of selectedApplicationIds) {
-        const eisPaymentData = {
-          workforceApplicationId: isBase64Encoded(encodedId?.id) ? decodeId(encodedId?.id) : encodedId?.id,
-        };
-
-        await dispatch(
-          eisPaymentProcessWithoutDate(eisPaymentData, recall == 1 ? "yes" : "no")
-        );
+        sendApplicationIds.push(isBase64Encoded(encodedId?.id) ? decodeId(encodedId?.id) : encodedId?.id);
       }
+
+      await dispatch(
+        eisPaymentProcessWithoutDate(sendApplicationIds, recall == 1 ? "yes" : "no")
+      );
 
       // setDataCreated(true);
       setLoading(false);
