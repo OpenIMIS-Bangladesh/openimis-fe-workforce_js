@@ -205,10 +205,10 @@ const AddDependentModal = ({ open, onClose, application }) => {
       employeeBankInfo: formatPayloadJson(finalBankList)
     };
 
-    await dispatch(updateApplication(payload, "update bank info")).then((res) => {
+    await  Promise.all(dispatch(updateApplication(payload, "update bank info")).then((res) => {
       onClose();
       window.location.reload();
-    });
+    }))
     // 2. Close Modal
     // onClose();
   };
