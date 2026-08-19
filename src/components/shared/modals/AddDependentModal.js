@@ -205,7 +205,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
       employeeBankInfo: formatPayloadJson(finalBankList)
     };
 
-    dispatch(updateApplication(payload, "update bank info")).then((res) => {
+    await dispatch(updateApplication(payload, "update bank info")).then((res) => {
       onClose();
       window.location.reload();
     });
