@@ -146,9 +146,11 @@ const AddDependentModal = ({ open, onClose, application }) => {
     setIsProcessing(true);
 
     const finalDependentList = formData.employeeDependentInfo || [];
+    const finalBankList = formData.employeeBankInfo || [];
     const payload = {
       id: application.id,
       employeeDependentInfo: formatPayloadJson(finalDependentList),
+      employeeBankInfo: formatPayloadJson(finalBankList),
     };
 
     try {
@@ -189,16 +191,18 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
   const handleSaveBankInfo = async () => {
     if (uploadBankFile) {
-      await uploadBankFile.map((file) => {
+      await Promise.all( uploadBankFile.map((file) => {
         return dispatch(
           createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
         );
-      });
+      }))
     }
     const finalBankList = formData.employeeBankInfo || [];
+    const finalDependentList = formData.employeeDependentInfo || [];
     const payload = {
       id: application.id,
-      employeeBankInfo: formatPayloadJson(finalBankList),
+      employeeDependentInfo: formatPayloadJson(finalDependentList),
+      employeeBankInfo: formatPayloadJson(finalBankList)
     };
 
     dispatch(updateApplication(payload, "update bank info")).then((res) => {
