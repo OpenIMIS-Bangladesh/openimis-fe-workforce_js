@@ -28,7 +28,7 @@ import {
   fetchCommitteeBankAdviceMap 
 } from '../../../actions';
 import { useDispatch } from "react-redux";
-import { safeDecodeId, safeParse } from '../../../utils/utils';
+import { safeDecodeId, safeParse, getOrdinalNumber } from '../../../utils/utils';
 import { 
   generateBankAdviceTemplate, 
   generateBankAdviceContent 
@@ -186,6 +186,16 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       const lastDay = new Date(rowYear, monthIndex, 0).getDate();
       let printPayFrom = row?.payFromDate ? new Date(row?.payFromDate).toLocaleDateString("en-GB") : `01.${monthFormatted}.${rowYear}`;
       let printPayTo = row?.payToDate ? new Date(row?.payToDate).toLocaleDateString("en-GB") : `${lastDay}.${monthFormatted}.${rowYear}`;
+      let paymentRows= ``;
+      if (row?.eisPaymentType=='installment') {
+        paymentRows= `<td style="border: 1px solid #000; padding: 3px 4px; text-align: right;" colspan="2">${getOrdinalNumber(row?.installmentNumber)} Installment</td>`;
+      } else if (row?.eisPaymentType=='onetime') {
+        paymentRows= `<td style="border: 1px solid #000; padding: 3px 4px; text-align: right;" colspan="2">Lifetime</td>`;
+      }
+      else{
+        paymentRows= `<td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayFrom}</td>
+                      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayTo}</td>`;
+      }
 
       dataRowsHTML += `<tr>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: center;">${index + 1}</td>
@@ -197,8 +207,7 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
       <td style="border: 1px solid #000; padding: 3px 4px;">${(row.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row.bank?.routingNumber) || ""}</td>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${Number(row?.paidAmount?.toFixed(2)) || "0.00"}</td>
       <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${row?.beneficiaryId || ""}</td>
-      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayFrom}</td>
-      <td style="border: 1px solid #000; padding: 3px 4px; text-align: right;">${printPayTo}</td>
+      ${paymentRows}
     </tr>`;
     });
 
@@ -499,17 +508,24 @@ const GenerateBeneficiaryAdvice = ({ open, onClose, paymentData, month, year, fr
                       <TableCell align="left">{Number(row?.paidAmount).toFixed(2)}</TableCell>
                       <TableCell align="left">{row?.beneficiaryId}</TableCell>
                       {
-                        row?.payFromDate ? (
-                          <TableCell align="left">{new Date(row?.payFromDate).toLocaleDateString("en-GB")}</TableCell>
-                        ) : (
-                          <TableCell align="left">01.{monthFormatted}.{rowYear}</TableCell>
-                        )
-                      }
-                      {
-                        row?.payFromDate ? (
-                          <TableCell align="left">{new Date(row?.payToDate).toLocaleDateString("en-GB")}</TableCell>
-                        ) : (
-                          <TableCell align="left">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                        row?.eisPaymentType=='installment' ? (
+                          <TableCell align="left" colSpan={2}>{`${getOrdinalNumber(row?.installmentNumber)} Installment`}</TableCell>
+                        ) : 
+                        row?.eisPaymentType=='onetime' ? (
+                          <TableCell align="left" colSpan={2}>{`Lifetime`}</TableCell>
+                        ):(
+                          <>
+                            {row?.payFromDate ? (
+                              <TableCell align="left">{new Date(row?.payFromDate).toLocaleDateString("en-GB")}</TableCell>
+                            ) : (
+                              <TableCell align="left">01.{monthFormatted}.{rowYear}</TableCell>
+                            )}
+                            {row?.payToDate ? (
+                              <TableCell align="left">{new Date(row?.payToDate).toLocaleDateString("en-GB")}</TableCell>
+                            ) : (
+                              <TableCell align="left">{lastDay}.{monthFormatted}.{rowYear}</TableCell>
+                            )}
+                          </>
                         )
                       }
                     </TableRow>

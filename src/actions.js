@@ -2685,6 +2685,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         routingNumber
         payFromDate
         payToDate
+        installmentNumber
         workforceEisBankAdvice{
         id
         isConfirmed

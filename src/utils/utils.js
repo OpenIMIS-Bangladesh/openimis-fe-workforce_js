@@ -1584,6 +1584,23 @@ export const formatAddress = (locationData, addressData) => {
     return { village, postOffice, thana, district };
   };
 
+
+export const getOrdinalNumber = (number) => {
+  if (number % 100 >= 11 && number % 100 <= 13) {
+    return number + "th";
+  }
+  switch (number % 10) {
+    case 1:
+      return number + "st";
+    case 2:
+      return number + "nd";
+    case 3:
+      return number + "rd";
+    default:
+      return number + "th";
+  }
+}
+
 export const isCfPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("cf");
