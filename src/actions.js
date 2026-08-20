@@ -812,6 +812,12 @@ export function fetchApplicationWiseMovementList(mm, variables) {
               revertNote
               note
               dateCreated
+              application {
+                id
+                eisApprovalIds
+                eisApprovedByIds
+                rejectedIds
+              }
               applicationFrom {
                 id
                 lastName

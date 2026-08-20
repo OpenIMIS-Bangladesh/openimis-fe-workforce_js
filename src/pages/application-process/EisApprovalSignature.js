@@ -200,6 +200,9 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
       } else {
         actualNodes = rawMovements;
       }
+      const approvedIds = safeParse(actualNodes?.[0]?.application?.eisApprovedByIds).map(String)
+      console.log({ actualNodes });
+      console.log({ approvedIds });
 
       // 5. Extract IDs
       const senderIds = [
@@ -214,7 +217,7 @@ const EisApprovalSignature = ({ open, onClose, userRights, selectedApplicationId
         ),
       ];
       console.log({ actualNodes });
-      await dispatch(fetchWorkforceSignatures([...senderIds])).then((res) => {
+      await dispatch(fetchWorkforceSignatures(approvedIds)).then((res) => {
         setEisApprovalSignature(res?.payload?.data?.workforceSignatures);
       });
 
