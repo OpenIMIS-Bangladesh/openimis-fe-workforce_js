@@ -149,6 +149,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     const finalBankList = formData.employeeBankInfo || [];
     const payload = {
       id: application.id,
+      status:application?.status,
       employeeDependentInfo: formatPayloadJson(finalDependentList),
       employeeBankInfo: formatPayloadJson(finalBankList),
     };
@@ -201,6 +202,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     const finalDependentList = formData.employeeDependentInfo || [];
     const payload = {
       id: application.id,
+      status:application?.status,
       employeeDependentInfo: formatPayloadJson(finalDependentList),
       employeeBankInfo: formatPayloadJson(finalBankList)
     };
