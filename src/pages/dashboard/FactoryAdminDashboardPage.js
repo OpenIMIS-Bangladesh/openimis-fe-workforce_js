@@ -165,11 +165,7 @@ const FiledApplications = () => {
 
       try {
         const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
+          `relatedUser_Id: ${loggedInUserId}`
         ];
 
         const res = await dispatch(
