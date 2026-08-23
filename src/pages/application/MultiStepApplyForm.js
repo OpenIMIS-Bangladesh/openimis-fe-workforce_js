@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams } from "@openimis/fe-core";
+import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams,encodeId } from "@openimis/fe-core";
 import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
