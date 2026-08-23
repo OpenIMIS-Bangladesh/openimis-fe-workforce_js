@@ -96,6 +96,18 @@ const initialEntry = {
   remarks: "",
 };
 
+const normalizeBoolean = (value) => {
+  if (value === true || value === "true") {
+    return true;
+  }
+
+  if (value === false || value === "false") {
+    return false;
+  }
+
+  return "";
+};
+
 const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType = "factory" }) => {
   const classes = useStyles();
   const { formatMessage } = useTranslations("workforce");
@@ -119,6 +131,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
           const formattedData = fetchOtherCompensation.map((item) => ({
             ...item,
             amount: item.amount !== null && item.amount !== undefined ? Number(item.amount).toFixed(2) : "",
+            eisBenefitAdjustment: normalizeBoolean(item.isEisBenefitAdjustmentEligible),
           }));
           if (fetchOtherCompensation && fetchOtherCompensation.length > 0) {
             setFormData(formattedData);
@@ -170,11 +183,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
     const validationErrors = validateRequiredFields(formRef, formatMessage, formData);
     if (user_type === WORKFORCE_USER_TYPE.EIS_OFFICER) {
       formData?.forEach((item, index) => {
-        const isSelected =
-          item.eisBenefitAdjustment === true ||
-          item.eisBenefitAdjustment === false ||
-          item.isEisBenefitAdjustmentEligible === true ||
-          item.isEisBenefitAdjustmentEligible === false;
+        const isSelected = item.eisBenefitAdjustment === true || item.eisBenefitAdjustment === false;
 
         if (!isSelected) {
           // Track the error using a dynamic key unique to this row item
@@ -198,12 +207,12 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
         dateOfCompensation: item.dateOfCompensation,
         amount: item.amount,
         receivedFromOrganization: item?.receivedFrom,
-        statusOfPayment: item.paymentStatus, // Map State -> API
-        // Map String "Yes"/"No" -> Boolean
-        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment ?? item.isEisBenefitAdjustmentEligible,
+        statusOfPayment: item.paymentStatus,
+
+        // Send the current radio value
+        isEisBenefitAdjustmentEligible: item.eisBenefitAdjustment,
+
         remarks: item.remarks,
-        // Optional: Map receivedFrom to paymentType if that's the intention
-        // paymentType: item.receivedFrom
       };
 
       console.log("SENDING TO DATABASE:", payload);
@@ -225,7 +234,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
 
   const isOfficer = entryType === "officer";
 
-  console.log({fahimFarooq:formData})
+  console.log({ fahimFarooq: formData });
 
   if (loader) {
     return (
@@ -343,7 +352,7 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                       </TextField>
                     </Grid>
 
-                    {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER||user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && (
+                    {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) && (
                       <>
                         <Grid item xs={12}>
                           <FormControl component="fieldset" error={!!errors[`eisBenefitAdjustment-${index}`]}>
@@ -352,20 +361,12 @@ const CompensationFormModal = ({ application, open, onClose, onSubmit, entryType
                             </FormLabel>
                             <RadioGroup
                               row
-                              // This logic ensures that if the DB sends true/false, the radio stays checked
-                              value={
-                                entry.eisBenefitAdjustment === true || entry.isEisBenefitAdjustmentEligible === "true"
-                                  ? "true"
-                                  : entry.eisBenefitAdjustment === false || entry.isEisBenefitAdjustmentEligible === "false"
-                                    ? "false"
-                                    : ""
-                              }
+                              value={entry.eisBenefitAdjustment === true ? "true" : entry.eisBenefitAdjustment === false ? "false" : ""}
                               onChange={(e) => {
-                                // Convert the string "true"/"false" from the radio back into a real boolean immediately
-                                const val = e.target.value === "true";
-                                handleChange(index, "eisBenefitAdjustment")(val);
+                                const value = e.target.value === "true";
 
-                                // Optional: Clear this field's error immediately when a user clicks an option
+                                handleChange(index, "eisBenefitAdjustment")(value);
+
                                 if (errors[`eisBenefitAdjustment-${index}`]) {
                                   setErrors((prev) => {
                                     const updated = { ...prev };

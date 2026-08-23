@@ -153,7 +153,10 @@ export function formatWorkforceOtherCompensationGQL(otherCompensation) {
     ${otherCompensation?.dateOfCompensation ? `dateOfCompensation: "${(otherCompensation?.dateOfCompensation)}"` : ""}
     ${otherCompensation?.amount ? `amount: "${(otherCompensation?.amount)}"` : ""}
     ${otherCompensation?.statusOfPayment ? `statusOfPayment: "${(otherCompensation?.statusOfPayment)}"` : ""}
-    ${otherCompensation?.isEisBenefitAdjustmentEligible ? `isEisBenefitAdjustmentEligible: "${otherCompensation?.isEisBenefitAdjustmentEligible}"` : ""}
+    ${otherCompensation?.isEisBenefitAdjustmentEligible !== undefined &&
+      otherCompensation?.isEisBenefitAdjustmentEligible !== null
+        ? `isEisBenefitAdjustmentEligible: "${otherCompensation.isEisBenefitAdjustmentEligible}"`
+    : ""}
     ${otherCompensation?.remarks ? `remarks: "${otherCompensation?.remarks}"` : ""}
     ${otherCompensation?.paymentType ? `paymentType: "${otherCompensation?.paymentType}"` : ""}
     ${otherCompensation?.receivedFromOrganization ? `receivedFromOrganization: "${otherCompensation?.receivedFromOrganization}"` : ""}
