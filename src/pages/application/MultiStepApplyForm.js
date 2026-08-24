@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useModulesManager, formatMutation, decodeId, FormattedMessage, useParams,encodeId } from "@openimis/fe-core";
 import { Paper, Button, IconButton, Typography, FormControl, FormControlLabel, Radio, RadioGroup, Snackbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -110,16 +110,17 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
     setApplicationForSelf(parsedApplicationData?.applicationFor === "dependent" ? "no" : parsedApplicationData?.applicationFor === "self" ? "yes" : "");
     setSelectedApplicationType(parsedApplicationData?.applicationType);
     setOrganizationType(parsedApplicationData?.organizationType);
+    setSelectedFactory(parsedApplicationData?.workforceFactory || null);
   }, [parsedApplicationData]);
 
-  const handleSelection = (applicationType, exportStatus) => {
+  const handleSelection = useCallback((applicationType, exportStatus) => {
     setSelectedApplicationType(applicationType);
     if (exportStatus === "yes") {
       setOrganizationType("cf");
     } else if (exportStatus === "no") {
       setOrganizationType("blwf");
     }
-  };
+  }, []);
 
   const handleBack = () => {
     setShowForm(false);

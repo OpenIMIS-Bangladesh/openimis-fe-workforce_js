@@ -33,6 +33,7 @@ const ApplicationTypeSelector = ({
   const dispatch = useDispatch();
   const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
   const selectedEmployee = useSelector((state) => state.selectedEmployee);
+  const [localApplicationType, setLocalApplicationType] = useState("");
   const history = useHistory();
   const user_type = getUserType();
 
@@ -42,33 +43,35 @@ const ApplicationTypeSelector = ({
 
   // 1. Logic to AUTOMATICALLY set Yes/No based on factory selection
   useEffect(() => {
-    // Check if selectedFactory exists and has an ID directly
-    // note: we check selectedFactory.id, NOT selectedFactory.factory.id
-    if (selectedFactory && selectedFactory.id) {
-      setIsExportOriented("yes");
-      // Ensure the parent gets the updated status immediately
-      if(selectedApplicationType) {
-         onSelect(selectedApplicationType, "yes");
-      }
-    } else {
-      setIsExportOriented("no");
-      if(selectedApplicationType) {
-         onSelect(selectedApplicationType, "no");
-      }
+    const exportStatus = selectedFactory?.id || selectedFactory?.factory?.id ? "yes" : "no";
+    setIsExportOriented(exportStatus);
+    if (selectedApplicationType) {
+      onSelect(selectedApplicationType, exportStatus);
     }
-  }, [selectedFactory]);
+  }, [selectedFactory, selectedApplicationType, onSelect]);
 
   // 2. Initial load logic (for edit mode)
   useEffect(() => {
-    if (parsedApplicationData) {
-      const orgType = parsedApplicationData?.organizationType;
-      const exportStatus = orgType === "cf" ? "yes" : "no";
-      setIsExportOriented(exportStatus);
-    }
-  }, [parsedApplicationData]);
+  if (!parsedApplicationData) return;
+
+  const applicationType = parsedApplicationData.applicationType || "";
+  const exportStatus =
+    parsedApplicationData.organizationType === "cf" ? "yes" : "no";
+
+  setLocalApplicationType(applicationType);
+  setIsExportOriented(exportStatus);
+
+  onSelect(applicationType, exportStatus);
+
+  dispatch({
+    type: "SET_SELECTED_EMPLOYEE",
+    payload: parsedApplicationData.workforceEmployee,
+  });
+  }, [parsedApplicationData, onSelect, dispatch]);
 
   const handleApplicationTypeChange = (event) => {
     const value = event.target.value;
+    setLocalApplicationType(value);
     onSelect(value, isExportOriented);
   };
 
@@ -84,7 +87,7 @@ const ApplicationTypeSelector = ({
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
                 workforceFactoryId={workforceFactoryId}
-                value={selectedEmployee}
+                value={selectedEmployee?.id || parsedApplicationData?.workforceEmployee?.id}
                 onChange={handleEmployeeChange}
                 required={true}
                 readOnly={false}
@@ -131,7 +134,7 @@ const ApplicationTypeSelector = ({
             <Typography variant="h6" className={classes.title}>
               {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
-            <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
+            <RadioGroup value={localApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
               <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
               <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
@@ -144,7 +147,7 @@ const ApplicationTypeSelector = ({
             <Typography variant="h6" className={classes.title}>
               {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
-            <RadioGroup value={selectedApplicationType} onChange={handleApplicationTypeChange}>
+            <RadioGroup value={localApplicationType} onChange={handleApplicationTypeChange}>
               <FormControlLabel value="medicalDonation" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
               <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
               <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
