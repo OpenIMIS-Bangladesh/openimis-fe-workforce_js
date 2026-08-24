@@ -246,6 +246,7 @@ export const headerAssociation = (component) => [
   "workforce.employee.application.applicationType",
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
+  "workforce.employee.application.organizationType",
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert

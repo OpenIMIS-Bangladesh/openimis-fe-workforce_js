@@ -300,11 +300,11 @@ export const handleBulkSelectedByAssociationLogic = async ({
           status:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !(selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
                 //   userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                (selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
         };
@@ -314,22 +314,22 @@ export const handleBulkSelectedByAssociationLogic = async ({
           status:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !(selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
               ? WORKFORCE_STATUS.FORWARD_TO_CF_SECTION
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
                 // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                (selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? WORKFORCE_STATUS.FORWARD_TO_EIS_COORDINATOR
                 : null,
           note: "আবেদন শাখায় প্রেরণ করা হয়েছে",
           action:
             // userType === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
             // userType === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION
-            !isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+            !(selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
               ? "forward_to_cf_section"
               : // userType === WORKFORCE_USER_TYPE.BEPZA_ASSOCIATION ||
                 // userType === WORKFORCE_USER_TYPE.LFMEAB_ASSOCIATION
-                isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
+                (selectedItem?.organizationType ==="eis") && WORKFORCE_USER_TYPE.ASSOCIATION
                 ? "forward_to_eis_coordinator"
                 : null,
           applicationFromId: loggedInUserId,
@@ -344,7 +344,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
           //   isEisPath() && WORKFORCE_USER_TYPE.ASSOCIATION
           // ? 194
           // : null,
-          toRoleId: isEisPath() ? 46 : selectedItem?.applicationType === "disabilityAssistance" || selectedItem?.applicationType === "financialAssistance"
+          toRoleId: (selectedItem?.organizationType ==="eis") ? 46 : selectedItem?.applicationType === "disabilityAssistance" || selectedItem?.applicationType === "financialAssistance"
               ? 35
               : 32,
         };

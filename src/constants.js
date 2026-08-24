@@ -40,7 +40,7 @@ export const  WORKFORCE_GENDER = [
 export const ORGANIZATION_TYPE_NAME_BN = {
   cf:"কেন্দ্রীয় তহবিল",
   blwf:"বাংলাদেশ শ্রমিক কল্যাণ ফাউন্ডেশন",
-  eis:"Employee Injury Scheme"
+  eis:"এমপ্লয়ী ইনজুরি স্কিম"
 }
 export const ORGANIZATION_TYPE_NAME_EN = {
   cf:"Central Fund",
@@ -514,6 +514,12 @@ export const cfAssociationOptions = [
 export const eisAssociationOptions = [
   { value: "BEPZA", label: "বেপজা" },
   { value: "LFMEAB", label: "এলএফএমইএবি" },
+];
+
+export const organizationTypeOptions = [
+  { value: "eis", label: "EIS" },
+  { value: "blwf", label: "BLWF" },
+  { value: "cf", label: "CF" },
 ];
 
 

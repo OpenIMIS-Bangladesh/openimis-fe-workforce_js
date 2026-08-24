@@ -8,7 +8,13 @@ import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
 import { conditionalEnToBn, getUserTypeFromRights, isBlwfPath, isEisPath, safeDecodeId, safeParse } from "../../utils/utils";
-import { createApplicationMovement, fetchApplicationWiseMovementList, fetchWorkforceDocument, updateApplication, updateApplicationSummary } from "../../actions";
+import {
+  createApplicationMovement,
+  fetchApplicationWiseMovementList,
+  fetchWorkforceDocument,
+  updateApplication,
+  updateApplicationSummary,
+} from "../../actions";
 import { bindActionCreators } from "redux";
 import DocumentReviewAccordion from "../../components/application-process/DocumentReviewAccordion";
 import ApplicationViewPage from "../../components/application-forms/ApplicationViewPage";
@@ -77,7 +83,7 @@ class ViewApplicationPage extends Component {
       open: false,
       selectedApplication: null,
       eisDependentBFTNModalOpen: false,
-      loader:false
+      loader: false,
     };
   }
 
@@ -228,12 +234,12 @@ class ViewApplicationPage extends Component {
         eisApprovedByIds: application?.eisApprovedByIds,
         dispatch: this.props.dispatch,
         history: this.props.history,
-        setCloseLoader:(l)=>this.setState({loader:l}),
-        loader:this.state.loader
+        setCloseLoader: (l) => this.setState({ loader: l }),
+        loader: this.state.loader,
       });
     } else {
       handleBulkSelectedByAssociationLogic({
-        selectedApplicationIds: [{ id: application?.id }],
+        selectedApplicationIds: [{ id: application?.id, applicationType: application?.applicationType, ...application }],
         loggedInUserId,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
@@ -449,7 +455,7 @@ class ViewApplicationPage extends Component {
             onOpen={() => this.setState({ open: true })}
             data={formData}
             documents={documents}
-            logoLeft={application?.organizationType==="blwf" ? "/front/workforce_assets/blwf.png" : "/front/workforce_assets/centralfund.png"}
+            logoLeft={application?.organizationType === "blwf" ? "/front/workforce_assets/blwf.png" : "/front/workforce_assets/centralfund.png"}
             logoLeftUrl="/front/workforce_assets/bdgov.png"
           />
         </Modal>

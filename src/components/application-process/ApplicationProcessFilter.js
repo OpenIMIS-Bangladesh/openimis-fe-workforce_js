@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import _debounce from "lodash/debounce";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-import { Grid, Checkbox, FormControlLabel ,Select,FormControl,InputLabel,MenuItem } from "@material-ui/core";
+import { Grid, Checkbox, FormControlLabel, Select, FormControl, InputLabel, MenuItem } from "@material-ui/core";
 import {
   withModulesManager,
   Contributions,
@@ -12,9 +12,22 @@ import {
   PublishedComponent,
   decodeId,
   formatMessage,
-  FormattedMessage
+  FormattedMessage,
 } from "@openimis/fe-core";
-import { MODULE_NAME, cfStatusOptions,blwfStatusOptions,eisStatusOptions,cfApplicationTypeOptions,blwfApplicationTypeOptions,eisApplicationTypeOptions,eisAssociationOptions,cfAssociationOptions,submittedByOptions,WORKFORCE_USER_TYPE } from "../../constants";
+import {
+  MODULE_NAME,
+  cfStatusOptions,
+  blwfStatusOptions,
+  eisStatusOptions,
+  cfApplicationTypeOptions,
+  blwfApplicationTypeOptions,
+  eisApplicationTypeOptions,
+  eisAssociationOptions,
+  cfAssociationOptions,
+  submittedByOptions,
+  WORKFORCE_USER_TYPE,
+  organizationTypeOptions,
+} from "../../constants";
 const styles = (theme) => ({
   dialogTitle: theme.dialog.title,
   dialogContent: theme.dialog.content,
@@ -26,16 +39,12 @@ const styles = (theme) => ({
   },
   paperDivider: theme.paper.divider,
 });
-import { getUserTypeFromRights, isEmptyObject,isEisPath } from "../../utils/utils";
+import { getUserTypeFromRights, isEmptyObject, isEisPath } from "../../utils/utils";
 
-const APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY =
-  "application.process.Filter";
+const APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY = "application.process.Filter";
 
 class ApplicationProcessFilter extends Component {
-  debouncedOnChangeFilter = _debounce(
-    this.props.onChangeFilters,
-    800,
-  );
+  debouncedOnChangeFilter = _debounce(this.props.onChangeFilters, 800);
 
   _filterValue = (k) => {
     const { filters } = this.props;
@@ -63,24 +72,22 @@ class ApplicationProcessFilter extends Component {
     this.props.onChangeFilters(filters);
     this.props.setShowHistoryFilter(value);
   };
- 
+
   render() {
     const { classes, filters, onChangeFilters } = this.props;
     const userType = getUserTypeFromRights(this.props.userRights);
 
-    let applicationTypeOptions;
     let organizationTypeIn;
 
     const type = userType?.toLowerCase() || "";
+    const selectedOrgType = this._filterValue("organizationType") || "";
 
-    if (isEisPath()) {
-      organizationTypeIn = "eis";
+    let applicationTypeOptions = [];
+    if (selectedOrgType === "eis") {
       applicationTypeOptions = eisApplicationTypeOptions;
-    } else if (type.includes("blwf")) {
-      organizationTypeIn = "blwf";
+    } else if (selectedOrgType === "blwf") {
       applicationTypeOptions = blwfApplicationTypeOptions;
-    } else {
-      organizationTypeIn = "cf";
+    } else if (selectedOrgType === "cf") {
       applicationTypeOptions = cfApplicationTypeOptions;
     }
 
@@ -100,199 +107,227 @@ class ApplicationProcessFilter extends Component {
       statusOptions = cfStatusOptions;
     }
 
-
     return (
       <Grid container className={classes.form}>
-      <ControlledField
-        module={MODULE_NAME}
-        id="workforce.employee.application.applicationType"
-        field={
-          <Grid item xs={3} className={classes.item}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>
-                <FormattedMessage
-                  id="workforce.employee.application.applicationType"
-                  defaultMessage="Application Type"
-                />
-              </InputLabel>
-              <Select
-                label="workforce.employee.application.applicationType"
-                value={this._filterValue("applicationType") || ""}
-                onChange={(e) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "applicationType",
-                      value: e.target.value,
-                      filter: `applicationTypeIn: ["${e.target.value}"]`,
-                    },
-                  ])
-                }
-              >
-               {applicationTypeOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-
-              </Select>
-            </FormControl>
-          </Grid>
-        }
-      />
-    {userType.toLowerCase().includes("eis") && (
-    <>
-      <ControlledField
-        module={MODULE_NAME}
-        id="workforce.employee.application.associationType"
-        field={
-          <Grid item xs={3} className={classes.item}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>
-                <FormattedMessage
-                  id="workforce.employee.application.associationType"
-                  defaultMessage="Application Type"
-                />
-              </InputLabel>
-              <Select
-                label="workforce.employee.application.associationType"
-                value={this._filterValue("associationType") || ""}
-                onChange={(e) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "associationType",
-                      value: e.target.value,
-                      filter: `associationTypeIn: ["${e.target.value}"]`,
-                    },
-                  ])
-                }
-              >
-               {asociationOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-
-              </Select>
-            </FormControl>
-          </Grid>
-        }
-      />
-      <Grid item xs={3} className={classes.item}>
-        <PublishedComponent
-          pubRef="workforce.DatePicker"
-          label="workforce.application.startDate"
-          value={this._filterValue("dateCreatedFrom") || ""}
-          onChange={(v) =>
-            this.debouncedOnChangeFilter([
-              {
-                id: "dateCreatedFrom",
-                value: v,
-                filter: `dateCreatedFrom: "${v}"`,
-              },
-            ])
-          }
-          readOnly={false}
-        />
-      </Grid>
-
-      <Grid item xs={3} className={classes.item}>
-        <PublishedComponent
-          pubRef="workforce.DatePicker"
-          label="workforce.application.endDate"
-          value={this._filterValue("dateCreatedTo") || ""}
-          onChange={(v) =>
-            this.debouncedOnChangeFilter([
-              {
-                id: "dateCreatedTo",
-                value: v,
-                filter: `dateCreatedTo: "${v}"`,
-              },
-            ])
-          }
-          readOnly={false}
-        />
-      </Grid>
-      </>
-    )}
-     {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR &&(
-       <ControlledField
-        module={MODULE_NAME}
-        id="workforce.employee.application.status"
-        field={
-          <Grid item xs={3} className={classes.item}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>
-                <FormattedMessage
-                  id="workforce.employee.application.status"
-                  defaultMessage="Status"
-                />
-              </InputLabel>
-              <Select
-                label="workforce.employee.application.status"
-                value={this._filterValue("status") || ""}
-                onChange={(e) =>
-                  this.debouncedOnChangeFilter([
-                    {
-                      id: "status",
-                      value: e.target.value,
-                      filter: `statusIn: ["${e.target.value}"]`,
-                    },
-                  ])
-                }
-              >             
-                {statusOptions.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </MenuItem>
-                  ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        }
-      />
-  )}
- {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN &&(
-     <ControlledField mt={3}
-          module={MODULE_NAME}
-          id="workforce.application.submittedBy"
-          field={
-            <Grid item xs={3} className={classes.item}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel><FormattedMessage id="workforce.application.submittedBy" defaultMessage="Submitted By" /></InputLabel>
+        <Grid item xs={3} className={classes.item}>
+          <ControlledField
+            module={MODULE_NAME}
+            id="workforce.employee.application.organizationType"
+            field={
+              <FormControl  fullWidth>
+                <InputLabel id="org-type-select-label">
+                  <FormattedMessage id="workforce.employee.application.organizationType" defaultMessage="Organization Type" />
+                </InputLabel>
                 <Select
-                  label="workforce.application.submittedBy"
-                  value={this._filterValue("submittedBy") || ""}
+                  labelId="org-type-select-label"
+                  id="org-type-select"
+                  label="workforce.employee.application.organizationType"
+                  value={this._filterValue("organizationType") || ""}
                   onChange={(e) =>
                     this.debouncedOnChangeFilter([
                       {
-                        id: "submittedBy",
+                        id: "organizationType",
                         value: e.target.value,
-                        filter: `submittedByIn: "${e.target.value}"`,
+                        filter: `organizationTypeIn: ["${e.target.value}"]`,
+                      },
+                      // Clear the application type so old options aren't left behind
+                      {
+                        id: "applicationType",
+                        value: "",
+                        filter: "",
                       },
                     ])
                   }
                 >
-                  {submittedByOptions.map((opt) => (
+                  {organizationTypeOptions.map((opt) => (
                     <MenuItem key={opt.value} value={opt.value}>
                       {opt.label}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+            }
+          />
+        </Grid>
+        <Grid item xs={3} className={classes.item}>
+          <ControlledField
+            module={MODULE_NAME}
+            id="workforce.employee.application.applicationType"
+            field={
+              <FormControl  fullWidth>
+                <InputLabel id="app-type-select-label">
+                  <FormattedMessage id="workforce.employee.application.applicationType" defaultMessage="Application Type" />
+                </InputLabel>
+                <Select
+                  labelId="app-type-select-label"
+                  id="app-type-select"
+                  label="workforce.employee.application.applicationType"
+                  value={this._filterValue("applicationType") || ""}
+                  disabled={!selectedOrgType} // Disables dropdown if no Organization Type is selected
+                  onChange={(e) =>
+                    this.debouncedOnChangeFilter([
+                      {
+                        id: "applicationType",
+                        value: e.target.value,
+                        filter: `applicationTypeIn: ["${e.target.value}"]`,
+                      },
+                    ])
+                  }
+                >
+                  {applicationTypeOptions.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            }
+          />
+        </Grid>
+        {userType.toLowerCase().includes("eis") && (
+          <>
+            <ControlledField
+              module={MODULE_NAME}
+              id="workforce.employee.application.associationType"
+              field={
+                <Grid item xs={3} className={classes.item}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel>
+                      <FormattedMessage id="workforce.employee.application.associationType" defaultMessage="Application Type" />
+                    </InputLabel>
+                    <Select
+                      label="workforce.employee.application.associationType"
+                      value={this._filterValue("associationType") || ""}
+                      onChange={(e) =>
+                        this.debouncedOnChangeFilter([
+                          {
+                            id: "associationType",
+                            value: e.target.value,
+                            filter: `associationTypeIn: ["${e.target.value}"]`,
+                          },
+                        ])
+                      }
+                    >
+                      {asociationOptions.map((opt) => (
+                        <MenuItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              }
+            />
+            <Grid item xs={3} className={classes.item}>
+              <PublishedComponent
+                pubRef="workforce.DatePicker"
+                label="workforce.application.startDate"
+                value={this._filterValue("dateCreatedFrom") || ""}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "dateCreatedFrom",
+                      value: v,
+                      filter: `dateCreatedFrom: "${v}"`,
+                    },
+                  ])
+                }
+                readOnly={false}
+              />
             </Grid>
-          }
-        />
-    )}
-        <Contributions
-          filters={filters}
-          onChangeFilters={onChangeFilters}
-          contributionKey={APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY}
-        />
+
+            <Grid item xs={3} className={classes.item}>
+              <PublishedComponent
+                pubRef="workforce.DatePicker"
+                label="workforce.application.endDate"
+                value={this._filterValue("dateCreatedTo") || ""}
+                onChange={(v) =>
+                  this.debouncedOnChangeFilter([
+                    {
+                      id: "dateCreatedTo",
+                      value: v,
+                      filter: `dateCreatedTo: "${v}"`,
+                    },
+                  ])
+                }
+                readOnly={false}
+              />
+            </Grid>
+          </>
+        )}
+        {userType === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+          <ControlledField
+            module={MODULE_NAME}
+            id="workforce.employee.application.status"
+            field={
+              <Grid item xs={3} className={classes.item}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel>
+                    <FormattedMessage id="workforce.employee.application.status" defaultMessage="Status" />
+                  </InputLabel>
+                  <Select
+                    label="workforce.employee.application.status"
+                    value={this._filterValue("status") || ""}
+                    onChange={(e) =>
+                      this.debouncedOnChangeFilter([
+                        {
+                          id: "status",
+                          value: e.target.value,
+                          filter: `statusIn: ["${e.target.value}"]`,
+                        },
+                      ])
+                    }
+                  >
+                    {statusOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            }
+          />
+        )}
+        {userType === WORKFORCE_USER_TYPE.FACTORY_ADMIN && (
+          <ControlledField
+            mt={3}
+            module={MODULE_NAME}
+            id="workforce.application.submittedBy"
+            field={
+              <Grid item xs={3} className={classes.item}>
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel>
+                    <FormattedMessage id="workforce.application.submittedBy" defaultMessage="Submitted By" />
+                  </InputLabel>
+                  <Select
+                    label="workforce.application.submittedBy"
+                    value={this._filterValue("submittedBy") || ""}
+                    onChange={(e) =>
+                      this.debouncedOnChangeFilter([
+                        {
+                          id: "submittedBy",
+                          value: e.target.value,
+                          filter: `submittedByIn: "${e.target.value}"`,
+                        },
+                      ])
+                    }
+                  >
+                    {submittedByOptions.map((opt) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            }
+          />
+        )}
+        <Contributions filters={filters} onChangeFilters={onChangeFilters} contributionKey={APPLICATION_PROCESS_FILTER_CONTRIBUTION_KEY} />
       </Grid>
     );
   }
 }
 
-export default withModulesManager(
-  withTheme(withStyles(styles)(ApplicationProcessFilter)),
-);
+export default withModulesManager(withTheme(withStyles(styles)(ApplicationProcessFilter)));

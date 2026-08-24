@@ -1309,6 +1309,7 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => (application?.lastMovementDate ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A"),
     (application) => (application?.applicationForwardDate ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A"),
+    (application) => (application?.organizationType ? (locale ==="en"?ORGANIZATION_TYPE_NAME_EN[application?.organizationType]:ORGANIZATION_TYPE_NAME_BN[application?.organizationType]) : "N/A"),
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
