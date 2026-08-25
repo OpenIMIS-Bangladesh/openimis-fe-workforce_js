@@ -34,7 +34,7 @@ export function getUserType() {
 
 export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
-  if (user_rights.length > 350 || user_rights.length===0) {
+  if (user_rights.length > 350) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
   else
