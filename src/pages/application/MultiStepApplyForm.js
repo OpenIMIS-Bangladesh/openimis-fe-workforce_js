@@ -95,7 +95,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
       dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
         const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
         const node = edges[0]?.node;
-        const factoryId = node?.workforceFactory || null;
+        const factoryId = node?.workforceFactory?.id || null;
         setFactoryId(factoryId);
         dispatch(fetchWorkforceEmployeesSummary(modulesManager, [`workforceFactoryId:"${factoryId?.id}"`]));
       });

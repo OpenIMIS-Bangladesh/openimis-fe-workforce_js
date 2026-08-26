@@ -197,7 +197,10 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
         const isVerified = isVerify();
         const workerBirthDate = isVerified ? formdata?.deceasedWorkerInfo?.birthDate : formdata?.workforceEmployee?.birthDate;
         // const isEligible =dependent?.isEligible?dependent?.isEligible: getRelationForApi(normalizedDependents[index], workerBirthDate);
-        const isEligible = getRelationForApi(normalizedDependents[index], workerBirthDate);
+        const isEisFinancialAssistance = applicationType === "financialAssistance" && formdata?.organizationType === "eis";
+        const targetDate = isEisFinancialAssistance ? formdata?.metadata?.deathDate : undefined;
+
+        const isEligible = getRelationForApi(normalizedDependents[index], workerBirthDate,targetDate);
         console.log("Single Beneficiary", dependent);
         console.log({ isEligible });
         const hasData = (dependent?.relationType || dependent?.relationWithWorker) && (dependent?.birthDate || dependent?.nid);

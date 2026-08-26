@@ -1261,12 +1261,28 @@ export function calculateAge(birthDate) {
 
   return age;
 }
+// 1. Update calculateAge to accept an optional targetDate
+export function calculateAgeForDependent(birthDate, targetDate = new Date()) {
+  if (!birthDate) return 0;
 
-export function getRelationForApi(depObj, workerBirthDate) {
+  const dob = new Date(birthDate);
+  const end = new Date(targetDate);
+
+  let age = end.getFullYear() - dob.getFullYear();
+  const monthDiff = end.getMonth() - dob.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && end.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age;
+}
+
+export function getRelationForApi(depObj, workerBirthDate,deathDate) {
   console.log("deps", depObj);
 
-  const age = calculateAge(depObj.birthDate);
-  const workerAge = calculateAge(workerBirthDate);
+  const age = calculateAgeForDependent(depObj.birthDate,deathDate);
+  const workerAge = calculateAgeForDependent(workerBirthDate);
 
   const relation = depObj?.relationWithWorker || depObj?.relationType;
   const marital = depObj.maritalStatus;
