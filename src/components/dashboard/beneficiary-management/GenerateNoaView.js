@@ -594,7 +594,7 @@ const GenerateNoaView = ({ open, onClose, onSuccess, row }) => {
                             </td>
                           </tr>
                           {
-                            calculateAge(row?.workforceEmployeeDependent?.[0]?.birthDate) < 18 ?
+                            calculateAge(row?.workforceEmployeeDependent?.[0]?.birthDate, employeeAccidentInfo.dateOfDeath??null) < 18 ?
                               (
                                 <tr>
                                   <td className="noa-label">অপ্রাপ্ত বয়স্ক নির্ভরশীল ব্যক্তির আইনগত অভিভাবক:</td>
