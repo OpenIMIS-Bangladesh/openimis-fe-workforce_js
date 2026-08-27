@@ -109,46 +109,50 @@ class ApplicationProcessFilter extends Component {
 
     return (
       <Grid container className={classes.form}>
-        <Grid item xs={3} className={classes.item}>
-          <ControlledField
-            module={MODULE_NAME}
-            id="workforce.employee.application.organizationType"
-            field={
-              <FormControl  fullWidth>
-                <InputLabel id="org-type-select-label">
-                  <FormattedMessage id="workforce.employee.application.organizationType" defaultMessage="Organization Type" />
-                </InputLabel>
-                <Select
-                  labelId="org-type-select-label"
-                  id="org-type-select"
-                  label="workforce.employee.application.organizationType"
-                  value={this._filterValue("organizationType") || ""}
-                  onChange={(e) =>
-                    this.debouncedOnChangeFilter([
-                      {
-                        id: "organizationType",
-                        value: e.target.value,
-                        filter: `organizationTypeIn: ["${e.target.value}"]`,
-                      },
-                      // Clear the application type so old options aren't left behind
-                      {
-                        id: "applicationType",
-                        value: "",
-                        filter: "",
-                      },
-                    ])
-                  }
-                >
-                  {organizationTypeOptions.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            }
-          />
-        </Grid>
+        {
+          userType.toLowerCase().includes("association") && (
+            <Grid item xs={3} className={classes.item}>
+              <ControlledField
+                module={MODULE_NAME}
+                id="workforce.employee.application.organizationType"
+                field={
+                  <FormControl  fullWidth>
+                    <InputLabel id="org-type-select-label">
+                      <FormattedMessage id="workforce.employee.application.organizationType" defaultMessage="Organization Type" />
+                    </InputLabel>
+                    <Select
+                      labelId="org-type-select-label"
+                      id="org-type-select"
+                      label="workforce.employee.application.organizationType"
+                      value={this._filterValue("organizationType") || ""}
+                      onChange={(e) =>
+                        this.debouncedOnChangeFilter([
+                          {
+                            id: "organizationType",
+                            value: e.target.value,
+                            filter: `organizationTypeIn: ["${e.target.value}"]`,
+                          },
+                          // Clear the application type so old options aren't left behind
+                          {
+                            id: "applicationType",
+                            value: "",
+                            filter: "",
+                          },
+                        ])
+                      }
+                    >
+                      {organizationTypeOptions.map((opt) => (
+                        <MenuItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                }
+              />
+            </Grid>
+          )
+        }
         <Grid item xs={3} className={classes.item}>
           <ControlledField
             module={MODULE_NAME}

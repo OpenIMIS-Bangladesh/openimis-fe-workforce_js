@@ -154,17 +154,22 @@ const ForwardApplicationSummaryModal = ({ open, onClose, selectedApplication, se
       const excludedStatuses = ["forward_to_doctor", "approved_by_committee"];
 
       const filteredMeetings = formattedMeetings.filter((meeting) => {
-        if (!meeting?.meetingDate) return false;
-        const [year, month, day] = meeting.meetingDate.split("-").map(Number);
-        const meetingDate = new Date(year, month - 1, day);
-        const diffTime = meetingDate.getTime() - today.getTime();
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-        return diffDays >= 3 && !excludedStatuses.includes(meeting.status);
+        // if (!meeting?.meetingDate) return false;
+        // const [year, month, day] = meeting.meetingDate.split("-").map(Number);
+        // const meetingDate = new Date(year, month - 1, day);
+        // const diffTime = meetingDate.getTime() - today.getTime();
+        // const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        // return diffDays >= 3 
+        // && 
+        return !excludedStatuses.includes(meeting.status);
       });
-
       setMeetingList(filteredMeetings);
     });
   }, [open, dispatch, modulesManager]);
+
+  useEffect(() => {
+    console.log("meetingList UPDATED:", meetingList);
+  }, [meetingList]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
