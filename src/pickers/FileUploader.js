@@ -358,10 +358,20 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     }
   };
 
-  const removeFile = (fileName) => {
+  const removeFile = async (fileName) => {
     const fileToRemove = files.find((f) => f?.name === fileName);
 
     if (fileToRemove) {
+      const generatedFileName= fileToRemove?.path.split("/").pop() || fileToRemove?.name;
+      const response = await fetch("/api/workforce/document/delete/"+generatedFileName, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        console.error(`Failed to delete file ${fileName}`+` with status ${response.status}`);
+        // return;
+      }
       const identifier = fileToRemove?.path || fileToRemove?.url || fileToRemove?.name || fileName;
 
       const filteredFiles = (filesRef.current || []).filter((f) => f?.name !== fileName);
@@ -385,6 +395,8 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
           documentId,
         });
       }
+
+
     }
   };
 
