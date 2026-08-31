@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography, Grid, Box, Paper, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useTranslations, FormattedMessage, historyPush, useHistory } from "@openimis/fe-core";
-import { getUserType, isBlwfPath } from "../../utils/utils";
+import { getUserType, isBlwfPath, safeDecodeId } from "../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../constants";
 import WorkforceEmployeePicker from "../../pickers/WorkforceEmployeePicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
@@ -114,7 +114,7 @@ const ApplicationTypeSelector = ({
         <FactoryPicker
           id="application-type-factory"
           // FIX: Pass the ID directly from the object (fallback to nested only if necessary)
-          value={selectedFactory?.id || selectedFactory?.factory?.id}
+          value={safeDecodeId(selectedFactory?.id) || safeDecodeId(selectedFactory?.factory?.id) || safeDecodeId(workforceFactoryId)}
           label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
           required
           companyId={employeeData?.company?.id}

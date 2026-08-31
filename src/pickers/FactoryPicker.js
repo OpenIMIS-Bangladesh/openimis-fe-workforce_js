@@ -31,13 +31,13 @@ const FactoryPicker = ({
       (state) => state.core?.user?.i_user?.language || "en"
     );
 
-  useEffect(async () => {
+    useEffect(async () => {
       const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUserId: "${encodeId(mm, "InteractiveUserGQLType", loggedInUserId)}"`]));
       const edges = response?.payload?.data?.workforceEmployerEmployees?.edges || [];
       const node = edges[0]?.node || {};
-      const factoryId = safeDecodeId(node?.workforceFactory?.id) || null;
+      const factoryId = safeDecodeId(value) || safeDecodeId(node?.workforceFactory?.id) || null;
       return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[`status:"active"`]));
-  }, []);
+    }, [value]);
 
   const isLoading = useSelector(
     (state) => state.workforce[`fetchingWorkforceFactoriesPick`],
