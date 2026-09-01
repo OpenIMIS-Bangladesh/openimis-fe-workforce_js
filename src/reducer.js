@@ -471,6 +471,11 @@ function reducer(
     uploadDependentFile: [],
     uploadBankFile: [],
 
+    ////for remove files///
+    removedFiles: [],
+    removedDependentFiles: [],
+    removedBankFiles: [],
+
     roles: [],
 
     workforceApplicationStatusCount: {},
@@ -500,6 +505,23 @@ function reducer(
           ...state.uploadedFilesByField,
           [action.payload.fieldKey]: (state.uploadedFilesByField[action.payload.fieldKey] || []).filter((f) => f?.name !== action.payload.fileName),
         },
+      };
+    case "SET_REMOVED_FILE_DATA":
+      return {
+        ...state,
+        removedFiles: [...state.removedFiles, action.payload],
+      };
+
+    case "SET_REMOVED_DEPENDENT_FILE_DATA":
+      return {
+        ...state,
+        removedDependentFiles: [...state.removedDependentFiles, action.payload],
+      };
+
+    case "SET_REMOVED_BANK_FILE_DATA":
+      return {
+        ...state,
+        removedBankFiles: [...state.removedBankFiles, action.payload],
       };
 
     case "CLEAR_ALL_UPLOADED_FILES":

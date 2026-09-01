@@ -17,7 +17,7 @@ import { formatGQLString, decodeId, FormattedMessage } from "@openimis/fe-core";
 import { createWorkforceDocument, removeUploadedFile, setUploadedFiles } from "../actions";
 import PhotoCameraIcon from "@material-ui/icons/PhotoCamera";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { safeApplicationId } from "../utils/utils";
+import { isVerify, safeApplicationId } from "../utils/utils";
 import Cropper from "react-cropper";
 
 const useStyles = makeStyles((theme) => ({
@@ -147,6 +147,17 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const globalUploadFile = useSelector((state) => state.workforce.uploadFile || []);
   const globalDependentFile = useSelector((state) => state.workforce.uploadDependentFile || []);
   const globalBankFile = useSelector((state) => state.workforce.uploadBankFile || []);
+  // 1. Extract the new states using useSelector
+  const removedFiles = useSelector((state) => state.workforce.removedFiles);
+  const removedDependentFiles = useSelector((state) => state.workforce.removedDependentFiles);
+  const removedBankFiles = useSelector((state) => state.workforce.removedBankFiles);
+
+  // 2. Log them using useEffect whenever they change
+  useEffect(() => {
+    console.log("Removed Files:", removedFiles);
+    console.log("Removed Dependent Files:", removedDependentFiles);
+    console.log("Removed Bank Files:", removedBankFiles);
+  }, [removedFiles, removedDependentFiles, removedBankFiles]);
 
   useEffect(() => {
     const savedFilesString = JSON.stringify(savedFiles || []);
@@ -362,26 +373,36 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     const fileToRemove = files.find((f) => f?.name === fileName);
 
     if (fileToRemove) {
-      const generatedFileName= fileToRemove?.path.split("/").pop() || fileToRemove?.name;
-      const response = await fetch("/api/workforce/document/delete/"+generatedFileName, {
-        method: "GET",
-        credentials: "include",
-      });
+      if (!isVerify()) {
+        const generatedFileName = fileToRemove?.path.split("/").pop() || fileToRemove?.name;
+        const response = await fetch("/api/workforce/document/delete/" + generatedFileName, {
+          method: "GET",
+          credentials: "include",
+        });
 
-      if (!response.ok) {
-        console.error(`Failed to delete file ${fileName}`+` with status ${response.status}`);
-        // return;
+        if (!response.ok) {
+          console.error(`Failed to delete file ${fileName} with status ${response.status}`);
+        }
       }
+      
       const identifier = fileToRemove?.path || fileToRemove?.url || fileToRemove?.name || fileName;
-
       const filteredFiles = (filesRef.current || []).filter((f) => f?.name !== fileName);
+      
       syncFilesWithState(filteredFiles);
 
       let removeType = "WORKFORCE_REMOVE_UPLOAD_FILE";
-      if (uploadedBy === "dependent") removeType = "WORKFORCE_REMOVE_DEPENDENT_FILE";
-      if (uploadedBy === "bank") removeType = "WORKFORCE_REMOVE_BANK_FILE";
+      let storeRemovedType = "SET_REMOVED_FILE_DATA"; 
+
+      if (uploadedBy === "dependent") {
+        removeType = "WORKFORCE_REMOVE_DEPENDENT_FILE";
+        storeRemovedType = "SET_REMOVED_DEPENDENT_FILE_DATA";
+      } else if (uploadedBy === "bank") {
+        removeType = "WORKFORCE_REMOVE_BANK_FILE";
+        storeRemovedType = "SET_REMOVED_BANK_FILE_DATA";
+      }
 
       dispatch({ type: removeType, payload: identifier });
+      dispatch({ type: storeRemovedType, payload: fileToRemove });
 
       const currentUploadList = uploadedBy === "dependent" ? globalDependentFile : uploadedBy === "bank" ? globalBankFile : globalUploadFile;
       const nextUploadList = (currentUploadList || []).filter((item) => getUploadIdentity(item) !== identifier);
@@ -390,16 +411,13 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       if (onFileChange) {
         onFileChange(fieldKey, {
           files: filteredFiles,
-          documentType: documentType,
+          documentType,
           documentPropId: documentProp?.id,
           documentId,
         });
       }
-
-
     }
   };
-
   const captureAndUpload = async () => {
     const imageSrc = webcamRef.current.getScreenshot();
 

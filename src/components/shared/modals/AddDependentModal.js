@@ -34,6 +34,9 @@ const AddDependentModal = ({ open, onClose, application }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const uploadDependentFile = useSelector((state) => state.workforce.uploadDependentFile);
   const uploadBankFile = useSelector((state) => state.workforce.uploadBankFile);
+  const removedFiles = useSelector((state) => state.workforce.removedFiles);
+  const removedDependentFiles = useSelector((state) => state.workforce.removedDependentFiles);
+  const removedBankFiles = useSelector((state) => state.workforce.removedBankFiles);
 
   const safeParseJson = (val) => {
     if (!val) return [];
@@ -149,7 +152,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     const finalBankList = formData.employeeBankInfo || [];
     const payload = {
       id: application.id,
-      status:application?.status,
+      status: application?.status,
       employeeDependentInfo: formatPayloadJson(finalDependentList),
       employeeBankInfo: formatPayloadJson(finalBankList),
     };
@@ -163,6 +166,18 @@ const AddDependentModal = ({ open, onClose, application }) => {
             );
           }),
         );
+      }
+
+      const filesToDelete = [...(removedDependentFiles || []), ...(removedBankFiles || [])];
+
+      if (filesToDelete.length > 0) {
+        await fetch("/api/workforce/document/delete/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(filesToDelete),
+        });
       }
 
       await dispatch(updateApplication(payload, "update dependent info"));
@@ -192,25 +207,40 @@ const AddDependentModal = ({ open, onClose, application }) => {
 
   const handleSaveBankInfo = async () => {
     if (uploadBankFile) {
-      await Promise.all( uploadBankFile.map((file) => {
-        return dispatch(
-          createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
-        );
-      }))
+      await Promise.all(
+        uploadBankFile.map((file) => {
+          return dispatch(
+            createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: safeDecodeId(application?.id) }, `Created workforce document`),
+          );
+        }),
+      );
+    }
+    const filesToDelete = [...(removedDependentFiles || []), ...(removedBankFiles || [])];
+
+    if (filesToDelete.length > 0) {
+      await fetch("/api/workforce/document/delete/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filesToDelete),
+      });
     }
     const finalBankList = formData.employeeBankInfo || [];
     const finalDependentList = formData.employeeDependentInfo || [];
     const payload = {
       id: application.id,
-      status:application?.status,
+      status: application?.status,
       employeeDependentInfo: formatPayloadJson(finalDependentList),
-      employeeBankInfo: formatPayloadJson(finalBankList)
+      employeeBankInfo: formatPayloadJson(finalBankList),
     };
 
-    await  Promise.all(dispatch(updateApplication(payload, "update bank info")).then((res) => {
-      onClose();
-      window.location.reload();
-    }))
+    await Promise.all(
+      dispatch(updateApplication(payload, "update bank info")).then((res) => {
+        onClose();
+        window.location.reload();
+      }),
+    );
     // 2. Close Modal
     // onClose();
   };
