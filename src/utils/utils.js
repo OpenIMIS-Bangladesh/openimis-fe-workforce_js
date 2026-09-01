@@ -57,9 +57,9 @@ export function getUserTypeFromRights(user_rights) {
       user_type = WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR;
     } else if (user_rights.includes(818001)) {
       user_type = WORKFORCE_USER_TYPE.DOCTOR;
-    } else if (user_rights.includes(813001)) {
+    } else if (user_rights.includes(813001) && isCfPath()) {
       user_type = WORKFORCE_USER_TYPE.APPROVER;
-    } else if (user_rights.includes(821006)) {
+    } else if (user_rights.includes(821006) && isBlwfPath()) {
       user_type = WORKFORCE_USER_TYPE.BLWF_APPROVER;
     } else if (user_rights.includes(814001)) {
       user_type = WORKFORCE_USER_TYPE.FACTORY_ADMIN;
