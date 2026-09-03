@@ -134,7 +134,7 @@ const AddDependentModal = ({ open, onClose, application }) => {
     const currentDependents = formData?.employeeDependentInfo || [{}];
 
     const validDependents = currentDependents?.filter((dep) => {
-      return getRelationForApi(dep, workerBirthDate);
+      return getRelationForApi(dep, workerBirthDate,formData?.metadata?.deathDate);
     });
 
     if (validDependents?.length !== currentDependents?.length) {
