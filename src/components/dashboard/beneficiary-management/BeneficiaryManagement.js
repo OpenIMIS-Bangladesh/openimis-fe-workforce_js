@@ -207,18 +207,21 @@ const BeneficiaryManagement = () => {
             <TextField
               fullWidth label="Application Tracking No" name="trackingNo" variant="outlined" size="small"
               value={filters.trackingNo} onChange={handleFilterChange}
+              disabled={loading}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth label="Beneficiary ID" name="beneficiaryId" variant="outlined" size="small"
               value={filters.beneficiaryId} onChange={handleFilterChange}
+              disabled={loading}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth select label="Factory" name="factory" variant="outlined" size="small"
               value={filters.factory} onChange={handleFilterChange}
+              disabled={loading}
             >
               <MenuItem value=""><em>All Factories</em></MenuItem>
               {factories.map(f => (
@@ -230,6 +233,7 @@ const BeneficiaryManagement = () => {
             <TextField
               fullWidth select label="Association" name="association" variant="outlined" size="small"
               value={filters.association} onChange={handleFilterChange}
+              disabled={loading}
             >
               <MenuItem value=""><em>All Associations</em></MenuItem>
               {associations.map(a => (
@@ -245,6 +249,7 @@ const BeneficiaryManagement = () => {
                 value={filters.approvalDateFrom}
                 onChange={(date) => handleDateChange("approvalDateFrom", date)}
                 required
+                readOnly={loading}
               />
             </Box>
           </Grid>
@@ -256,6 +261,7 @@ const BeneficiaryManagement = () => {
                 value={filters.approvalDateTo}
                 onChange={(date) => handleDateChange("approvalDateTo", date)}
                 required
+                readOnly={loading}
               />
             </Box>
           </Grid>
@@ -267,6 +273,7 @@ const BeneficiaryManagement = () => {
                 value={filters.accidentDateFrom}
                 onChange={(date) => handleDateChange("accidentDateFrom", date)}
                 required
+                readOnly={loading}
               />
             </Box>
           </Grid>
@@ -278,6 +285,7 @@ const BeneficiaryManagement = () => {
                 value={filters.accidentDateTo}
                 onChange={(date) => handleDateChange("accidentDateTo", date)}
                 required
+                readOnly={loading}
               />
             </Box>
           </Grid>

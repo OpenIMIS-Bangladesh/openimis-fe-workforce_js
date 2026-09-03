@@ -48,46 +48,81 @@ const AddDependentModal = ({ open, onClose, application }) => {
     return Array.isArray(val) ? val : [];
   };
 
+  // const [formData, setFormData] = useState(() => {
+  //   // 1. Parse all dependents; collect every attachment entry into a flat pool
+  //   const rawDependents = application?.workforceEmployeeDependentApplication ?? [];
+  //   const allEntries = [];
+  //   rawDependents.forEach((dep) => allEntries.push(...safeParseJson(dep?.attachments)));
+
+  //   // 2. Redistribute: each dependent keeps ONLY entries whose fieldKey starts with
+  //   //    "dependent_<index>_" (e.g. "dependent_0_…" for index 0)
+  //   const fullyParsedDependentInfo = rawDependents.map((dep, index) => {
+  //     const prefix = `dependent_${index}_`;
+  //     const ownAttachments = allEntries.filter((att) => String(att?.fieldKey ?? "").startsWith(prefix));
+  //     return { ...dep, attachments: ownAttachments };
+  //   });
+
+  //   // Map over employeeBankInfo (the main DB table with bank/branch details)
+  //   const fullyParsedBankInfo = application?.employeeBankInfo?.map((bank) => {
+  //     // Match using the Account Number instead of NID!
+  //     const matched = application?.employeeBankingInfoApplication?.find((appBank) => String(appBank?.dependentNid) === String(bank?.dependentNid));
+
+  //     // Safely grab attachments from the matched object
+  //     const rawAttachments = matched?.attachments || bank?.attachments;
+
+  //     let parsedAttachments = [];
+  //     if (rawAttachments) {
+  //       parsedAttachments = typeof rawAttachments === "string" ? JSON.parse(rawAttachments) : rawAttachments;
+  //     }
+
+  //     return {
+  //       ...bank,
+  //       accountNumber: bank?.accountNumber, // Standardize key for the UI
+  //       attachments: parsedAttachments,
+  //     };
+  //   });
+
+  //   return {
+  //     ...application,
+  //     employeeDependentInfo: fullyParsedDependentInfo,
+  //     employeeBankInfo: fullyParsedBankInfo,
+  //   };
+  // });
   const [formData, setFormData] = useState(() => {
-    // 1. Parse all dependents; collect every attachment entry into a flat pool
-    const rawDependents = application?.workforceEmployeeDependentApplication ?? [];
-    const allEntries = [];
-    rawDependents.forEach((dep) => allEntries.push(...safeParseJson(dep?.attachments)));
-
-    // 2. Redistribute: each dependent keeps ONLY entries whose fieldKey starts with
-    //    "dependent_<index>_" (e.g. "dependent_0_…" for index 0)
-    const fullyParsedDependentInfo = rawDependents.map((dep, index) => {
-      const prefix = `dependent_${index}_`;
-      const ownAttachments = allEntries.filter((att) => String(att?.fieldKey ?? "").startsWith(prefix));
-      return { ...dep, attachments: ownAttachments };
-    });
-
-    // Map over employeeBankInfo (the main DB table with bank/branch details)
-    const fullyParsedBankInfo = application?.employeeBankInfo?.map((bank) => {
-      // Match using the Account Number instead of NID!
-      const matched = application?.employeeBankingInfoApplication?.find((appBank) => String(appBank?.dependentNid) === String(bank?.dependentNid));
-
-      // Safely grab attachments from the matched object
-      const rawAttachments = matched?.attachments || bank?.attachments;
-
-      let parsedAttachments = [];
-      if (rawAttachments) {
-        parsedAttachments = typeof rawAttachments === "string" ? JSON.parse(rawAttachments) : rawAttachments;
-      }
-
-      return {
-        ...bank,
-        accountNumber: bank?.accountNumber, // Standardize key for the UI
-        attachments: parsedAttachments,
-      };
-    });
+    // Helper function to rewrite old index keys to the current runtime index
+    const reindexAttachments = (attachments, prefix, currentIndex) => {
+      return attachments.map(att => {
+        if (att.fieldKey) {
+          // Strips 'dependent_X_' or 'account_X_' to get the raw fieldId, then applies the current index
+          const baseKey = att.fieldKey.replace(new RegExp(`^${prefix}_\\d+_`), '');
+          return { ...att, fieldKey: `${prefix}_${currentIndex}_${baseKey}` };
+        }
+        return att;
+      });
+    };
 
     return {
       ...application,
-      employeeDependentInfo: fullyParsedDependentInfo,
-      employeeBankInfo: fullyParsedBankInfo,
+      employeeDependentInfo: (application?.workforceEmployeeDependentApplication ?? []).map((dep, index) => {
+        const rawAttachments = safeParseJson(dep?.attachments);
+        return {
+          ...dep,
+          attachments: reindexAttachments(rawAttachments, "dependent", index),
+        };
+      }),
+      employeeBankInfo: (application?.employeeBankInfo ?? []).map((bank, index) => {
+        const matched = application?.employeeBankingInfoApplication?.find(
+          (appBank) => String(appBank?.accountNumber) === String(bank?.accountNumber)
+        );
+        const rawAttachments = safeParseJson(matched?.attachments || bank?.attachments);
+        return {
+          ...bank,
+          attachments: reindexAttachments(rawAttachments, "account", index),
+        };
+      }),
     };
   });
+
 
   const handleArrayFieldChange = (fieldKey, index, key, value) => {
     setFormData((prev) => {

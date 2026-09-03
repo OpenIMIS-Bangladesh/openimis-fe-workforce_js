@@ -151,6 +151,7 @@ const BeneficiaryPaymentProcess = () => {
             <TextField
               fullWidth select label="Factory" name="factory" variant="outlined" size="small"
               value={filters.factory} onChange={handleFilterChange}
+              disabled={loading}
             >
               <MenuItem value=""><em>All Factories</em></MenuItem>
               {factories.map(f => (
@@ -162,6 +163,7 @@ const BeneficiaryPaymentProcess = () => {
             <TextField
               fullWidth select label="Association" name="association" variant="outlined" size="small"
               value={filters.association} onChange={handleFilterChange}
+              disabled={loading}
             >
               <MenuItem value=""><em>All Associations</em></MenuItem>
               {associations.map(a => (
@@ -179,6 +181,7 @@ const BeneficiaryPaymentProcess = () => {
               size="small"
               value={filters.month || currentMonth}
               onChange={handleFilterChange}
+              disabled={loading}
             >
               <MenuItem value=""><em>All Months</em></MenuItem>
               {monthOptions.map(month => (
@@ -196,6 +199,7 @@ const BeneficiaryPaymentProcess = () => {
               size="small"
               value={filters.year || currentYear}
               onChange={handleFilterChange}
+              disabled={loading}
             >
               {yearOptions.map(year => (
                 <MenuItem key={year} value={year}>{year}</MenuItem>
