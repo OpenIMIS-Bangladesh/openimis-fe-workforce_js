@@ -70,19 +70,39 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   if (loading) return <b>Loading...</b>;
 
   // Autofill account holder names from dependents or employee
+  // Autofill account holder names from dependents or employee and respect saved data
   useEffect(() => {
     if (dependent?.length > 0) {
       setExpanded(0);
-      dependent?.map((dep, index) => {
-        handleChange(index, "accountHolderName", dep?.nameEn);
-        handleChange(index, "dependentId", dep?.id);
-        handleChange(index, "dependentNid", dep?.nid);
-        handleChange(index, "accountHolderType", "self");
+      dependent.forEach((dep, index) => {
+        const existingAccount = accounts[index] || {};
+
+        handleChange(index, "accountHolderName", existingAccount.accountHolderName || dep?.nameEn);
+        handleChange(index, "dependentId", existingAccount.dependentId || dep?.id);
+        handleChange(index, "dependentNid", existingAccount.dependentNid || dep?.nid);
+
+        // Check if the backend saved a parentDependentId
+        if (existingAccount.parentDependentId) {
+          handleChange(index, "accountHolderType", "select_from_another_dependent");
+
+          // Extract the string ID if the backend returns an object
+          // const parentId = typeof existingAccount.parentDependentId === "object"
+          //   ? existingAccount.parentDependentId.id
+          //   : existingAccount.parentDependentId;
+
+          // handleChange(index, "parentDependentId", parentId);
+        } else if (existingAccount.accountHolderType) {
+          // Respect "other" or any natively saved type
+          handleChange(index, "accountHolderType", existingAccount.accountHolderType);
+        } else {
+          handleChange(index, "accountHolderType", "self");
+        }
       });
     } else {
-      handleChange(0, "accountHolderName", formdata?.workforceEmployee?.nameEn);
-      // handleChange(index, "accountHolderType", "self")
+      const existingAccount = accounts[0] || {};
+      handleChange(0, "accountHolderName", existingAccount.accountHolderName || formdata?.workforceEmployee?.nameEn);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dependent]);
 
   // simplified flat update handler
@@ -163,7 +183,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
     [handleChange],
   );
 
-  console.log({ dependent });
+  console.log({ accounts });
 
   return (
     <Box mt={1}>
@@ -226,11 +246,15 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                       onChange={(v) => handleAccountChange(index, "parentDependentId", v)}
                       options={dependent
                         ?.filter((d, i) => i !== index)
-                        ?.map((dep) => ({
-                          id: dep.id,
-                          nameEn: dep.nameEn,
-                          nameBn: dep.nameBn,
-                        }))}
+                        ?.map((dep) => {
+                          const parentAccount = accounts.find((acc) => acc.dependentId === dep.id);
+
+                          return {
+                            id: parentAccount?.id || dep.id,
+                            nameEn: dep.nameEn,
+                            nameBn: dep.nameBn,
+                          };
+                        })}
                     />
                   </Grid>
                 )}

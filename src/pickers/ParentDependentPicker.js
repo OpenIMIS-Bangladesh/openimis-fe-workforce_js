@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Autocomplete, useTranslations } from "@openimis/fe-core";
 import { useSelector } from "react-redux";
+import { safeDecodeId } from "../utils/utils";
 
 const ParentDependentPicker = ({
   id = "parentDependent",
@@ -25,10 +26,17 @@ const ParentDependentPicker = ({
   );
 
   // Memoize selected option
-  const selectedOption = useMemo(
-    () => options.find((opt) => opt.id === value) || null,
-    [value, options]
+  const selectedOption = useMemo(() => {
+  if (!value) return null;
+
+  const valueId = typeof value === "object" ? value.id : value;
+
+  return (
+    options.find(
+      (opt) => safeDecodeId(opt.id) === safeDecodeId(valueId)
+    ) || null
   );
+}, [value, options]);
 
   return (
     <Autocomplete
