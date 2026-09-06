@@ -292,7 +292,12 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                                 bankId={account?.bank?.bankCode}
                                 districtName={account?.district?.districtNameBn}
                                 label={<FormattedMessage id="workforce.branch.picker" />}
-                                onChange={(v) => handleAccountChange(index, "branch", v)}
+                                onChange={(v) => {
+                                  handleAccountChange(index, "branch", v);
+                                  if (v?.routingNumber) {
+                                    handleAccountChange(index, "routingNumber", v.routingNumber);
+                                  }
+                                }}
                                 required
                               />
                             </Grid>
@@ -312,7 +317,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                               <TextInput
                                 id="routingNumber"
                                 label="workforce.employee.account.info.routingNumber"
-                                value={account?.branch?.routingNumber || ""}
+                                value={account?.routingNumber ?? account?.branch?.routingNumber ?? ""}
                                 onChange={(v) => handleAccountChange(index, "routingNumber", normalizeNumberInput(v))}
                                 required
                               />
