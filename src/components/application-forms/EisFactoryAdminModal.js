@@ -1,14 +1,5 @@
 import React, { useRef, useState } from "react";
-import {
-  Modal,
-  Backdrop,
-  Box,
-  Typography,
-  Button,
-  Divider,
-  IconButton,
-  CircularProgress,
-} from "@material-ui/core";
+import { Modal, Backdrop, Box, Typography, Button, Divider, IconButton, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { useSelector, useDispatch } from "react-redux";
@@ -43,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     // 1. Let the paper flow downwards freely
     "@media print": {
       display: "block !important",
-      position: "static !important", 
+      position: "static !important",
       width: "100% !important",
       maxWidth: "100% !important",
       height: "auto !important",
@@ -52,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: "none !important",
       background: "white !important",
       margin: "0 !important",
-      padding: "20px !important", 
+      padding: "20px !important",
     },
   },
   header: {
@@ -64,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flex: 1,
-    overflowY: "auto", 
+    overflowY: "auto",
     overflowX: "hidden",
     marginBottom: theme.spacing(2),
     paddingRight: theme.spacing(1),
@@ -102,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
       },
       // 4. Kill the Flexbox centering and Fixed positioning on the Modal wrapper!
       "body > [role='presentation'], .MuiModal-root": {
-        display: "block !important",   // Kills the flex centering (fixes the top gap)
+        display: "block !important", // Kills the flex centering (fixes the top gap)
         position: "static !important", // Kills fixed position (fixes the pagination issue)
         height: "auto !important",
         overflow: "visible !important",
@@ -122,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, maxWidth,viewType }) => {
+const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, maxWidth, viewType }) => {
   const classes = useStyles({ maxWidth });
   const [formData, setFormData] = useState(application || {});
   const [errors, setErrors] = useState({});
@@ -141,9 +132,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
   // 1. Identify if the current user is a Doctor (Reused logic)
   const isDoctor =
     application?.organizationType === "eis" &&
-    (user_type === WORKFORCE_USER_TYPE.DOCTOR ||
-      user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR ||
-      user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR);
+    (user_type === WORKFORCE_USER_TYPE.DOCTOR || user_type === WORKFORCE_USER_TYPE.BLWF_DOCTOR || user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR);
 
   const renderDoctorEntries = viewType === "doctorEntries" || isDoctor;
 
@@ -164,15 +153,15 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
 
   const handleSubmit = async () => {
     // 2. Validate Required Fields
-    const newErrors = validateRequiredFields(stepRef, formatMessage,formData);
+    const newErrors = validateRequiredFields(stepRef, formatMessage, formData);
     delete newErrors.documents;
     let documentValidation = validateMandatoryDocuments(documentType, uploadFile);
     if (!documentValidation?.isValid) {
-      newErrors.documents = documentValidation?.errors
+      newErrors.documents = documentValidation?.errors;
     }
     setErrors(newErrors);
-    console.log({newErrors})
-    console.log({documentValidation})
+    console.log({ newErrors });
+    console.log({ documentValidation });
     if (Object.keys(newErrors).length > 0) return;
 
     // 3. Date Validation (Only for Factory Admin)
@@ -187,14 +176,14 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         return; // Stop execution
       }
 
-      if (accidentDate>deathDate) {
-        setDeathAlertMessage(true)
-        return
+      if (accidentDate > deathDate) {
+        setDeathAlertMessage(true);
+        return;
       }
 
-      if (joiningDate>accidentDate) {
-        setAccidentDateAlertMessage(true)
-        return
+      if (joiningDate > accidentDate) {
+        setAccidentDateAlertMessage(true);
+        return;
       }
     }
 
@@ -203,20 +192,26 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
     try {
       if (uploadFile && uploadFile.length > 0) {
         const uploadPromises = uploadFile.map((file) =>
-          dispatch(createWorkforceDocument({ ...file,status:"verified", workforceApplicationId: application?.id }, `Created workforce document`))
+          dispatch(createWorkforceDocument({ ...file, status: "verified", workforceApplicationId: application?.id }, `Created workforce document`)),
         );
         await Promise.all(uploadPromises);
       }
 
       const updateApplicationData = {
         id: application?.id,
-        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo)?.replace(/\\n/g, '\\\\n')?.replace(/\\r/g, '\\\\r'),
-        doctorEntries: JSON.stringify(formData?.doctorEntries)?.replace(/\\n/g, '\\\\n')?.replace(/\\r/g, '\\\\r'),
+        employeeAccidentInfo: JSON.stringify(formData?.employeeAccidentInfo)?.replace(/\\n/g, "\\\\n")?.replace(/\\r/g, "\\\\r"),
+        doctorEntries: JSON.stringify(
+          formData?.doctorEntries
+            ? Object.fromEntries(Object.entries(formData.doctorEntries).map(([k, v]) => [k, typeof v === "string" ? v.replace(/\\/g, "/") : v]))
+            : formData?.doctorEntries,
+        )
+          ?.replace(/\\n/g, "\\\\n")
+          ?.replace(/\\r/g, "\\\\r"),
       };
-      console.log({updateApplicationData})
+      console.log({ updateApplicationData });
       await dispatch(updateApplication(updateApplicationData, `update workforce application ${formData.firstNameEn}`));
       await dispatch(testWorkforcePayment({ id: application?.id }, "create test payment"));
-      
+
       window.location.reload();
     } catch (error) {
       console.error("Submission failed:", error);
@@ -233,7 +228,7 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{ timeout: 300 }}
-      >    
+      >
         <Box className={classes.paper} id="print-paper">
           {loading && (
             <div className={classes.loaderOverlay}>
@@ -282,18 +277,13 @@ const EisFactoryAdminModal = ({ open, onClose, application, showActions = true, 
               <Button onClick={onClose} variant="outlined" disabled={loading}>
                 <FormattedMessage id="workforce.confirm.modal.cancel" />
               </Button>
-              <Button
-                onClick={handleSubmit}
-                color="primary"
-                variant="contained"
-                disabled={loading || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}
-              >
+              <Button onClick={handleSubmit} color="primary" variant="contained" disabled={loading || user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR}>
                 <FormattedMessage id="workforce.submit" />
               </Button>
               {user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
-                <Button onClick={()=>window.print()} variant="outlined" disabled={loading}>
-                <FormattedMessage id="workforce.modal.print" />
-              </Button>
+                <Button onClick={() => window.print()} variant="outlined" disabled={loading}>
+                  <FormattedMessage id="workforce.modal.print" />
+                </Button>
               )}
             </div>
           )}

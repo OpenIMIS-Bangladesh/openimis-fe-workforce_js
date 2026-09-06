@@ -56,8 +56,8 @@ const DoctorsEntries = ({ application }) => {
       doctorsFlag: doctorsActions,
       diseaseGrade: diseaseGrade,
       doctorEntries: JSON.stringify({
-        doctorsAssesment: doctorDiagnosis || null,
-        doctorAssesmentComment: doctorComment || null,
+        doctorsAssesment: (doctorDiagnosis || "").replace(/\\/g, "/") || null,
+        doctorAssesmentComment: (doctorComment || "").replace(/\\/g, "/") || null,
         doctorsProposedDonation: proposedAmount,
         doctorsActionFlag: doctorsActions,
       }),
