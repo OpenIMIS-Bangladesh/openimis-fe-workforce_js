@@ -192,7 +192,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       </Typography>
 
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
-        const account = accounts[index] || {};
+        const account = accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dependentValue?.id)) || {};
         const accountType = account?.accountType || "bank";
 
         // 🎯 New field: whose account?
@@ -246,15 +246,11 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                       onChange={(v) => handleAccountChange(index, "parentDependentId", v)}
                       options={dependent
                         ?.filter((d, i) => i !== index)
-                        ?.map((dep) => {
-                          const parentAccount = accounts.find((acc) => acc.dependentId === dep.id);
-
-                          return {
-                            id: parentAccount?.id || dep.id,
-                            nameEn: dep.nameEn,
-                            nameBn: dep.nameBn,
-                          };
-                        })}
+                        ?.map((dep) => ({
+                          id: accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dep?.id))?.id || dep.id,
+                          nameEn: dep.nameEn,
+                          nameBn: dep.nameBn,
+                        }))}
                     />
                   </Grid>
                 )}
