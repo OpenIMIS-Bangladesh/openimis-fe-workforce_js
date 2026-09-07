@@ -155,25 +155,18 @@ const FiledApplications = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
-
+      console.log({ loggedInUserId });
       try {
-        const filters = [
-          `relatedUser_Id: ${loggedInUserId}`
-        ];
+        const filters = [`relatedUser_Id: ${safeDecodeId(loggedInUserId)}`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -235,7 +228,7 @@ const newApplications = () => (
   </Typography>
 );
 
-const DraftApplications = ({workforceFactoryId}) => {
+const DraftApplications = ({ workforceFactoryId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const modulesManager = useModulesManager();
@@ -243,29 +236,18 @@ const DraftApplications = ({workforceFactoryId}) => {
   // const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        const filters = [`relatedUser_Id: "${loggedInUserId}"`];
+        console.log({ filters });
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
-
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -283,7 +265,7 @@ const DraftApplications = ({workforceFactoryId}) => {
   }, [loggedInUserId, dispatch, modulesManager]);
 
   useEffect(() => {
-    console.log("factoryId paisi:", workforceFactoryId.id);
+    console.log("factoryId paisi:", workforceFactoryId?.id);
   }, [workforceFactoryId]);
 
   if (loading) {
@@ -292,9 +274,7 @@ const DraftApplications = ({workforceFactoryId}) => {
 
   if (!workforceFactoryId) {
     return <div>No factory found</div>;
-  }
-  else
-  {
+  } else {
     return (
       <>
         <ApplicationProcessSearcher
@@ -407,29 +387,18 @@ const RevertApplication = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -489,29 +458,18 @@ const ReturnedApplications = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -568,29 +526,25 @@ const RejectApplication = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        // const filters = [
+        //   `relatedUser_Id: "${encodeId(
+        //     modulesManager,
+        //     "InteractiveUserGQLType",
+        //     loggedInUserId
+        //   )}"`
+        // ];
+        const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -646,29 +600,25 @@ const SubmittedByApplicants = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        // const filters = [
+        //   `relatedUser_Id: "${encodeId(
+        //     modulesManager,
+        //     "InteractiveUserGQLType",
+        //     loggedInUserId
+        //   )}"`
+        // ];
+        const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -701,9 +651,7 @@ const SubmittedByApplicants = () => {
     <>
       <ApplicationProcessSearcher
         submittedByApplicants={true}
-        dynamicTableTitle={
-          "workforce.new.application.submittedbyapplicant"
-        }
+        dynamicTableTitle={"workforce.new.application.submittedbyapplicant"}
         loggedInUserId={loggedInUserId}
         factoryId={workforceFactoryId}
       />
@@ -711,16 +659,10 @@ const SubmittedByApplicants = () => {
       {/* Pagination */}
       <div className={classes.pagination}>
         <Button>
-          <FormattedMessage
-            module="workforce"
-            id="workforce.back"
-          />
+          <FormattedMessage module="workforce" id="workforce.back" />
         </Button>
         <Button>
-          <FormattedMessage
-            module="workforce"
-            id="workforce.next"
-          />
+          <FormattedMessage module="workforce" id="workforce.next" />
         </Button>
       </div>
     </>
@@ -733,29 +675,25 @@ const ForwardedApplications = () => {
   const [workforceFactoryId, setWorkforceFactoryId] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const loggedInUserId = useSelector(
-    (state) => state.core?.user?.i_user?.id
-  );
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
 
   useEffect(() => {
     const fetchFactory = async () => {
       if (!loggedInUserId) return;
 
       try {
-        const filters = [
-          `relatedUser_Id: "${encodeId(
-            modulesManager,
-            "InteractiveUserGQLType",
-            loggedInUserId
-          )}"`
-        ];
+        // const filters = [
+        //   `relatedUser_Id: "${encodeId(
+        //     modulesManager,
+        //     "InteractiveUserGQLType",
+        //     loggedInUserId
+        //   )}"`
+        // ];
+        const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
 
-        const res = await dispatch(
-          fetchFactoryEmployee(modulesManager, filters)
-        );
+        const res = await dispatch(fetchFactoryEmployee(modulesManager, filters));
 
-        const edges =
-          res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
 
         const node = edges[0]?.node;
         const factoryId = node?.workforceFactory?.id || null;
@@ -823,7 +761,9 @@ const FactoryAdminDashboard = () => {
 
   useEffect(() => {
     if (loggedInUserId) {
-      const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+      // const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", loggedInUserId)}"`];
+      const filters = [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`];
+      console.log({ filters });
       dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
         const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
         const node = edges[0]?.node;
@@ -857,7 +797,7 @@ const FactoryAdminDashboard = () => {
       case "rejectedApplication":
         return <RejectApplication />;
       case "draftApplications":
-        return <DraftApplications workforceFactoryId={workforceFactoryId}/>;
+        return <DraftApplications workforceFactoryId={workforceFactoryId?.id} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
@@ -871,7 +811,11 @@ const FactoryAdminDashboard = () => {
         {/* Sidebar */}
         <Grid item xs={12} md={3}>
           <Paper className={classes.sidebar}>
-            {workforceFactoryId?.status === "draft" && <Typography style={{ color: "red", textAlign: "center", fontWeight: "bold" }}><FormattedMessage id="workforce.application.factory.activation.error" /></Typography>}
+            {workforceFactoryId?.status === "draft" && (
+              <Typography style={{ color: "red", textAlign: "center", fontWeight: "bold" }}>
+                <FormattedMessage id="workforce.application.factory.activation.error" />
+              </Typography>
+            )}
             <List>
               {SidebarMenu.map((item) => {
                 // Determine if this item should be disabled

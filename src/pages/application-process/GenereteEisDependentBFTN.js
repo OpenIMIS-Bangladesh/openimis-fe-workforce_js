@@ -937,7 +937,7 @@ const GenereteEisDependentBFTN = ({ open, onClose, userRights, status, summary_I
               <FormattedMessage id="workforce.modal.close" />
             </Button>
             {
-              user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && first?.workforceApplication?.status && (first?.workforceApplication?.status === "verified" || first?.workforceApplication?.status === "approved_by_doctor") ? (
+              user_type == WORKFORCE_USER_TYPE.EIS_COORDINATOR && first?.workforceApplication?.status && (first?.workforceApplication?.status === "verified" || first?.workforceApplication?.status === "approved_by_doctor"||first?.workforceApplication?.status === "approved_by_eis_advisor") ? (
                 <>
                   <Button onClick={() => setRecall(1)} variant="contained" color="primary">
                     <FormattedMessage id="workforce.modal.recalculate" />
