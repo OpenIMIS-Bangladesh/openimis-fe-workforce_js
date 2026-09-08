@@ -73,6 +73,8 @@ const filterUsersByType = (users) => {
   return users;
 };
 
+
+
 // No changes to RevertPathSelector needed
 const RevertPathSelector = ({ users, userType, selectedUser, onChange }) => (
   <Paper elevation={1} style={{ padding: "15px", marginBottom: "20px" }}>
@@ -123,28 +125,30 @@ const RevertPathSelector = ({ users, userType, selectedUser, onChange }) => (
                 />
               ))
           : isEisPath() && (userType === WORKFORCE_USER_TYPE.EIS_COMMITTEE || userType === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE)
-            ? users
-                .filter((user) => user.role === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user.role === "Eis Coordinator")
-                .map((user) => (
-                  <FormControlLabel
-                    key={user.id}
-                    value={user.id}
-                    control={
-                      <Radio
-                        checked={selectedUser === user.id}
-                        onChange={() => onChange(user.id)}
-                        style={{
-                          color: selectedUser === user.id ? "#1976d2" : "black",
-                        }}
-                      />
-                    }
-                    label={
-                      <Typography color={selectedUser === user.id ? "primary" : "inherit"}>
-                        {user.name} ({user.role})
-                      </Typography>
-                    }
-                  />
-                ))
+            ? Array.from(
+                new Map(
+                  users.filter((user) => user.role === WORKFORCE_USER_TYPE.EIS_COORDINATOR || user.role === "Eis Coordinator").map((user) => [user.id, user]),
+                ).values(),
+              ).map((user) => (
+                <FormControlLabel
+                  key={user.id}
+                  value={user.id}
+                  control={
+                    <Radio
+                      checked={selectedUser === user.id}
+                      onChange={() => onChange(user.id)}
+                      style={{
+                        color: selectedUser === user.id ? "#1976d2" : "black",
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography color={selectedUser === user.id ? "primary" : "inherit"}>
+                      {user.name} ({user.role})
+                    </Typography>
+                  }
+                />
+              ))
             : users.map((user) => (
                 <FormControlLabel
                   key={user.id}
