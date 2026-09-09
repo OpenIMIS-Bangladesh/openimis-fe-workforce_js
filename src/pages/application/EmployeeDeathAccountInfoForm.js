@@ -297,6 +297,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                             <Grid item xs={6}>
                               <DistrictBanks
                                 id="districtBank"
+                                modulesManager={modulesManager}
                                 value={account?.district || null}
                                 bankId={account?.bank?.bankCode}
                                 label={<FormattedMessage id="workforce.district.branch.picker" />}
@@ -308,6 +309,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                             <Grid item xs={6}>
                               <BranchPicker
                                 id="branch"
+                                modulesManager={modulesManager}
                                 value={account?.branch || ""}
                                 bankId={account?.bank?.bankCode}
                                 districtName={account?.district?.districtNameBn}

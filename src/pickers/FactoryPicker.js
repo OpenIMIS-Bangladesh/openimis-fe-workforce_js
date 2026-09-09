@@ -32,10 +32,10 @@ const FactoryPicker = ({
     );
 
     useEffect(async () => {
-      const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUserId: "${encodeId(mm, "InteractiveUserGQLType", loggedInUserId)}"`]));
+      const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUserId: "${safeDecodeId(loggedInUserId)}"`]));
       const edges = response?.payload?.data?.workforceEmployerEmployees?.edges || [];
       const node = edges[0]?.node || {};
-      const factoryId = safeDecodeId(value) || safeDecodeId(node?.workforceFactory?.id) || null;
+      const factoryId = safeDecodeId(value) ?? safeDecodeId(node?.workforceFactory?.id) ?? null;
       return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[`status:"active"`]));
     }, [value]);
 
