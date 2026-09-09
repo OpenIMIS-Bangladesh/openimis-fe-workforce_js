@@ -264,6 +264,7 @@ class VerifyApplicationPage extends Component {
       note: file.note,
       verifierId: loggedInUserId,
       verificationDate: today,
+      holderType:user_type
     };
 
     this.props.updateWorkforceDocument(payload, `update workforce document`).then(() => {

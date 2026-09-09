@@ -130,7 +130,8 @@ class ViewApplicationPage extends Component {
   handlePrint = () => {
     this.setState({ open: true });
   };
-  handleReject = (application) => {
+  handleReject = () => {
+    const { user_rights, application, loggedInUserId } = this.props
     const { selectedApplication } = this.state;
     this.setState({
       confirmModalOpen: true,
@@ -164,7 +165,7 @@ class ViewApplicationPage extends Component {
                     message: "আবেদন বাতিল করা হয়েছে!",
                   },
                 });
-                window.location.reload();
+                // window.location.reload();
               } catch (error) {
                 console.error("Approval failed:", error);
                 this.setState({
@@ -369,7 +370,7 @@ class ViewApplicationPage extends Component {
                   </Button>
                 </Grid>
                 <Grid item xs={2}>
-                  <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }} fullWidth onClick={this.handleReject}>
+                  <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }} fullWidth onClick={()=>this.handleReject()}>
                     <FormattedMessage module="workforce" id="workforce.application.reject" />
                   </Button>
                 </Grid>
