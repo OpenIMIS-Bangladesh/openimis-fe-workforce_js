@@ -194,7 +194,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       </Typography>
 
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
-        const account = accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dependentValue?.id)) || accounts[index] || {};
+        const account = accounts[index] || {};
         const accountType = account?.accountType || "bank";
 
         // 🎯 New field: whose account?
