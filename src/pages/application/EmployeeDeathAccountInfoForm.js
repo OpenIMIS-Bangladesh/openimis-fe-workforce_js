@@ -47,7 +47,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const dependent = useSelector((state) => state.workforce.workforceDependent);
+  const reduxDependent = useSelector((state) => state.workforce.workforceDependent);
+
+  const dependent = formdata?.employeeDependentInfo?.length > 0 ? formdata.employeeDependentInfo : reduxDependent;
 
   // Fetch dependents if application exists
   useEffect(() => {
@@ -192,7 +194,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       </Typography>
 
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
-        const account = accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dependentValue?.id)) || {};
+        const account = accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dependentValue?.id)) || accounts[index] || {};
         const accountType = account?.accountType || "bank";
 
         // 🎯 New field: whose account?
