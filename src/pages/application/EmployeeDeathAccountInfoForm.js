@@ -47,9 +47,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const reduxDependent = useSelector((state) => state.workforce.workforceDependent);
-
-  const dependent = formdata?.employeeDependentInfo?.length > 0 ? formdata.employeeDependentInfo : reduxDependent;
+  const dependent = useSelector((state) => state.workforce.workforceDependent);
 
   // Fetch dependents if application exists
   useEffect(() => {
@@ -199,12 +197,25 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
 
         // 🎯 New field: whose account?
         const accountHolderType = account?.accountHolderType || "self";
-
+        const districtValue =
+          account.district ||
+          (account.branch
+            ? {
+                districtNameBn: account.branch.districtNameBn,
+                districtNameEn: account.branch.districtNameEn,
+                districtCode: account.branch.districtCode,
+                bankCode: account.branch.bankCode,
+              }
+            : null);
+        console.log("account holder name 1",account?.accountHolderName)
+        console.log("account holder name 2",dependent?.[index]?.nameEn)
+        console.log("account holder name 3",formdata?.workforceEmployee?.nameEn)
         return (
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "}
+                {/* {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "} */}
+                {account?.accountHolderName} {account?.accountHolderName && "এর"}{" "}
                 {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
@@ -248,11 +259,15 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                       onChange={(v) => handleAccountChange(index, "parentDependentId", v)}
                       options={dependent
                         ?.filter((d, i) => i !== index)
-                        ?.map((dep) => ({
-                          id: accounts.find((acc) => safeDecodeId(acc?.dependentId) === safeDecodeId(dep?.id))?.id || dep.id,
-                          nameEn: dep.nameEn,
-                          nameBn: dep.nameBn,
-                        }))}
+                        ?.map((dep) => {
+                          const parentAccount = accounts.find((acc) => acc.dependentId === dep.id);
+
+                          return {
+                            id: parentAccount?.id || dep.id,
+                            nameEn: dep.nameEn,
+                            nameBn: dep.nameBn,
+                          };
+                        })}
                     />
                   </Grid>
                 )}
@@ -300,7 +315,8 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                               <DistrictBanks
                                 id="districtBank"
                                 modulesManager={modulesManager}
-                                value={account?.district || null}
+                                // value={account?.district || null}
+                                value={districtValue}
                                 bankId={account?.bank?.bankCode}
                                 label={<FormattedMessage id="workforce.district.branch.picker" />}
                                 onChange={(v) => handleAccountChange(index, "district", v)}
@@ -314,7 +330,8 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                                 modulesManager={modulesManager}
                                 value={account?.branch || ""}
                                 bankId={account?.bank?.bankCode}
-                                districtName={account?.district?.districtNameBn}
+                                // districtName={account?.district?.districtNameBn}
+                                districtName={districtValue?.districtNameBn}
                                 label={<FormattedMessage id="workforce.branch.picker" />}
                                 onChange={(v) => {
                                   handleAccountChange(index, "branch", v);

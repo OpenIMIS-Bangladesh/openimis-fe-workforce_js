@@ -165,7 +165,7 @@ class ViewApplicationPage extends Component {
                     message: "আবেদন বাতিল করা হয়েছে!",
                   },
                 });
-                // window.location.reload();
+                window.location.reload();
               } catch (error) {
                 console.error("Approval failed:", error);
                 this.setState({
