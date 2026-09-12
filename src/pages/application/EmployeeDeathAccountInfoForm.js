@@ -223,7 +223,8 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "}
+                {/* {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "} */}
+                {account?.accountHolderName} {account?.accountHolderName && "এর"}{" "}
                 {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
