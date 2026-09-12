@@ -75,14 +75,25 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
     if (dependent?.length > 0) {
       setExpanded(0);
       dependent.forEach((dep, index) => {
-        const existingAccount = accounts[index] || {};
 
-        handleChange(index, "accountHolderName", existingAccount.accountHolderName || dep?.nameEn);
-        handleChange(index, "dependentId", existingAccount.dependentId || dep?.id);
-        handleChange(index, "dependentNid", existingAccount.dependentNid || dep?.nid);
+        let existingAccount = null;
+        for (const account of accounts) {
+          if (account.dependentId === dep.id) {
+            existingAccount = account;
+            break;
+          }
+        }
+        if (existingAccount=== null) {
+          existingAccount = accounts[index] || {};
+        }
+        // const existingAccount = accounts[index] || {};
+
+        handleChange(index, "accountHolderName", existingAccount?.accountHolderName || dep?.nameEn);
+        handleChange(index, "dependentId", existingAccount?.dependentId || dep?.id);
+        handleChange(index, "dependentNid", existingAccount?.dependentNid || dep?.nid);
 
         // Check if the backend saved a parentDependentId
-        if (existingAccount.parentDependentId) {
+        if (existingAccount?.parentDependentId) {
           handleChange(index, "accountHolderType", "select_from_another_dependent");
 
           // Extract the string ID if the backend returns an object
@@ -91,7 +102,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
           //   : existingAccount.parentDependentId;
 
           // handleChange(index, "parentDependentId", parentId);
-        } else if (existingAccount.accountHolderType) {
+        } else if (existingAccount?.accountHolderType) {
           // Respect "other" or any natively saved type
           handleChange(index, "accountHolderType", existingAccount.accountHolderType);
         } else {
@@ -192,30 +203,27 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
       </Typography>
 
       {(dependent?.length > 0 ? dependent : [{}]).map((dependentValue, index) => {
-        const account = accounts[index] || {};
+        // const account = accounts[index] || {};
+        let account = null;
+        for (const acc of accounts) {
+          if (acc.dependentId === dependentValue.id) {
+            account = acc;
+            break;
+          }
+        }
+        if (account=== null) {
+          account = accounts[index] || {};
+        }
         const accountType = account?.accountType || "bank";
 
         // 🎯 New field: whose account?
         const accountHolderType = account?.accountHolderType || "self";
-        const districtValue =
-          account.district ||
-          (account.branch
-            ? {
-                districtNameBn: account.branch.districtNameBn,
-                districtNameEn: account.branch.districtNameEn,
-                districtCode: account.branch.districtCode,
-                bankCode: account.branch.bankCode,
-              }
-            : null);
-        console.log("account holder name 1",account?.accountHolderName)
-        console.log("account holder name 2",dependent?.[index]?.nameEn)
-        console.log("account holder name 3",formdata?.workforceEmployee?.nameEn)
+
         return (
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle2" style={{ fontWeight: "bold" }}>
-                {/* {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "} */}
-                {account?.accountHolderName} {account?.accountHolderName && "এর"}{" "}
+                {dependentValue?.nameBn} {dependentValue?.nameBn && "এর"}{" "}
                 {<FormattedMessage id="workforce.previewDetails.employeeBankInfo" defaultMessage={`Bank Account ${index + 1}`} />}
               </Typography>
             </AccordionSummary>
@@ -314,9 +322,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                             <Grid item xs={6}>
                               <DistrictBanks
                                 id="districtBank"
-                                modulesManager={modulesManager}
-                                // value={account?.district || null}
-                                value={districtValue}
+                                value={account?.district || null}
                                 bankId={account?.bank?.bankCode}
                                 label={<FormattedMessage id="workforce.district.branch.picker" />}
                                 onChange={(v) => handleAccountChange(index, "district", v)}
@@ -327,11 +333,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                             <Grid item xs={6}>
                               <BranchPicker
                                 id="branch"
-                                modulesManager={modulesManager}
                                 value={account?.branch || ""}
                                 bankId={account?.bank?.bankCode}
-                                // districtName={account?.district?.districtNameBn}
-                                districtName={districtValue?.districtNameBn}
+                                districtName={account?.district?.districtNameBn}
                                 label={<FormattedMessage id="workforce.branch.picker" />}
                                 onChange={(v) => {
                                   handleAccountChange(index, "branch", v);
@@ -349,7 +353,7 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
                                 label="workforce.employee.account.info.accountHolderName"
                                 value={account?.accountHolderName || dependent?.[index]?.nameEn || formdata?.workforceEmployee?.nameEn}
                                 onChange={(v) => handleAccountChange(index, "accountHolderName", v)}
-                                readOnly={account?.accountHolderName || dependent?.[index]?.nameEn || formdata?.workforceEmployee?.nameEn}
+                                // readOnly={account?.accountHolderName || dependent?.[index]?.nameEn || formdata?.workforceEmployee?.nameEn}
                                 required
                               />
                             </Grid>
