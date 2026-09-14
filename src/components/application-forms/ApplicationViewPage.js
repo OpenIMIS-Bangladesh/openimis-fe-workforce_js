@@ -31,6 +31,7 @@ import EisFactoryAdminModal from "./EisFactoryAdminModal";
 import ApplicationMovementStepper from "../shared/ApplicationMovementStepper";
 import CompensationFormModal from "./CompensationFormModal";
 import ApplicationPreviousHistory from "./Atoms/ApplicationPreviousHistory";
+import CommitteeMeetingApplicationList from "./Atoms/CommitteeMeetingApplicationList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -905,6 +906,11 @@ const ApplicationViewPage = ({
               ))}
             </Box>
           </Paper>
+          {(user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) && (
+            <>
+              <CommitteeMeetingApplicationList application={application}/>
+            </>
+          )}
           {viewedFromFlag === "view" && (
             <>
               <ApplicationMovementStepper data={movementLogs} language={language} />
