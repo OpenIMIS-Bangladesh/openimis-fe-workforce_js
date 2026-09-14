@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { getUserTypeFromRights, safeDecodeId } from '../../utils/utils';
 import { STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE } from '../../constants';
-import { fetchNotificationData, updateNotification } from '../../actions';
+import { fetchNotificationData, updateNotification, markAllNotificationAsRead } from '../../actions';
 
 // MUI v4 Imports
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 
 const POLL_INTERVAL_MS = 300000;
 
@@ -145,13 +146,13 @@ const PushNotification = () => {
     setAnchorEl(null);
   };
 
-  const markNotificationAsRead = async (notification) => {
+  const markNotificationAsRead = async (notification, skipNavigation = false) => {
     if (!notification || !notification.id || isNotificationRead(notification)) {
       return;
     }
 
     try {
-      const payload={
+      const payload = {
         id: safeDecodeId(notification.id),
         isRead: true,
         userId: safeDecodeId(notification.user.id),
@@ -173,10 +174,31 @@ const PushNotification = () => {
         )
       );
       setUnreadCount((prev) => Math.max(prev - 1, 0));
-      window.location.href = window.location.origin + '/front/workforce/applications/application/verify/'+safeDecodeId(notification.workforceApplication.id);
+
+      if (!skipNavigation && notification.workforceApplication?.id) {
+        window.location.href = `${window.location.origin}/front/workforce/applications/application/verify/${safeDecodeId(notification.workforceApplication.id)}`;
+      }
     } catch (error) {
       console.error('Failed to mark notification read:', error);
     }
+  };
+
+  const markAllAsRead = async () => {
+    // const unreadNotifications = (items || []).filter(
+    //   (notification) => notification && notification.id && !isNotificationRead(notification)
+    // );
+
+    // if (unreadNotifications.length === 0) {
+    //   return;
+    // }
+
+    // for (const notification of unreadNotifications) {
+    //   await markNotificationAsRead(notification, true);
+    // }
+
+    await dispatch(markAllNotificationAsRead(userId));
+
+    await refreshNotifications();
   };
 
   if (userType === WORKFORCE_USER_TYPE.APPLICANT) {
@@ -212,12 +234,30 @@ const PushNotification = () => {
         PaperProps={{ className: classes.menuPaper }}
       >
         <Box className={classes.menuHeader}>
-          <Typography variant="subtitle1">{locale === "en" ? "Notifications" : "নোটিফিকেশন"}</Typography>
           {
-            unreadCount > 0 && (
-              <Typography variant="body2">{locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} {locale === "en" ? "unread" : "টি নোটিফিকেশন অপঠিত"}</Typography>
+            unreadCount < 1 && (
+              <Typography variant="subtitle1">{locale === "en" ? "Notifications" : "নোটিফিকেশন"}</Typography>
             )
           }
+          <Box display="flex" alignItems="center" gap={1}>
+            {
+              unreadCount > 0 && (
+                <Typography variant="body2">{locale === "en" ? unreadCount : Number(unreadCount).toLocaleString("bn-BD")} {locale === "en" ? " Unread Notifications" : " টি নোটিফিকেশন অপঠিত"}</Typography>
+              )
+            }
+            {unreadCount > 0 && (
+              <Button
+                size="small"
+                color="primary"
+                variant= "outlined"
+                onClick={() => markAllAsRead()}
+                disabled={unreadCount === 0}
+                style={{marginLeft: '10px'}}
+              >
+                {locale === "en" ? "Mark all as read" : "সবগুলো পড়া হয়েছে"}
+              </Button>
+            )}
+          </Box>
         </Box>
         <Divider />
         {notifications.length === 0 ? (

@@ -3612,3 +3612,20 @@ export function fetchWorkforceEisLastPaymentDate(filters) {
 
   return graphql(payload, "EIS_LAST_PAYMENT_DATE");
 }
+
+
+
+export function markAllNotificationAsRead(userId) {
+  const mutation = `
+  mutation {
+      markAllNotificationAsRead(
+        userId: "${userId}"
+      ) {
+        success
+        errors
+      }
+    }
+  `;
+  return graphql(mutation, "MARK_ALL_NOTIFICATIONS_AS_READ");
+}
+

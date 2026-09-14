@@ -682,6 +682,7 @@ export function formatWorkforceNotificationGQL(user) {
   return `
     ${user?.id ? `id: "${user.id}"` : ""}
     ${user?.isRead ? `isRead: ${user.isRead}` : ""}
+    ${user?.allRead ? `allRead: ${user.allRead}` : ""}
     ${user?.notification ? `notification: "${user.notification}"` : ""}
     ${user?.notificationBn ? `notificationBn: "${user.notificationBn}"` : ""}
     ${user?.userId ? `userId: ${user.userId}` : ""}

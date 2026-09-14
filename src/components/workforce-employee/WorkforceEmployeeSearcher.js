@@ -98,7 +98,7 @@ class WorkforceEmployeeSearcher extends Component {
             const node = edges[0]?.node;
             const factoryId = node?.workforceFactory || null;
             
-            this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager,  [`workforceFactoryId:"${factoryId?.id}"`]);
+            this.props.fetchWorkforceEmployeesSummary(this.props.modulesManager,  [`workforceFactoryId:"${factoryId?.id??""}"`]);
           })
   };
 
