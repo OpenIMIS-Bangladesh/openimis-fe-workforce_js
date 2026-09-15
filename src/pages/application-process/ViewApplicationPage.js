@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Grid, Paper, Typography, Divider, IconButton, Card, Button, Box, Modal } from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage } from "@openimis/fe-core";
 import { withTheme, withStyles } from "@material-ui/core/styles";
-
+import { CircularProgress } from "@material-ui/core";
 import PreviewDetails from "../../components/application-forms/PreviewDetails";
 import ForwardApplicationAdminModal from "../../components/application-process/modals/ForwardApplicationAdminModal";
 import { WORKFORCE_STATUS, WORKFORCE_USER_TYPE } from "../../constants";
@@ -131,7 +131,7 @@ class ViewApplicationPage extends Component {
     this.setState({ open: true });
   };
   handleReject = () => {
-    const { user_rights, application, loggedInUserId } = this.props
+    const { user_rights, application, loggedInUserId } = this.props;
     const { selectedApplication } = this.state;
     this.setState({
       confirmModalOpen: true,
@@ -296,7 +296,19 @@ class ViewApplicationPage extends Component {
   }
 
   render() {
-    const { classes, user_rights, documents, application, locale, organizationEmployee, history, edited_id } = this.props;
+    const {
+      classes,
+      user_rights,
+      documents,
+      application,
+      locale,
+      organizationEmployee,
+      history,
+      edited_id,
+      fetchingApplication,
+      fetchingDocument,
+      fetchingApplicationMovements,
+    } = this.props;
     const { stateEdited, workforceEmployee, isForwardModalOpen, forwardModalOpenFA } = this.state;
     // const application = this.memoizedApplication
 
@@ -338,6 +350,16 @@ class ViewApplicationPage extends Component {
     console.log({ formData });
     console.log({ parsedWorkforceEmployeeDependentApplication });
     console.log({ movementLogs: this.state.movementLogs });
+
+    const isLoading = !application || fetchingApplication || fetchingDocument || fetchingApplicationMovements;
+
+    if (isLoading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="500px">
+          <CircularProgress />
+        </Box>
+      );
+    }
     return (
       <div className={classes.container}>
         <Box p={0} className={classes.paper}>
@@ -370,7 +392,7 @@ class ViewApplicationPage extends Component {
                   </Button>
                 </Grid>
                 <Grid item xs={2}>
-                  <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }} fullWidth onClick={()=>this.handleReject()}>
+                  <Button variant="outlined" style={{ backgroundColor: "#D10000", color: "white" }} fullWidth onClick={() => this.handleReject()}>
                     <FormattedMessage module="workforce" id="workforce.application.reject" />
                   </Button>
                 </Grid>
@@ -509,6 +531,9 @@ class ViewApplicationPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
+  fetchingApplication: state.workforce.fetchingApplication,
+  fetchingDocument: state.workforce.fetchingDocument,
+  fetchingApplicationMovements: state.workforce.fetchingApplicationMovements,
   application: state.workforce.application,
   user_rights: state.core?.user?.i_user?.rights || {},
   documents: state.workforce.document,

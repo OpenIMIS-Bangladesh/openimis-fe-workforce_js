@@ -22,7 +22,7 @@ import { withTheme, withStyles } from "@material-ui/core/styles";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
+import { CircularProgress } from "@material-ui/core";
 import { withModulesManager, withHistory, historyPush, coreConfirm, journalize, FormattedMessage, decodeId } from "@openimis/fe-core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { bindActionCreators } from "redux";
@@ -140,10 +140,10 @@ class VerifyApplicationPage extends Component {
       forwardModalOpenSA: false,
       revertModalOpen: false,
       confirmModalOpen: false,
-      forwardModalOpenEIS:false,
+      forwardModalOpenEIS: false,
       confirmModalMessage: "",
       confirmModalCallback: null,
-      loader:false,
+      loader: false,
       serverResponse: "",
       selectedApplication: null,
       eisDependentBFTNModalOpen: false,
@@ -248,7 +248,7 @@ class VerifyApplicationPage extends Component {
     const { user_rights, application, loggedInUserId, user, roles } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
     const file = this.state.fileStates[index];
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = new Date().toLocaleDateString("en-CA");
     const payload = {
       ...file,
       id: safeDecodeId(file.id),
@@ -259,12 +259,17 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-              :user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED:( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?(isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED) :
-              "",
+              : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+                : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                  ? isBlwfPath()
+                    ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED
+                    : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED
+                  : "",
       note: file.note,
       verifierId: loggedInUserId,
       verificationDate: today,
-      holderType:user_type
+      holderType: user_type,
     };
 
     this.props.updateWorkforceDocument(payload, `update workforce document`).then(() => {
@@ -280,27 +285,38 @@ class VerifyApplicationPage extends Component {
               ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
               : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
                 ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-                :user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED:( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?(isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED) :
-                "",
+                : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                  ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+                  : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                    ? isBlwfPath()
+                      ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED
+                      : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED
+                    : "",
         note: file.note,
         verifiedById: loggedInUserId,
         verifiedByRoleId: roles[0]?.roleId,
         verificationDate: today,
       };
-      this.props.createWorkforceDocumentMap(payload,`create document map data`)
+      this.props.createWorkforceDocumentMap(payload, `create document map data`);
     });
 
     // optionally update UI optimistically
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
-      updated[index].status = user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+      updated[index].status =
+        user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
           ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_VERIFIED
           : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_VERIFIED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_VERIFIED
-              : user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED:( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)? (isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED) :
-              "";
+              : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_VERIFIED
+                : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                  ? isBlwfPath()
+                    ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_VERIFIED
+                    : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_VERIFIED
+                  : "";
       return { fileStates: updated };
     });
   };
@@ -309,7 +325,7 @@ class VerifyApplicationPage extends Component {
     const { user_rights, application, loggedInUserId, user, roles } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
     const file = this.state.fileStates[index];
-    const today = new Date().toLocaleDateString('en-CA');
+    const today = new Date().toLocaleDateString("en-CA");
 
     const payload = {
       ...file,
@@ -321,8 +337,13 @@ class VerifyApplicationPage extends Component {
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-              :user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED: ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)? (isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED) :
-              "",
+              : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED
+                : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                  ? isBlwfPath()
+                    ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED
+                    : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED
+                  : "",
       note: file.note,
       verifierId: loggedInUserId,
       verificationDate: today,
@@ -341,27 +362,37 @@ class VerifyApplicationPage extends Component {
               ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
               : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
                 ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-                :user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED: ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)?(isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED)  :
-              "",
+                : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                  ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED
+                  : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                    ? isBlwfPath()
+                      ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED
+                      : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED
+                    : "",
         note: file.note,
         verifiedById: loggedInUserId,
         verifiedByRoleId: roles[0]?.roleId,
         verificationDate: today,
       };
-      this.props.createWorkforceDocumentMap(payload,`create document map data`)
+      this.props.createWorkforceDocumentMap(payload, `create document map data`);
     });
 
     this.setState((prevState) => {
       const updated = [...prevState.fileStates];
-      updated[index].status = user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
+      updated[index].status =
+        user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN
           ? WORKFORCE_DOCUMENT_STATUS.FACTORY_ADMIN_REJECTED
           : user_type === WORKFORCE_USER_TYPE.ASSOCIATION
             ? WORKFORCE_DOCUMENT_STATUS.ASSOCIATION_REJECTED
             : user_type === WORKFORCE_USER_TYPE.EIS_OFFICER
               ? WORKFORCE_DOCUMENT_STATUS.EIS_OFFICER_REJECTED
-              : user_type===WORKFORCE_USER_TYPE.BLWF_DOL_DIFE?WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED:
-              ( WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO)? (isBlwfPath()? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED:WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED) :
-              "";
+              : user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+                ? WORKFORCE_DOCUMENT_STATUS.DOL_DIFE_REJECTED
+                : WORKFORCE_USER_TYPE.CHECKER || WORKFORCE_USER_TYPE.CHECKER_TWO
+                  ? isBlwfPath()
+                    ? WORKFORCE_DOCUMENT_STATUS.BLWF_SECTION_OFFICER_REJECTED
+                    : WORKFORCE_DOCUMENT_STATUS.SECTION_OFFICER_REJECTED
+                  : "";
       return { fileStates: updated };
     });
   };
@@ -394,12 +425,16 @@ class VerifyApplicationPage extends Component {
   };
 
   handleForward = () => {
-    const { user_rights, application, loggedInUserId,roles,history } = this.props;
+    const { user_rights, application, loggedInUserId, roles, history } = this.props;
     const user_type = getUserTypeFromRights(user_rights);
 
     if (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {
       this.setState({ forwardModalOpenFA: true });
-    } else if (user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN||user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO||user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN) {
+    } else if (
+      user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+      user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO ||
+      user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN
+    ) {
       this.setState({ forwardModalOpenSA: true });
     } else if (
       user_type === WORKFORCE_USER_TYPE.CHECKER ||
@@ -426,11 +461,11 @@ class VerifyApplicationPage extends Component {
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         history: this.props.history,
         dispatch: this.props.dispatch,
-        setCloseLoader:(l)=>this.setState({loader:l}),
-        loader:this.state.loader
+        setCloseLoader: (l) => this.setState({ loader: l }),
+        loader: this.state.loader,
       });
-    }else if (user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
-      this.setState({ forwardModalOpenEIS: true })
+    } else if (user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR) {
+      this.setState({ forwardModalOpenEIS: true });
     } else if (user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) {
       handleApprovalByDoctor({
         selectedApplicationIds: [{ id: application?.id }],
@@ -446,8 +481,8 @@ class VerifyApplicationPage extends Component {
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         // historyPush:historyPush,
         history: this.props.history,
-        setCloseLoader:(l)=>this.setState({loader:l}),
-        loader:this.state.loader
+        setCloseLoader: (l) => this.setState({ loader: l }),
+        loader: this.state.loader,
       });
     } else if (user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE) {
       const summaryApplicationRes = this.props.dispatch(
@@ -475,24 +510,26 @@ class VerifyApplicationPage extends Component {
         eisApprovedByIds: application?.eisApprovedByIds,
         // historyPush:historyPush,
         history: this.props.history,
-        setCloseLoader:(l)=>this.setState({loader:l}),
-        loader:this.state.loader
+        setCloseLoader: (l) => this.setState({ loader: l }),
+        loader: this.state.loader,
       });
     } else {
       handleBulkSelectedByAssociationLogic({
-        selectedApplicationIds: [{ 
-          id: application?.id,
-          applicationType: application?.applicationType,
-          ...application
-        }],
+        selectedApplicationIds: [
+          {
+            id: application?.id,
+            applicationType: application?.applicationType,
+            ...application,
+          },
+        ],
         loggedInUserId,
         updateApplication: this.props.updateApplication,
         createApplicationMovement: this.props.createApplicationMovement,
-        userRights:this.props.user_rights,
-        fetchWorkforceDocument:this.props.fetchWorkforceDocument,
-        testWorkforcePayment:this.props.testWorkforcePayment,
-        fetchUsersByRoleId:this.props.fetchUsersByRoleId,
-        modulesManager:this.props.modulesManager,
+        userRights: this.props.user_rights,
+        fetchWorkforceDocument: this.props.fetchWorkforceDocument,
+        testWorkforcePayment: this.props.testWorkforcePayment,
+        fetchUsersByRoleId: this.props.fetchUsersByRoleId,
+        modulesManager: this.props.modulesManager,
         roles,
         setServerResponse: (res) => this.setState({ serverResponse: res }),
         setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
@@ -500,8 +537,8 @@ class VerifyApplicationPage extends Component {
         setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
         // historyPush:historyPush,
         history: this.props.history,
-        setCloseLoader:(l)=>this.setState({loader:l}),
-        loader:this.state.loader
+        setCloseLoader: (l) => this.setState({ loader: l }),
+        loader: this.state.loader,
       });
     }
   };
@@ -535,7 +572,20 @@ class VerifyApplicationPage extends Component {
   };
 
   render() {
-    const { classes, applicationUuid, documents, application, documentType, locale, user_rights, user, roles } = this.props;
+    const {
+      classes,
+      applicationUuid,
+      documents,
+      application,
+      documentType,
+      locale,
+      user_rights,
+      user,
+      roles,
+      fetchingApplication,
+      fetchingDocument,
+      fetchingApplicationMovements,
+    } = this.props;
     const { stateEdited, preview, fileStates, comment, applicationType } = this.state;
     const user_type = getUserTypeFromRights(user_rights);
     const bankInfo = this.safeParse(application?.employeeBankInfo);
@@ -579,85 +629,91 @@ class VerifyApplicationPage extends Component {
       return !isUploaded;
     });
 
+    const isLoading = fetchingApplication || fetchingDocument || !application;
+
+    if (isLoading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="500px">
+          <CircularProgress />
+        </Box>
+      );
+    }
     console.log({ roles });
     return (
       <>
-        {isEisPath()&&(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-          user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
-          user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
-          user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-          user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
-          user_type === WORKFORCE_USER_TYPE.CHECKER ||
-          user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
-          user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
-          user_type=== WORKFORCE_USER_TYPE.ASSOCIATION||
-          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
-          <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
-            {/* <Grid item xs={6}></Grid> */}
-            {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
-                  {
-                    isCfPath() || isBlwfPath() ? (
+        {isEisPath() &&
+          (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+            user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+            user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
+            user_type === WORKFORCE_USER_TYPE.CHECKER ||
+            user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
+            user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+            user_type === WORKFORCE_USER_TYPE.ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR) && (
+            <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
+              {/* <Grid item xs={6}></Grid> */}
+              {user_type === WORKFORCE_USER_TYPE.EIS_OFFICER && application?.applicationType === "financialAssistance" && (
+                <Grid item xs={2}>
+                  <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
+                    {isCfPath() || isBlwfPath() ? (
                       <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
                     ) : (
                       <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
-                    )
-                  }
-                </Button>
-              </Grid>
-            )}
-            {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-              user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
-              user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-              user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
-                  <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
-                </Button>
-              </Grid>
-            )}
-            {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
-              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
-                <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={this.props.application?.isHistory}
-                    onClick={() => {
-                      this.handleForward();
-                    }}
-                  >
-                    <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                    )}
                   </Button>
                 </Grid>
-              )
-            ) : (
-              !(user_type===WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.status ==="verified") && (
+              )}
+              {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+                user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+                user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+                user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
+                <Grid item xs={2}>
+                  <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
+                    <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
+                  </Button>
+                </Grid>
+              )}
+              {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE
+                ? !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
+                    <Grid item xs={2}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        disabled={this.props.application?.isHistory}
+                        onClick={() => {
+                          this.handleForward();
+                        }}
+                      >
+                        <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                      </Button>
+                    </Grid>
+                  )
+                : !(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR && application?.status === "verified") && (
+                    <Grid item xs={2}>
+                      <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
+                        <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                      </Button>
+                    </Grid>
+                  )}
               <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
                 </Button>
               </Grid>
-              )
-            )}
-            <Grid item xs={2}>
-              <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
-                <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
-              </Button>
             </Grid>
-          </Grid>
-        )}
+          )}
 
         <Grid container spacing={3} className={classes.rootGrid}>
           {/* User Summary */}
@@ -692,82 +748,82 @@ class VerifyApplicationPage extends Component {
           </Grid>
         </Grid>
 
-        {!isEisPath()&&(user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
-          user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
-          user_type === WORKFORCE_USER_TYPE.ASSOCIATION ||
-          user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
-          user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
-          user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-          user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
-          user_type === WORKFORCE_USER_TYPE.CHECKER ||
-          user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
-          user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
-          user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
-          user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
-          user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR||
-          user_type === WORKFORCE_USER_TYPE.DIRECTOR || 
-          user_type === WORKFORCE_USER_TYPE.ADMIN) && (
-          <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
-            {/* <Grid item xs={6}></Grid> */}
-            {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER||user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.ADMIN) && application?.applicationType === "financialAssistance" && (
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
-                  {
-                    isCfPath() || isBlwfPath() ? (
-                      <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
-                    ) : (
-                      <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
-                    )
-                  }
-                </Button>
-              </Grid>
-            )}
-            {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
-              user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
-              user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
-              user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
-              <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
-                  <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
-                </Button>
-              </Grid>
-            )}
-            {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
-              !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
+        {!isEisPath() &&
+          (user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.BGMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.BKMEA_ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.ASSOCIATION ||
+            user_type === WORKFORCE_USER_TYPE.SECTION_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_SECTION_ADMIN ||
+            user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+            user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+            user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
+            user_type === WORKFORCE_USER_TYPE.CHECKER ||
+            user_type === WORKFORCE_USER_TYPE.CHECKER_TWO ||
+            user_type === WORKFORCE_USER_TYPE.SEC1_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.SEC2_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE ||
+            user_type === WORKFORCE_USER_TYPE.BLWF_DEPUTI_ASST_DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.EIS_OFFICER ||
+            user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR ||
+            user_type === WORKFORCE_USER_TYPE.DIRECTOR ||
+            user_type === WORKFORCE_USER_TYPE.ADMIN) && (
+            <Grid container spacing={2} className={classes.gridRightPad} style={{ marginTop: "16px", padding: 4, display: "flex", justifyContent: "flex-end" }}>
+              {/* <Grid item xs={6}></Grid> */}
+              {(user_type === WORKFORCE_USER_TYPE.EIS_OFFICER || user_type === WORKFORCE_USER_TYPE.DIRECTOR || user_type === WORKFORCE_USER_TYPE.ADMIN) &&
+                application?.applicationType === "financialAssistance" && (
+                  <Grid item xs={2}>
+                    <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ addDependentModalOpen: true })}>
+                      {isCfPath() || isBlwfPath() ? (
+                        <FormattedMessage id="workforce.application.steps.warishAdd" defaultMessage="Add Nominee" />
+                      ) : (
+                        <FormattedMessage id="workforce.application.steps.dependentAdd" defaultMessage="Add New Dependent" />
+                      )}
+                    </Button>
+                  </Grid>
+                )}
+              {(user_type === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
+                user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ||
+                user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE ||
+                user_type === WORKFORCE_USER_TYPE.EIS_ADVISOR) && (
                 <Grid item xs={2}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    disabled={this.props.application?.isHistory}
-                    onClick={() => {
-                      this.handleForward();
-                    }}
-                  >
-                    <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                  <Button variant="contained" color="primary" fullWidth onClick={() => this.setState({ eisDependentBFTNModalOpen: true })}>
+                    <FormattedMessage id="workforce.employee.application.paymentProcess" defaultMessage="Payment Calculation" />
                   </Button>
                 </Grid>
-              )
-            ) : (
+              )}
+              {user_type === WORKFORCE_USER_TYPE.EIS_COMMITTEE || user_type === WORKFORCE_USER_TYPE.EIS_ASSOCIATION_COMMITTEE ? (
+                !safeParse(this.props.application?.eisApprovedByIds)?.includes(this.props.loggedInUserId) && (
+                  <Grid item xs={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      disabled={this.props.application?.isHistory}
+                      onClick={() => {
+                        this.handleForward();
+                      }}
+                    >
+                      <FormattedMessage module="workforce" id="workforce.employee.application.eis_committee.recommended" />
+                    </Button>
+                  </Grid>
+                )
+              ) : (
+                <Grid item xs={2}>
+                  <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
+                    <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                  </Button>
+                </Grid>
+              )}
               <Grid item xs={2}>
-                <Button variant="contained" color="primary" fullWidth onClick={this.handleForward}>
-                  <FormattedMessage module="workforce" id="workforce.employee.application.forward" />
+                <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
+                  <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
                 </Button>
               </Grid>
-            )}
-            <Grid item xs={2}>
-              <Button variant="contained" color="primary" fullWidth onClick={this.handleRevert}>
-                <FormattedMessage module="workforce" id="workforce.employee.application.revert" />
-              </Button>
             </Grid>
-          </Grid>
-        )}
+          )}
 
         {this.state.addDependentModalOpen && (
           <AddDependentModal open={this.state.addDependentModalOpen} onClose={() => this.setState({ addDependentModalOpen: false })} application={formData} />
@@ -788,7 +844,7 @@ class VerifyApplicationPage extends Component {
             onClose={() => this.setState({ forwardModalOpenFA: false })}
             selectedApplicationIds={[{ id: this.props.application?.id }]}
             organizationEmployee={this.props.organizationEmployee}
-            roles = {roles}
+            roles={roles}
           />
         )}
 
@@ -850,6 +906,9 @@ class VerifyApplicationPage extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
+  fetchingApplication: state.workforce.fetchingApplication,
+  fetchingDocument: state.workforce.fetchingDocument,
+  fetchingApplicationMovements: state.workforce.fetchingApplicationMovements,
   application: state.workforce.application,
   applicationUuid: props.match.params.application_uuid,
   documents: state.workforce.document,

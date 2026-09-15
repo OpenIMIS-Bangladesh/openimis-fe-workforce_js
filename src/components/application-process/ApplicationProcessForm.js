@@ -100,6 +100,7 @@ class ApplicationProcessForm extends Component {
   render() {
     const {
       fetchingTicket,
+      fetchingApplication,
       fetchedApplication,
       errorTicket,
       save,
@@ -122,7 +123,7 @@ class ApplicationProcessForm extends Component {
 
     return (
       <>
-        <ProgressOrError progress={fetchingTicket} error={errorTicket} />
+        <ProgressOrError progress={fetchingApplication} error={errorTicket} />
         {(!!fetchedApplication || !applicationUuid) && (
           <Form
             module={MODULE_NAME}
@@ -167,6 +168,9 @@ const mapStateToProps = (state, props) => ({
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
   grievanceConfig: state.workforce.grievanceConfig,
+  fetchingApplication: state.workforce.fetchingApplication,
+  fetchingDocument: state.workforce.fetchingDocument,
+  fetchingApplicationMovements: state.workforce.fetchingApplicationMovements,
 });
 
 const mapDispatchToProps = (dispatch) =>

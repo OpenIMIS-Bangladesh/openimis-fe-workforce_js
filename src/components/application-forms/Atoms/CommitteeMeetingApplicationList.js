@@ -50,7 +50,7 @@ const CommitteeMeetingApplicationList = ({ application }) => {
                   <Typography component="span" variant="body2" color="textPrimary">
                     {app?.applicationType}
                   </Typography>
-                  {` — ${WORKFORCE_STATUS[app?.status]}`}
+                  {` — ${app?.status}`}
                 </React.Fragment>
               }
             />

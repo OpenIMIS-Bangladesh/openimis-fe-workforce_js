@@ -779,8 +779,8 @@ export const handleApprovalByEisCommittee = async ({
       // history.push("/");
       // //window.location.reload();
       setTimeout(() => {
-        history.push("/");
-        //window.location.reload();
+        // history.push("/");
+        window.location.reload();
       }, 500);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
