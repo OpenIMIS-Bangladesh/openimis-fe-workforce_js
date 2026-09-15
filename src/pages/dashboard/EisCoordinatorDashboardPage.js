@@ -761,6 +761,7 @@ const Dashboard = ({selectedMenu}) => {
           };
         });
         setApplications(formData);
+        setMarriageStatus(getMarriageStatusCounts(formData));
         console.log({ fromEISAdvisor: formData });
       });
 
@@ -1312,6 +1313,45 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
 };
 
 // ------------------------------------------------------------
+
+const getMarriageStatusCounts = (applications) => applications.reduce(
+  (counts, application) => {
+    const dependents = safeParse(application?.employeeDependentInfo);
+    if (!Array.isArray(dependents)) return counts;
+
+    dependents.forEach((dependent) => {
+      const relation = dependent?.relationWithWorker || dependent?.relationType;
+      const maritalStatus = dependent?.maritalStatus;
+
+      if (relation === "workforce.relation.wife" && maritalStatus === "workforce.marital_status.widow") {
+        counts.unmarriedWidow += 1;
+      } else if (relation === "workforce.relation.husband" && maritalStatus === "workforce.marital_status.widower") {
+        counts.unmarriedWidower += 1;
+      } else if (relation === "workforce.relation.sister" && maritalStatus === "workforce.marital_status.single") {
+        counts.unmarriedSister += 1;
+      } else if (
+        relation === "workforce.relation.daughter"
+        && maritalStatus === "workforce.marital_status.single"
+      ) {
+        counts.unmarriedDaughter += 1;
+      } else if (
+        ["workforce.relation.grand_daughter", "workforce.relation.grand_daughter_from_daughter"].includes(relation)
+        && maritalStatus === "workforce.marital_status.single"
+      ) {
+        counts.unmarriedGrandDaughter += 1;
+      }
+    });
+
+    return counts;
+  },
+  {
+    unmarriedWidow: 0,
+    unmarriedWidower: 0,
+    unmarriedSister: 0,
+    unmarriedDaughter: 0,
+    unmarriedGrandDaughter: 0,
+  },
+);
 
 const EisCoordinatorDashboardPage = () => {
   const classes = useStyles();
