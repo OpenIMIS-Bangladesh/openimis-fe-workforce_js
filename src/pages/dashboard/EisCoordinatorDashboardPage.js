@@ -27,7 +27,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
-import { getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
+import { calculateAge, getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN, STATUS_MAP_EN, STATUS_MAP_BN } from "../../constants";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -762,6 +762,7 @@ const Dashboard = ({selectedMenu}) => {
         });
         setApplications(formData);
         setMarriageStatus(getMarriageStatusCounts(formData));
+        setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(formData));
         console.log({ fromEISAdvisor: formData });
       });
 
@@ -1350,6 +1351,50 @@ const getMarriageStatusCounts = (applications) => applications.reduce(
     unmarriedSister: 0,
     unmarriedDaughter: 0,
     unmarriedGrandDaughter: 0,
+  },
+);
+
+const getBeneficiaryMonitoringCounts = (applications) => applications.reduce(
+  (counts, application) => {
+    const dependents = safeParse(application?.employeeDependentInfo);
+    if (!Array.isArray(dependents)) return counts;
+
+    dependents.forEach((dependent) => {
+      const age = calculateAge(dependent?.birthDate);
+      const relation = dependent?.relationWithWorker || dependent?.relationType;
+      const maritalStatus = dependent?.maritalStatus;
+      const isFemale = [
+        "workforce.relation.wife",
+        "workforce.relation.daughter",
+        "workforce.relation.sister",
+        "workforce.relation.grand_daughter",
+        "workforce.relation.grand_daughter_from_daughter",
+      ].includes(relation);
+
+      if (age >= 17 && age < 18) {
+        counts.almost18 += 1;
+      }
+      if (age >= 18 && isFemale && maritalStatus === "workforce.marital_status.single") {
+        counts.adultFemaleUnmarried += 1;
+      }
+      if (age > 60) {
+        counts.elderly += 1;
+      }
+      if (
+        age < 35
+        && ["workforce.marital_status.widow", "workforce.marital_status.widower"].includes(maritalStatus)
+      ) {
+        counts.widowUnder35 += 1;
+      }
+    });
+
+    return counts;
+  },
+  {
+    almost18: 0,
+    adultFemaleUnmarried: 0,
+    elderly: 0,
+    widowUnder35: 0,
   },
 );
 
