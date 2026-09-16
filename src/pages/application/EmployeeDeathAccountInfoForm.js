@@ -218,6 +218,9 @@ const EmployeeDeathAccountInfoForm = ({ formdata, accounts, handleChange, addIte
 
         // 🎯 New field: whose account?
         const accountHolderType = account?.accountHolderType || "self";
+        console.log("account holder 1",account?.accountHolderName)
+        console.log("account holder 2",dependent?.[index]?.nameEn)
+        console.log("account holder 3",formdata?.workforceEmployee?.nameEn)
 
         return (
           <Accordion key={index} expanded={expanded === index} onChange={() => setExpanded(expanded === index ? false : index)}>

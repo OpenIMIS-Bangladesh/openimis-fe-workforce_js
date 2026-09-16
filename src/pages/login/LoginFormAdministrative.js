@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Button, Box, Grid, LinearProgress, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { TextInput } from "@openimis/fe-core";
+import { TextField,InputAdornment, IconButton } from "@material-ui/core";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useAuthentication, useHistory, Helmet, useModulesManager, useTranslations } from "@openimis/fe-core";
 import LoginHeader from "./LoginHeader";
 
@@ -86,6 +88,7 @@ export default function LoginFormAdministrative() {
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("core.LoginPage", modulesManager);
   const [credentials, setCredentials] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
   const auth = useAuthentication();
   const [isAuthenticating, setAuthenticating] = useState(false);
   const [serverResponse, setServerResponse] = useState({ loginStatus: "", message: null });
@@ -154,13 +157,30 @@ export default function LoginFormAdministrative() {
                     />
                   </Grid>
                   <Grid item>
-                    <TextInput
+                    {/* <TextInput
                       required
                       readOnly={isAuthenticating}
                       type="password"
                       label={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
                       fullWidth
                       onChange={(password) => setCredentials({ ...credentials, password })}
+                    /> */}
+                    <TextField
+                      required
+                      readOnly={isAuthenticating}
+                      type={showPassword ? "text" : "password"}
+                      label={lang === "bn" ? "পাসওয়ার্ড" : "Password"}
+                      fullWidth
+                      onChange={(e) => setCredentials({ ...credentials, password: e.target.value  })}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
 

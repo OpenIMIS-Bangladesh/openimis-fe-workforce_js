@@ -8,7 +8,10 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
-  FormControl,InputLabel,Select,MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Card,
   CardHeader,
   CardContent,
@@ -44,15 +47,7 @@ import {
   fetchWorkforceDocument,
   fetchWorkforceAllAssociationSummary,
 } from "../../actions";
-import {
-  TextInput,
-  journalize,
-  PublishedComponent,
-  FormattedMessage,
-  formatMutation,
-  decodeId,
-  withModulesManager,
-} from "@openimis/fe-core";
+import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId, withModulesManager, parseData } from "@openimis/fe-core";
 
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -174,6 +169,9 @@ class EditWorkforceFactoryPage extends Component {
   componentDidMount() {
     // Fetch associations when component mounts
     this.fetchAssociations();
+    if (this.props.workforceFactory?.id) {
+      this.fetchDocuments(this.props.workforceFactory.id);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -196,15 +194,13 @@ class EditWorkforceFactoryPage extends Component {
   fetchAssociations = () => {
     const { dispatch, modulesManager } = this.props;
     this.setState({ fetchingAssociations: true });
-    
+
     dispatch(fetchWorkforceAllAssociationSummary([]))
       .then((response) => {
-        if (response?.payload?.data?.workforceAllAssociations?.edges) {
-          const associations = response.payload.data.workforceAllAssociations.edges.map(edge => edge.node);
-          this.setState({ associations, fetchingAssociations: false });
-        } else {
-          this.setState({ fetchingAssociations: false });
-        }
+        // const associations = parseData(response.payload.data.workforceAllAssociations).edges.map(edge => edge.node);
+        const associations = parseData(response?.payload?.data?.workforceAllAssociation);
+        console.log({ associations });
+        this.setState({ associations: [...associations], fetchingAssociations: false });
       })
       .catch((error) => {
         console.error("Error fetching associations:", error);
@@ -215,29 +211,27 @@ class EditWorkforceFactoryPage extends Component {
   fetchDocuments = (factoryId) => {
     const { dispatch, modulesManager } = this.props;
     this.setState({ fetchingDocuments: true });
-    
-    dispatch(
-      fetchWorkforceDocument(modulesManager, [
-        `holderType: "factory"`,
-        `workforceFactoryId: "${factoryId}"`,
-      ])
-    ).then((response) => {
-      if (response?.payload?.data?.workforceDocuments?.edges) {
-        const docs = response.payload.data.workforceDocuments.edges.map(edge => edge.node);
+
+    dispatch(fetchWorkforceDocument(modulesManager, [`holderType: "factory"`, `workforceFactoryId: "${factoryId}"`]))
+      .then((response) => {
+        // const docs = response.payload.data.workforceDocuments.edges.map(edge => edge.node);
+        const docs = parseData(response.payload.data.workforceDocuments);
+        console.log({ docs });
         this.setState({ documents: docs, fetchingDocuments: false });
-      } else {
+        // } else {
+        //   this.setState({ fetchingDocuments: false });
+        // }
+      })
+      .catch((error) => {
+        console.error("Error fetching documents:", error);
         this.setState({ fetchingDocuments: false });
-      }
-    }).catch((error) => {
-      console.error("Error fetching documents:", error);
-      this.setState({ fetchingDocuments: false });
-    });
+      });
   };
 
   handleDownloadDocument = (doc) => {
     if (doc?.url) {
       const fileUrl = window.location.origin + doc.url;
-      window.open(fileUrl, '_blank');
+      window.open(fileUrl, "_blank");
     }
   };
 
@@ -285,12 +279,7 @@ class EditWorkforceFactoryPage extends Component {
         id: decodeId(stateEdited.workforceRepresentative.id),
       };
 
-      dispatch(
-        updateRepresentative(
-          representativeData,
-          `Update Representative ${representativeData.nameEn}`
-        )
-      );
+      dispatch(updateRepresentative(representativeData, `Update Representative ${representativeData.nameEn}`));
     }
 
     // Update factory
@@ -321,18 +310,17 @@ class EditWorkforceFactoryPage extends Component {
       company: stateEdited.workforceEmployer?.id,
     };
 
-    dispatch(
-      updateWorkforceFactory(
-        workforceFactoryData,
-        `Update Workforce Factory ${workforceFactoryData.nameEn}`
-      )
-    );
+    dispatch(updateWorkforceFactory(workforceFactoryData, `Update Workforce Factory ${workforceFactoryData.nameEn}`));
   };
 
   render() {
     const { classes, theme } = this.props;
     const { stateEdited, isSaved, showSuccessMessage, associations } = this.state;
     const isSaveDisabled = false;
+    console.log({ stateEdited });
+    console.log({ associations });
+    const foundAssociation = associations?.find((res) => res?.shortNameEn === stateEdited?.associationType);
+    console.log({ foundAssociation });
 
     let disableAssociationSelect = getAssociationNameByUserType(this.props.userType) === "" ? false : true;
 
@@ -358,11 +346,7 @@ class EditWorkforceFactoryPage extends Component {
                     <BusinessIcon style={{ fontSize: "2.5rem", marginRight: "16px", color: "white" }} />
                     <Box>
                       <Typography variant="h4" style={{ color: "white", fontWeight: "700" }}>
-                        <FormattedMessage
-                          module={MODULE_NAME}
-                          id="workforce.factory.edit.title"
-                          defaultMessage="Edit Factory"
-                        />
+                        <FormattedMessage module={MODULE_NAME} id="workforce.factory.edit.title" defaultMessage="Edit Factory" />
                       </Typography>
                       <Typography variant="caption" style={{ color: "rgba(255,255,255,0.8)" }}>
                         {stateEdited.nameEn && `${stateEdited.nameEn}`}
@@ -375,78 +359,322 @@ class EditWorkforceFactoryPage extends Component {
           </Grid>
 
           <Grid item xs={12}>
-              {/* BASIC INFORMATION SECTION */}
-              <Card className={classes.sectionCard}>
-                <CardHeader
-                  className={classes.sectionHeader}
-                  title={
-                    <Typography className={classes.sectionTitle}>
-                      <BusinessIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.basicInfo" defaultMessage="Basic Information" />
-                    </Typography>
-                  }
-                />
-                <CardContent className={classes.cardContent}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.name.en"
-                        value={stateEdited.nameEn || stateEdited.title || ""}
-                        onChange={(v) => this.updateAttribute("nameEn", v)}
-                        required
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.name.bn"
-                        value={stateEdited.nameBn || stateEdited.titleBn || ""}
-                        onChange={(v) => this.updateAttribute("nameBn", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <FormControl fullWidth>
-                        <InputLabel id="association-type-label">Association Type</InputLabel>
-                        <Select
-                          labelId="association-type-label"
-                          value={stateEdited.associationType || ""}
-                          onChange={(e) => this.updateAttribute("associationType", e.target.value)}
-                          label="Association Type"
-                          disabled={isSaved || disableAssociationSelect}
-                          required
-                        >
-                          {associations.map((assoc) => (
-                            <MenuItem key={assoc.id} value={assoc.shortNameEn}>
-                              {assoc.shortNameEn}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.licenseType"
-                        value={stateEdited.licenseType || ""}
-                        onChange={(v) => this.updateAttribute("licenseType", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
+            {/* BASIC INFORMATION SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <BusinessIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.basicInfo" defaultMessage="Basic Information" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.name.en"
+                      value={stateEdited.nameEn || stateEdited.title || ""}
+                      onChange={(v) => this.updateAttribute("nameEn", v)}
+                      required
+                      readOnly={isSaved}
+                    />
                   </Grid>
-                </CardContent>
-              </Card>
 
-              {/* CONTACT INFORMATION SECTION */}
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.name.bn"
+                      value={stateEdited.nameBn || stateEdited.titleBn || ""}
+                      onChange={(v) => this.updateAttribute("nameBn", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <FormControl fullWidth>
+                      <InputLabel id="association-type-label">Association Type</InputLabel>
+                      <Select
+                        labelId="association-type-label"
+                        value={stateEdited?.associationType || ""}
+                        onChange={(e) => this.updateAttribute("associationType", e.target.value)}
+                        label="Association Type"
+                        disabled={isSaved || disableAssociationSelect}
+                        required
+                      >
+                        {associations.map((assoc) => (
+                          <MenuItem key={assoc.id} value={assoc.shortNameEn}>
+                            {assoc.shortNameEn}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.licenseType"
+                      value={stateEdited.licenseType || ""}
+                      onChange={(v) => this.updateAttribute("licenseType", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* CONTACT INFORMATION SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <PhoneIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.contactInfo" defaultMessage="Contact Information" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.phone"
+                      value={stateEdited.phoneNumber || ""}
+                      onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                      type="number"
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.email"
+                      value={stateEdited.email || ""}
+                      onChange={(v) => this.updateAttribute("email", v)}
+                      type="email"
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.website"
+                      value={stateEdited.website || ""}
+                      onChange={(v) => this.updateAttribute("website", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* LOCATION INFORMATION SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <LocationOnIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.locationInfo" defaultMessage="Location Information" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} className={classes.gridField}>
+                    <Typography variant="subtitle2" style={{ marginBottom: "8px", fontWeight: "bold" }}>
+                      <FormattedMessage id="workforce.factory.location" defaultMessage="Factory Location" />
+                    </Typography>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={stateEdited.location || null}
+                      onChange={(location) => this.updateAttribute("location", location)}
+                      readOnly={isSaved}
+                      required
+                      split={true}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.address"
+                      value={stateEdited.address || ""}
+                      onChange={(v) => this.updateAttribute("address", v)}
+                      readOnly={isSaved}
+                      multiline
+                      rows={2}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} className={classes.gridField}>
+                    <Typography variant="subtitle2" style={{ marginBottom: "8px", fontWeight: "bold" }}>
+                      <FormattedMessage id="workforce.factory.officeLocation" defaultMessage="Office Location" />
+                    </Typography>
+                    <PublishedComponent
+                      pubRef="location.DetailedLocation"
+                      withNull={true}
+                      value={stateEdited.officeLocation || null}
+                      onChange={(location) => this.updateAttribute("officeLocation", location)}
+                      readOnly={isSaved}
+                      split={true}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.officeAddress"
+                      value={stateEdited.officeAddress || ""}
+                      onChange={(v) => this.updateAttribute("officeAddress", v)}
+                      readOnly={isSaved}
+                      multiline
+                      rows={2}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* REGISTRATION & DATES SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <EventIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.registrationInfo" defaultMessage="Registration Information" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.dateOfEstablishment"
+                      value={stateEdited.dateOfFactoryEstablishment || ""}
+                      onChange={(v) => this.updateAttribute("dateOfFactoryEstablishment", v)}
+                      type="date"
+                      readOnly={isSaved}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.eisIncorporationDate"
+                      value={stateEdited.dateOfEisIncorporation || ""}
+                      onChange={(v) => this.updateAttribute("dateOfEisIncorporation", v)}
+                      type="date"
+                      readOnly={isSaved}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.registrationDate"
+                      value={stateEdited.registrationDate || ""}
+                      onChange={(v) => this.updateAttribute("registrationDate", v)}
+                      type="date"
+                      readOnly={isSaved}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.registrationExpiryDate"
+                      value={stateEdited.registrationExpiryDate || ""}
+                      onChange={(v) => this.updateAttribute("registrationExpiryDate", v)}
+                      type="date"
+                      readOnly={isSaved}
+                      InputLabelProps={{ shrink: true }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.limaRegistrationNumber"
+                      value={stateEdited.limaRegistrationNumber || ""}
+                      onChange={(v) => this.updateAttribute("limaRegistrationNumber", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.licenseNumber"
+                      value={stateEdited.licenseNo || ""}
+                      onChange={(v) => this.updateAttribute("licenseNo", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* ADDITIONAL DETAILS SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <InfoIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.additionalDetails" defaultMessage="Additional Details" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.numberOfEmployees"
+                      value={stateEdited.approximateNumberOfEmployee || ""}
+                      onChange={(v) => this.updateAttribute("approximateNumberOfEmployee", v)}
+                      type="number"
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.businessSector"
+                      value={stateEdited.businessSector || ""}
+                      onChange={(v) => this.updateAttribute("businessSector", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.membershipNumber"
+                      value={stateEdited.membershipNo || ""}
+                      onChange={(v) => this.updateAttribute("membershipNo", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6} className={classes.gridField}>
+                    <TextInput
+                      label="workforce.factory.groupName"
+                      value={stateEdited.groupName || ""}
+                      onChange={(v) => this.updateAttribute("groupName", v)}
+                      readOnly={isSaved}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            {/* REPRESENTATIVE INFORMATION SECTION */}
+            {stateEdited.workforceRepresentative && (
               <Card className={classes.sectionCard}>
                 <CardHeader
                   className={classes.sectionHeader}
                   title={
                     <Typography className={classes.sectionTitle}>
-                      <PhoneIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.contactInfo" defaultMessage="Contact Information" />
+                      <PersonIcon className={classes.sectionIcon} />
+                      <FormattedMessage id="workforce.factory.representativeInfo" defaultMessage="Representative Information" />
                     </Typography>
                   }
                 />
@@ -454,9 +682,37 @@ class EditWorkforceFactoryPage extends Component {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6} className={classes.gridField}>
                       <TextInput
-                        label="workforce.factory.phone"
-                        value={stateEdited.phoneNumber || ""}
-                        onChange={(v) => this.updateAttribute("phoneNumber", v)}
+                        label="workforce.representative.name.en"
+                        value={stateEdited.workforceRepresentative?.nameEn || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nameEn", v)}
+                        readOnly={isSaved}
+                        required
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} className={classes.gridField}>
+                      <TextInput
+                        label="workforce.representative.name.bn"
+                        value={stateEdited.workforceRepresentative?.nameBn || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nameBn", v)}
+                        readOnly={isSaved}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} className={classes.gridField}>
+                      <TextInput
+                        label="workforce.representative.position"
+                        value={stateEdited.workforceRepresentative?.position || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "position", v)}
+                        readOnly={isSaved}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={6} className={classes.gridField}>
+                      <TextInput
+                        label="workforce.representative.phone"
+                        value={stateEdited.workforceRepresentative?.phoneNumber || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "phoneNumber", v)}
                         type="number"
                         readOnly={isSaved}
                       />
@@ -464,189 +720,19 @@ class EditWorkforceFactoryPage extends Component {
 
                     <Grid item xs={12} sm={6} className={classes.gridField}>
                       <TextInput
-                        label="workforce.factory.email"
-                        value={stateEdited.email || ""}
-                        onChange={(v) => this.updateAttribute("email", v)}
+                        label="workforce.representative.email"
+                        value={stateEdited.workforceRepresentative?.email || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "email", v)}
                         type="email"
                         readOnly={isSaved}
                       />
                     </Grid>
 
-                    <Grid item xs={12} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.website"
-                        value={stateEdited.website || ""}
-                        onChange={(v) => this.updateAttribute("website", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-
-              {/* LOCATION INFORMATION SECTION */}
-              <Card className={classes.sectionCard}>
-                <CardHeader
-                  className={classes.sectionHeader}
-                  title={
-                    <Typography className={classes.sectionTitle}>
-                      <LocationOnIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.locationInfo" defaultMessage="Location Information" />
-                    </Typography>
-                  }
-                />
-                <CardContent className={classes.cardContent}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} className={classes.gridField}>
-                      <Typography variant="subtitle2" style={{ marginBottom: "8px", fontWeight: "bold" }}>
-                        <FormattedMessage id="workforce.factory.location" defaultMessage="Factory Location" />
-                      </Typography>
-                      <PublishedComponent
-                        pubRef="location.DetailedLocation"
-                        withNull={true}
-                        value={stateEdited.location || null}
-                        onChange={(location) => this.updateAttribute("location", location)}
-                        readOnly={isSaved}
-                        required
-                        split={true}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.address"
-                        value={stateEdited.address || ""}
-                        onChange={(v) => this.updateAttribute("address", v)}
-                        readOnly={isSaved}
-                        multiline
-                        rows={2}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} className={classes.gridField}>
-                      <Typography variant="subtitle2" style={{ marginBottom: "8px", fontWeight: "bold" }}>
-                        <FormattedMessage id="workforce.factory.officeLocation" defaultMessage="Office Location" />
-                      </Typography>
-                      <PublishedComponent
-                        pubRef="location.DetailedLocation"
-                        withNull={true}
-                        value={stateEdited.officeLocation || null}
-                        onChange={(location) => this.updateAttribute("officeLocation", location)}
-                        readOnly={isSaved}
-                        split={true}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.officeAddress"
-                        value={stateEdited.officeAddress || ""}
-                        onChange={(v) => this.updateAttribute("officeAddress", v)}
-                        readOnly={isSaved}
-                        multiline
-                        rows={2}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-
-              {/* REGISTRATION & DATES SECTION */}
-              <Card className={classes.sectionCard}>
-                <CardHeader
-                  className={classes.sectionHeader}
-                  title={
-                    <Typography className={classes.sectionTitle}>
-                      <EventIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.registrationInfo" defaultMessage="Registration Information" />
-                    </Typography>
-                  }
-                />
-                <CardContent className={classes.cardContent}>
-                  <Grid container spacing={2}>
                     <Grid item xs={12} sm={6} className={classes.gridField}>
                       <TextInput
-                        label="workforce.factory.dateOfEstablishment"
-                        value={stateEdited.dateOfFactoryEstablishment || ""}
-                        onChange={(v) => this.updateAttribute("dateOfFactoryEstablishment", v)}
-                        type="date"
-                        readOnly={isSaved}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.eisIncorporationDate"
-                        value={stateEdited.dateOfEisIncorporation || ""}
-                        onChange={(v) => this.updateAttribute("dateOfEisIncorporation", v)}
-                        type="date"
-                        readOnly={isSaved}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.registrationDate"
-                        value={stateEdited.registrationDate || ""}
-                        onChange={(v) => this.updateAttribute("registrationDate", v)}
-                        type="date"
-                        readOnly={isSaved}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.registrationExpiryDate"
-                        value={stateEdited.registrationExpiryDate || ""}
-                        onChange={(v) => this.updateAttribute("registrationExpiryDate", v)}
-                        type="date"
-                        readOnly={isSaved}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.limaRegistrationNumber"
-                        value={stateEdited.limaRegistrationNumber || ""}
-                        onChange={(v) => this.updateAttribute("limaRegistrationNumber", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.licenseNumber"
-                        value={stateEdited.licenseNo || ""}
-                        onChange={(v) => this.updateAttribute("licenseNo", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
-
-              {/* ADDITIONAL DETAILS SECTION */}
-              <Card className={classes.sectionCard}>
-                <CardHeader
-                  className={classes.sectionHeader}
-                  title={
-                    <Typography className={classes.sectionTitle}>
-                      <InfoIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.additionalDetails" defaultMessage="Additional Details" />
-                    </Typography>
-                  }
-                />
-                <CardContent className={classes.cardContent}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.numberOfEmployees"
-                        value={stateEdited.approximateNumberOfEmployee || ""}
-                        onChange={(v) => this.updateAttribute("approximateNumberOfEmployee", v)}
+                        label="workforce.representative.nid"
+                        value={stateEdited.workforceRepresentative?.nid || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nid", v)}
                         type="number"
                         readOnly={isSaved}
                       />
@@ -654,225 +740,117 @@ class EditWorkforceFactoryPage extends Component {
 
                     <Grid item xs={12} sm={6} className={classes.gridField}>
                       <TextInput
-                        label="workforce.factory.businessSector"
-                        value={stateEdited.businessSector || ""}
-                        onChange={(v) => this.updateAttribute("businessSector", v)}
+                        label="workforce.representative.birthDate"
+                        value={stateEdited.workforceRepresentative?.birthDate || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "birthDate", v)}
+                        type="date"
                         readOnly={isSaved}
+                        InputLabelProps={{ shrink: true }}
                       />
                     </Grid>
 
                     <Grid item xs={12} sm={6} className={classes.gridField}>
                       <TextInput
-                        label="workforce.factory.membershipNumber"
-                        value={stateEdited.membershipNo || ""}
-                        onChange={(v) => this.updateAttribute("membershipNo", v)}
-                        readOnly={isSaved}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} className={classes.gridField}>
-                      <TextInput
-                        label="workforce.factory.groupName"
-                        value={stateEdited.groupName || ""}
-                        onChange={(v) => this.updateAttribute("groupName", v)}
+                        label="workforce.representative.passport"
+                        value={stateEdited.workforceRepresentative?.passportNo || ""}
+                        onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "passportNo", v)}
                         readOnly={isSaved}
                       />
                     </Grid>
                   </Grid>
                 </CardContent>
               </Card>
+            )}
 
-              {/* REPRESENTATIVE INFORMATION SECTION */}
-              {stateEdited.workforceRepresentative && (
-                <Card className={classes.sectionCard}>
-                  <CardHeader
-                    className={classes.sectionHeader}
-                    title={
-                      <Typography className={classes.sectionTitle}>
-                        <PersonIcon className={classes.sectionIcon} />
-                        <FormattedMessage id="workforce.factory.representativeInfo" defaultMessage="Representative Information" />
-                      </Typography>
-                    }
-                  />
-                  <CardContent className={classes.cardContent}>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.name.en"
-                          value={stateEdited.workforceRepresentative?.nameEn || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nameEn", v)}
-                          readOnly={isSaved}
-                          required
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.name.bn"
-                          value={stateEdited.workforceRepresentative?.nameBn || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nameBn", v)}
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.position"
-                          value={stateEdited.workforceRepresentative?.position || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "position", v)}
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.phone"
-                          value={stateEdited.workforceRepresentative?.phoneNumber || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "phoneNumber", v)}
-                          type="number"
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.email"
-                          value={stateEdited.workforceRepresentative?.email || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "email", v)}
-                          type="email"
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.nid"
-                          value={stateEdited.workforceRepresentative?.nid || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "nid", v)}
-                          type="number"
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.birthDate"
-                          value={stateEdited.workforceRepresentative?.birthDate || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "birthDate", v)}
-                          type="date"
-                          readOnly={isSaved}
-                          InputLabelProps={{ shrink: true }}
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} className={classes.gridField}>
-                        <TextInput
-                          label="workforce.representative.passport"
-                          value={stateEdited.workforceRepresentative?.passportNo || ""}
-                          onChange={(v) => this.updateNestedAttribute("workforceRepresentative", "passportNo", v)}
-                          readOnly={isSaved}
-                        />
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* DOCUMENTS SECTION */}
-              <Card className={classes.sectionCard}>
-                <CardHeader
-                  className={classes.sectionHeader}
-                  title={
-                    <Typography className={classes.sectionTitle}>
-                      <DescriptionIcon className={classes.sectionIcon} />
-                      <FormattedMessage id="workforce.factory.uploadedDocuments" defaultMessage="Uploaded Documents" />
+            {/* DOCUMENTS SECTION */}
+            <Card className={classes.sectionCard}>
+              <CardHeader
+                className={classes.sectionHeader}
+                title={
+                  <Typography className={classes.sectionTitle}>
+                    <DescriptionIcon className={classes.sectionIcon} />
+                    <FormattedMessage id="workforce.factory.uploadedDocuments" defaultMessage="Uploaded Documents" />
+                  </Typography>
+                }
+              />
+              <CardContent className={classes.cardContent}>
+                {this.state.fetchingDocuments ? (
+                  <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+                    <CircularProgress />
+                  </Box>
+                ) : this.state.documents && this.state.documents.length > 0 ? (
+                  <Box style={{ marginBottom: "24px" }}>
+                    <Typography variant="subtitle2" style={{ marginBottom: "16px", fontWeight: "bold" }}>
+                      <FormattedMessage id="workforce.factory.currentDocuments" defaultMessage="Current Documents" />
                     </Typography>
-                  }
-                />
-                <CardContent className={classes.cardContent}>
-                  {this.state.fetchingDocuments ? (
-                    <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-                      <CircularProgress />
-                    </Box>
-                  ) : this.state.documents && this.state.documents.length > 0 ? (
-                    <Box style={{ marginBottom: "24px" }}>
-                      <Typography variant="subtitle2" style={{ marginBottom: "16px", fontWeight: "bold" }}>
-                        <FormattedMessage id="workforce.factory.currentDocuments" defaultMessage="Current Documents" />
-                      </Typography>
-                      <Table>
-                        <TableHead>
-                          <TableRow style={{ backgroundColor: "#f5f5f5" }}>
-                            <TableCell style={{ fontWeight: "bold" }}>
-                              <FormattedMessage id="workforce.factory.documentType" defaultMessage="Document Type" />
+                    <Table>
+                      <TableHead>
+                        <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+                          <TableCell style={{ fontWeight: "bold" }}>
+                            <FormattedMessage id="workforce.factory.documentType" defaultMessage="Document Type" />
+                          </TableCell>
+                          <TableCell style={{ fontWeight: "bold" }}>
+                            <FormattedMessage id="workforce.factory.documentFile" defaultMessage="File Name" />
+                          </TableCell>
+                          <TableCell style={{ fontWeight: "bold" }}>
+                            <FormattedMessage id="workforce.factory.documentStatus" defaultMessage="Status" />
+                          </TableCell>
+                          <TableCell style={{ fontWeight: "bold", textAlign: "center" }}>
+                            <FormattedMessage id="workforce.factory.documentAction" defaultMessage="Action" />
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {this.state.documents.map((doc, index) => (
+                          <TableRow key={index} style={{ "&:hover": { backgroundColor: "#f5f5f5" } }}>
+                            <TableCell>
+                              <Box display="flex" alignItems="center">
+                                <DescriptionIcon style={{ marginRight: "8px", color: this.props.theme.palette.primary.main }} />
+                                <Box>
+                                  <Typography variant="body2" style={{ fontWeight: "bold" }}>
+                                    {doc.workforceDocumentType?.nameEn || "Document"}
+                                  </Typography>
+                                  <Typography variant="caption" color="textSecondary">
+                                    {doc.workforceDocumentType?.nameBn}
+                                  </Typography>
+                                </Box>
+                              </Box>
                             </TableCell>
-                            <TableCell style={{ fontWeight: "bold" }}>
-                              <FormattedMessage id="workforce.factory.documentFile" defaultMessage="File Name" />
+                            <TableCell>
+                              <Typography variant="body2">{doc.path?.split("/").pop() || "Document"}</Typography>
                             </TableCell>
-                            <TableCell style={{ fontWeight: "bold" }}>
-                              <FormattedMessage id="workforce.factory.documentStatus" defaultMessage="Status" />
+                            <TableCell>
+                              <Chip
+                                size="small"
+                                label={doc.status?.toUpperCase() || "PENDING"}
+                                color={
+                                  doc.status?.toLowerCase() === "approved" ? "primary" : doc.status?.toLowerCase() === "rejected" ? "secondary" : "default"
+                                }
+                                variant="outlined"
+                              />
                             </TableCell>
-                            <TableCell style={{ fontWeight: "bold", textAlign: "center" }}>
-                              <FormattedMessage id="workforce.factory.documentAction" defaultMessage="Action" />
+                            <TableCell align="center">
+                              <Tooltip title="Download Document">
+                                <Button
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => this.handleDownloadDocument(doc)}
+                                  disabled={!doc.url}
+                                  startIcon={<GetAppIcon />}
+                                >
+                                  <FormattedMessage id="workforce.factory.viewDocument" defaultMessage="View" />
+                                </Button>
+                              </Tooltip>
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {this.state.documents.map((doc, index) => (
-                            <TableRow key={index} style={{ "&:hover": { backgroundColor: "#f5f5f5" } }}>
-                              <TableCell>
-                                <Box display="flex" alignItems="center">
-                                  <DescriptionIcon style={{ marginRight: "8px", color: this.props.theme.palette.primary.main }} />
-                                  <Box>
-                                    <Typography variant="body2" style={{ fontWeight: "bold" }}>
-                                      {doc.workforceDocumentType?.nameEn || 'Document'}
-                                    </Typography>
-                                    <Typography variant="caption" color="textSecondary">
-                                      {doc.workforceDocumentType?.nameBn}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2">
-                                  {doc.path?.split('/').pop() || 'Document'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Chip
-                                  size="small"
-                                  label={doc.status?.toUpperCase() || 'PENDING'}
-                                  color={
-                                    doc.status?.toLowerCase() === 'approved'
-                                      ? 'primary'
-                                      : doc.status?.toLowerCase() === 'rejected'
-                                      ? 'secondary'
-                                      : 'default'
-                                  }
-                                  variant="outlined"
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <Tooltip title="Download Document">
-                                  <Button
-                                    size="small"
-                                    color="primary"
-                                    onClick={() => this.handleDownloadDocument(doc)}
-                                    disabled={!doc.url}
-                                    startIcon={<GetAppIcon />}
-                                  >
-                                    <FormattedMessage id="workforce.factory.viewDocument" defaultMessage="View" />
-                                  </Button>
-                                </Tooltip>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Box>
-                  ) : null}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                ) : null}
 
-                  {/* Document Upload Section */}
-                  {/* <Divider style={{ margin: "16px 0" }} />
+                {/* Document Upload Section */}
+                {/* <Divider style={{ margin: "16px 0" }} />
                   <Box style={{ marginTop: "16px" }}>
                     <Typography variant="h6" style={{ marginBottom: "12px", fontWeight: "bold" }}>
                       <CloudUploadIcon style={{ verticalAlign: "middle", marginRight: "8px" }} />
@@ -898,31 +876,20 @@ class EditWorkforceFactoryPage extends Component {
                       />
                     </Box>
                   </Box> */}
-                </CardContent>
-              </Card>
+              </CardContent>
+            </Card>
 
-              <Divider className={classes.divider} />
+            <Divider className={classes.divider} />
 
-              {/* ACTION BUTTONS */}
-              <Box className={classes.buttonGroup}>
-                <Button
-                  onClick={() => window.history.back()}
-                  variant="outlined"
-                  className={classes.closeButton}
-                  startIcon={<Close />}
-                >
-                  <FormattedMessage id="workforce.modal.close" />
-                </Button>
-                <Button
-                  onClick={this.save}
-                  variant="contained"
-                  className={classes.saveButton}
-                  startIcon={<Save />}
-                  disabled={isSaveDisabled || isSaved}
-                >
-                  <FormattedMessage id="core.save" />
-                </Button>
-              </Box>
+            {/* ACTION BUTTONS */}
+            <Box className={classes.buttonGroup}>
+              <Button onClick={() => window.history.back()} variant="outlined" className={classes.closeButton} startIcon={<Close />}>
+                <FormattedMessage id="workforce.modal.close" />
+              </Button>
+              <Button onClick={this.save} variant="contained" className={classes.saveButton} startIcon={<Save />} disabled={isSaveDisabled || isSaved}>
+                <FormattedMessage id="core.save" />
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </div>
@@ -935,6 +902,4 @@ const mapStateToProps = (state) => ({
   userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
-export default connect(mapStateToProps)(
-  withModulesManager(withStyles(styles)(EditWorkforceFactoryPage))
-);
+export default connect(mapStateToProps)(withModulesManager(withStyles(styles)(EditWorkforceFactoryPage)));
