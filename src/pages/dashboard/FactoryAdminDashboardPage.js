@@ -797,7 +797,7 @@ const FactoryAdminDashboard = () => {
       case "rejectedApplication":
         return <RejectApplication />;
       case "draftApplications":
-        return <DraftApplications workforceFactoryId={workforceFactoryId?.id} />;
+        return <DraftApplications workforceFactoryId={workforceFactoryId} />;
       case "applicationStatus":
         return <ApplicationStatus />;
       default:
