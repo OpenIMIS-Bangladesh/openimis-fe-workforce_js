@@ -26,7 +26,7 @@ import {
   ButtonGroup,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
+import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceAllAssociationSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
 import { calculateAge, getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN, STATUS_MAP_EN, STATUS_MAP_BN } from "../../constants";
@@ -554,6 +554,7 @@ const Dashboard = ({selectedMenu}) => {
   const [accFromDate, setAccFromDate] = useState("");
   const [accToDate, setAccToDate] = useState("");
   const [association, setAssociation] = useState("all");
+  const [associationOptions, setAssociationOptions] = useState([]);
 
   // --- 3. EIS ADVISOR STATE ---
   const [beneficiaryMonitoring, setBeneficiaryMonitoring] = useState({ almost18: 0, adultFemaleUnmarried: 0, elderly: 0, widowUnder35: 0 });
@@ -615,6 +616,12 @@ const Dashboard = ({selectedMenu}) => {
     setMonths(0);
     setMonthString("");
   }, [fromDate, toDate]);
+
+  useEffect(() => {
+    dispatch(fetchWorkforceAllAssociationSummary([])).then((response) => {
+      setAssociationOptions(response?.payload?.data?.workforceAllAssociation?.edges || []);
+    });
+  }, [dispatch]);
 
   useEffect(() => {
     async function loadData() {
@@ -734,15 +741,19 @@ const Dashboard = ({selectedMenu}) => {
 
   useEffect(() => {
     async function loadNewDashboardRequirements() {
-      // Dispatch new API actions here using accFromDate, accToDate, association
       const filtersBase = [
         // 'statusIn: ["forward_to_eis_advisor","approved_by_eis_director"]',
         'organizationTypeIn: ["eis"]',
         'orderBy: ["-dateCreated"]',
       ];
-      dispatch(fetchApplicationsSummaryDashboard(modulesManager, filtersBase)).then((res) => {
+      const dashboardFilters = [...filtersBase];
+      if (fromDate) dashboardFilters.push(`dateCreatedFrom: "${fromDate}"`);
+      if (toDate) dashboardFilters.push(`dateCreatedTo: "${toDate}"`);
+      if (association !== "all") dashboardFilters.push(`associationTypeIn: ["${association.toUpperCase()}"]`);
+
+      dispatch(fetchApplicationsSummaryDashboard(modulesManager, dashboardFilters)).then((res) => {
         const response = parseData(res?.payload?.data?.workforceApplication);
-        const formData = response?.map((application) => {
+        const formData = Array.isArray(response) ? response.map((application) => {
           const parsedMetadata = safeParse(application?.metadata);
           const parsedApplicantInfo = safeParse(application?.applicantInfo);
           const parsedDeceasedWorkerInfo = safeParse(application?.deceasedWorkerInfo);
@@ -759,10 +770,33 @@ const Dashboard = ({selectedMenu}) => {
             // employeeDependentInfo:JSON.parse(parsedEmployeeDependentInfo),
             // employeeBankInfo:JSON.parse(parsedEmployeeBankInfo)
           };
+        }) : [];
+        const filteredApplications = formData.filter((application) => {
+          if (association !== "all") {
+            if (application?.associationType?.toLowerCase() !== association.toLowerCase()) return false;
+          }
+
+          const accidentInfo = typeof application?.employeeAccidentInfo === "string"
+            ? safeParse(application.employeeAccidentInfo)
+            : application?.employeeAccidentInfo;
+          const accidentDate = accidentInfo?.accidentDate;
+          if (!accFromDate && !accToDate) return true;
+          if (!accidentDate) return false;
+
+          const accidentDateValue = new Date(accidentDate);
+          const fromDateValue = accFromDate ? new Date(accFromDate) : null;
+          const toDateValue = accToDate ? new Date(accToDate) : null;
+          if (fromDateValue && accidentDateValue < fromDateValue) return false;
+          if (toDateValue) {
+            toDateValue.setHours(23, 59, 59, 999);
+            if (accidentDateValue > toDateValue) return false;
+          }
+          return true;
         });
+
         setApplications(formData);
-        setMarriageStatus(getMarriageStatusCounts(formData));
-        setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(formData));
+        setMarriageStatus(getMarriageStatusCounts(filteredApplications));
+        setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(filteredApplications));
         console.log({ fromEISAdvisor: formData });
       });
 
@@ -775,7 +809,7 @@ const Dashboard = ({selectedMenu}) => {
     if (selectedMenu === "dashboard") {
       loadNewDashboardRequirements();
     }
-  }, [selectedMenu]);
+  }, [selectedMenu, fromDate, toDate, accFromDate, accToDate, association]);
 
   const getBeneficiaryCount = (key) => {
     const found = applicationCounts.find((item) => item.type === applicantTypeNames[key]);
@@ -817,8 +851,15 @@ const Dashboard = ({selectedMenu}) => {
                   <MenuItem value="all">
                     <FormattedMessage id="workforce.dashboard.allAssociations" />
                   </MenuItem>
-                  <MenuItem value="bgmea">BGMEA</MenuItem>
-                  <MenuItem value="bkmea">BKMEA</MenuItem>
+                  {associationOptions.map(({ node: associationOption }) => {
+                    const value = associationOption?.shortNameEn || associationOption?.nameEn;
+                    if (!value) return null;
+                    return (
+                      <MenuItem key={associationOption.id || value} value={value}>
+                        {associationOption?.nameEn || value}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </FormControl>
             </Grid>
