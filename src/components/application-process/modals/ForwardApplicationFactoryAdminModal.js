@@ -175,7 +175,7 @@ const ForwardApplicationFactoryAdminModal = ({
         // window.location.reload();
         // historyPush(modulesManager, history, "/")
         history.push("/")
-      }, 2000);
+      }, 5000);
     }
   }, [serverResponse]);
 
@@ -183,7 +183,7 @@ const ForwardApplicationFactoryAdminModal = ({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <form className={classes.modalContainer} onSubmit={handleSubmit}>
+      <form className={classes.modalContainer} >
         {/* Close button */}
         <Button onClick={onClose} className={classes.closeButton}>
           ✕
@@ -264,7 +264,7 @@ const ForwardApplicationFactoryAdminModal = ({
             বাতিল করুন
           </Button>
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             color="primary"
             disabled={submitting}

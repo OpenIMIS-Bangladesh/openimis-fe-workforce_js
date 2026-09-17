@@ -1,20 +1,18 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import LockOpenIcon from "@material-ui/icons/LockOpen";
-import {
-  Form, journalize, ProgressOrError, withModulesManager, formatMessage,
-} from "@openimis/fe-core";
+import { Form, journalize, ProgressOrError, withModulesManager, formatMessage } from "@openimis/fe-core";
 import { bindActionCreators } from "redux";
-import {
-  fetchWorkforceAllAssociation,
-} from "../../actions";
+import { fetchWorkforceAllAssociation } from "../../actions";
 import EditWorkforceAssociationPage from "../../pages/workforce-association/EditWorkforceAssociationPage";
 import AddWorkforceAssociationPage from "../../pages/workforce-association/AddWorkforceAssociationPage";
 import { MODULE_NAME } from "../../constants";
+import { safeDecodeId } from "../../utils/utils";
 
 class WorkforceAssociationForm extends Component {
   constructor(props) {
     super(props);
+    this.lastRefreshedMutationId = null;
     this.state = {
       lockNew: false,
       reset: 0,
@@ -25,36 +23,40 @@ class WorkforceAssociationForm extends Component {
 
   componentDidMount() {
     if (this.props.workforceAssociationUuid) {
-      this.setState((state, props) => ({ workforceAssociationUuid: props.workforceAssociationUuid }));
+      this.setState({
+        workforceAssociationUuid: safeDecodeId(this.props.workforceAssociationUuid),
+      });
     }
   }
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.fetchedWorkforceAllAssociation !== this.props.fetchedWorkforceAllAssociation
-      && !!this.props.fetchedWorkforceAllAssociation
-      && !!this.props.workforceAllAssociation) {
+    if (
+      prevProps.fetchedWorkforceAllAssociation !== this.props.fetchedWorkforceAllAssociation &&
+      !!this.props.fetchedWorkforceAllAssociation &&
+      !!this.props.workforceAllAssociation
+    ) {
       this.setState((state, props) => ({
         workforceAllAssociation: { ...props.workforceAllAssociation },
-        workforceAssociationUuid: props.workforceAllAssociation.id,
+        workforceAssociationUuid: safeDecodeId(props.workforceAllAssociation.id),
         lockNew: false,
       }));
     } else if (prevState.workforceAssociationUuid !== this.state.workforceAssociationUuid) {
-      const filters = [`id: "${this.state.workforceAssociationUuid}"`];
-      this.props.fetchWorkforceAllAssociation(
-        this.props.modulesManager,
-        filters,
-      );
+      const filters = [`id: "${safeDecodeId(this.state.workforceAssociationUuid)}"`];
+      this.props.fetchWorkforceAllAssociation(this.props.modulesManager, filters);
     } else if (prevProps.submittingMutation && !this.props.submittingMutation) {
+      const mutationId = this.props.mutation?.clientMutationId || JSON.stringify(this.props.mutation || {});
+
+      if (mutationId === this.lastRefreshedMutationId) {
+        return;
+      }
+
+      this.lastRefreshedMutationId = mutationId;
       this.props.journalize(this.props.mutation);
-      this.setState((state) => ({ reset: state.reset + 1 }));
+      // this.setState((state) => ({ reset: state.reset + 1 }));
       if (this.props?.workforceAllAssociation?.id) {
-        this.props.fetchWorkforceAllAssociation(
-          this.props.modulesManager,
-          [`id: "${this.state.workforceAssociationUuid}"`],
-        );
+        this.props.fetchWorkforceAllAssociation(this.props.modulesManager, [`id: "${safeDecodeId(this.state.workforceAssociationUuid)}"`]);
       }
     }
   }
@@ -63,19 +65,12 @@ class WorkforceAssociationForm extends Component {
     return {};
   }
 
-  reload = () => {
+  reload = () => {};
 
-  };
-
-  canSave = () => {
-
-  };
+  canSave = () => {};
 
   _save = (workforceAllAssociation) => {
-    this.setState(
-      { lockNew: !workforceAllAssociation.uuid },
-      () => this.props.save(workforceAllAssociation),
-    );
+    this.setState({ lockNew: !workforceAllAssociation.uuid }, () => this.props.save(workforceAllAssociation));
   };
 
   onEditedChanged = (workforceAllAssociation) => {
@@ -84,30 +79,15 @@ class WorkforceAssociationForm extends Component {
 
   reopenTicket = () => {
     const { intl, workforceAllAssociation } = this.props;
-    this.props.reopenTicket(
-      workforceAllAssociation.id,
-      formatMessage(intl, MODULE_NAME, "reopenTicket.mutation.label"),
-    );
+    this.props.reopenTicket(workforceAllAssociation.id, formatMessage(intl, MODULE_NAME, "reopenTicket.mutation.label"));
   };
 
   render() {
-    const {
-      fetchingTicket,
-      fetchedWorkforceAllAssociation,
-      workforceAllAssociation,
-      errorTicket,
-      save, back,
-    } = this.props;
+    const { fetchingTicket, fetchedWorkforceAllAssociation, workforceAllAssociation, errorTicket, save, back } = this.props;
 
-    const {
-      lockNew,
-      reset,
-      update,
-      overview,
-      workforceAssociationUuid,
-    } = this.state;
+    const { lockNew, reset, update, overview, workforceAssociationUuid } = this.state;
 
-    const readOnly = lockNew || !!workforceAllAssociation || this.props.readOnly;
+    const readOnly = lockNew || this.props.readOnly;
     const actions = [
       {
         doIt: this.reopenTicket,
@@ -115,7 +95,7 @@ class WorkforceAssociationForm extends Component {
         disabled: workforceAllAssociation,
       },
     ];
-console.log("workforceAllAssociation",workforceAllAssociation)
+    console.log("workforceAllAssociation", workforceAllAssociation);
     return (
       <>
         <ProgressOrError progress={fetchingTicket} error={errorTicket} />
@@ -145,23 +125,24 @@ console.log("workforceAllAssociation",workforceAllAssociation)
 
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = (state, props) => ({
-  rights: !!state.core && !!state.core.user && !!state.core.user.i_user ? state.core.user.i_user.rights : [],
-  fetchingTicket: state.workforce.fetchingTicket,
-  errorTicket: state.workforce.errorTicket,
-  workforceAllAssociation: state.workforce.workforceAllAssociation,
-  fetchingWorkforceAllAssociation: state.workforce.fetchingWorkforceAllAssociation,
-  fetchedWorkforceAllAssociation: state.workforce.fetchedWorkforceAllAssociation,
-  errorWorkforceAllAssociation: state.workforce.errorWorkforceAllAssociation,  
+  rights: state.core?.user?.i_user?.rights || [],
+  fetchingTicket: state.workforce.fetchingWorkforceAllAssociations,
+  errorTicket: state.workforce.errorWorkforceAllAssociations,
+  workforceAllAssociation: state.workforce.workforceAllAssociations?.[0],
+  fetchingWorkforceAllAssociation: state.workforce.fetchingWorkforceAllAssociations,
+  fetchedWorkforceAllAssociation: state.workforce.fetchedWorkforceAllAssociations,
+  errorWorkforceAllAssociation: state.workforce.errorWorkforceAllAssociations,
   submittingMutation: state.workforce.submittingMutation,
   mutation: state.workforce.mutation,
-  grievanceConfig: state.workforce.grievanceConfig,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-  fetchWorkforceAllAssociation,
-  journalize,
-}, dispatch);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      fetchWorkforceAllAssociation,
+      journalize,
+    },
+    dispatch,
+  );
 
-export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(
-  WorkforceAssociationForm,
-));
+export default withModulesManager(connect(mapStateToProps, mapDispatchToProps)(WorkforceAssociationForm));

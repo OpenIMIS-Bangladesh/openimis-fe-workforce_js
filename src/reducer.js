@@ -1972,7 +1972,7 @@ function reducer(
         ...state,
         fetchingApplication: true,
         fetchedApplication: false,
-        application: null,
+        // application: null,
         errorApplication: null,
       };
     case "WORKFORCE_APPLICATION_RESP":

@@ -2,6 +2,7 @@ import {
   formatGQLString, decodeId,
 } from "@openimis/fe-core";
 import { WORKFORCE_STATUS } from "../constants";
+import { safeDecodeId } from "./utils";
 
 export function formatRepresentativeGQL(representative) {
   return `
@@ -251,7 +252,7 @@ export function formatWorkforceEmployeeGQL(employee) {
 }
 export function formatWorkforceAssociationGQL(association) {
   return `
-    ${association?.id ? `id: "${formatGQLString(association.id)}"` : ""}
+    ${association?.id ? `id: "${safeDecodeId(association.id)}"` : ""}
     ${association.nameBn ? `nameBn: "${formatGQLString(association.nameBn)}"` : ""}
     ${association.shortNameBn ? `shortNameBn: "${formatGQLString(association.shortNameBn)}"` : ""}
     ${association.nameEn ? `nameEn: "${formatGQLString(association.nameEn)}"` : ""}

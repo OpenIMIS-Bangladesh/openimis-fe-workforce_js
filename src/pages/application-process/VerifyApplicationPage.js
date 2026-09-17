@@ -629,7 +629,7 @@ class VerifyApplicationPage extends Component {
       return !isUploaded;
     });
 
-    const isLoading = fetchingApplication || fetchingDocument || !application;
+    const isLoading = !application && (fetchingApplication || fetchingDocument);
 
     if (isLoading) {
       return (

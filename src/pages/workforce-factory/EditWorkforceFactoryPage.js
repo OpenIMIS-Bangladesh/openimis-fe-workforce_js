@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   Grid,
   Paper,
@@ -26,6 +27,10 @@ import {
   TableRow,
   CircularProgress,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Save, Close } from "@material-ui/icons";
@@ -38,6 +43,8 @@ import LocationOnIcon from "@material-ui/icons/LocationOn";
 import EventIcon from "@material-ui/icons/Event";
 import PersonIcon from "@material-ui/icons/Person";
 import InfoIcon from "@material-ui/icons/Info";
+import EditIcon from "@material-ui/icons/Edit";
+import CloseIcon from "@material-ui/icons/Close";
 import {
   createRepresentative,
   fetchRepresentativeByClientMutationId,
@@ -46,16 +53,17 @@ import {
   updateWorkforceFactory,
   fetchWorkforceDocument,
   fetchWorkforceAllAssociationSummary,
+  updateWorkforceDocument,
 } from "../../actions";
 import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId, withModulesManager, parseData } from "@openimis/fe-core";
 
-import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
+import { banglaLabels, EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
 import WorkforceForm from "../../components/form/WorkforceForm";
 import { formatRepresentativeGQL } from "../../utils/format_gql";
 import CompanyPicker from "../../pickers/CompanyPicker";
 import FileUploader from "../../pickers/FileUploader";
-import { getAssociationNameByUserType, getUserTypeFromRights } from "../../utils/utils";
+import { getAssociationNameByUserType, getUserTypeFromRights, safeDecodeId } from "../../utils/utils";
 
 const styles = (theme) => ({
   paper: {
@@ -163,6 +171,11 @@ class EditWorkforceFactoryPage extends Component {
       fetchingDocuments: false,
       associations: [],
       fetchingAssociations: false,
+
+      reuploadDocument: null,
+      reuploadFile: null,
+      reuploadOpen: false,
+      reuploadSubmitting: false,
     };
   }
 
@@ -190,6 +203,120 @@ class EditWorkforceFactoryPage extends Component {
       }
     }
   }
+
+  formatKey = (key, language) => {
+    const cleanKey = key.split(".").pop();
+    // if (["fr", "bangla", "bd"].includes(language) && banglaLabels[cleanKey]) {
+    //   return banglaLabels[cleanKey];
+    // }
+    return cleanKey
+      .replace(/_/g, " ")
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+
+  openReuploadModal = (document) => {
+    this.setState({
+      reuploadDocument: document,
+      reuploadFile: null,
+      reuploadOpen: true,
+    });
+  };
+
+  closeReuploadModal = () => {
+    this.setState({
+      reuploadDocument: null,
+      reuploadFile: null,
+      reuploadOpen: false,
+      reuploadSubmitting: false,
+    });
+  };
+
+  handleReuploadChange = async (fieldKey, uploadData) => {
+    const { reuploadDocument } = this.state;
+
+    const uploadedFile = uploadData?.files?.[0];
+
+    if (!reuploadDocument || !uploadedFile?.path || !uploadedFile?.url) {
+      return;
+    }
+
+    const payload = {
+      id: safeDecodeId(reuploadDocument.id),
+      path: uploadedFile.path,
+      url: uploadedFile.url,
+
+      factoryId: safeDecodeId(this.state.stateEdited.id),
+
+      workforceDocumentTypeId: reuploadDocument.workforceDocumentType?.id ? safeDecodeId(reuploadDocument.workforceDocumentType.id) : undefined,
+
+      documentType: reuploadDocument.documentType,
+      holderType: reuploadDocument.holderType || "factory",
+      note: "Document reuploaded",
+    };
+
+    try {
+      await this.props.updateWorkforceDocument(payload, "Update workforce factory document");
+
+      await this.fetchDocuments(this.state.stateEdited.id);
+
+      this.closeReuploadModal();
+    } catch (error) {
+      console.error("Failed to update workforce document:", error);
+    }
+  };
+
+  handleReuploadChange = (fieldKey, uploadData) => {
+    const uploadedFile = uploadData?.files?.[0];
+
+    if (!uploadedFile?.path || !uploadedFile?.url) {
+      return;
+    }
+
+    this.setState({
+      reuploadFile: uploadedFile,
+    });
+  };
+
+  submitReupload = async () => {
+    const { reuploadDocument, reuploadFile, stateEdited } = this.state;
+
+    if (!reuploadDocument || !reuploadFile) {
+      return;
+    }
+
+    const payload = {
+      id: safeDecodeId(reuploadDocument.id),
+      path: reuploadFile.path,
+      url: reuploadFile.url,
+      factoryId: safeDecodeId(stateEdited.id),
+      workforceDocumentTypeId: reuploadDocument.workforceDocumentType?.id ? safeDecodeId(reuploadDocument.workforceDocumentType.id) : undefined,
+      documentType: reuploadDocument.documentType,
+      holderType: reuploadDocument.holderType || "factory",
+      note: "Document reuploaded",
+    };
+
+    this.setState({ reuploadSubmitting: true });
+
+    try {
+      await this.props.updateWorkforceDocument(payload, "Update workforce factory document");
+
+      await this.fetchDocuments(stateEdited.id);
+
+      this.setState({
+        reuploadDocument: null,
+        reuploadFile: null,
+        reuploadOpen: false,
+        reuploadSubmitting: false,
+      });
+    } catch (error) {
+      console.error("Failed to update workforce document:", error);
+
+      this.setState({
+        reuploadSubmitting: false,
+      });
+    }
+  };
 
   fetchAssociations = () => {
     const { dispatch, modulesManager } = this.props;
@@ -321,6 +448,7 @@ class EditWorkforceFactoryPage extends Component {
     console.log({ associations });
     const foundAssociation = associations?.find((res) => res?.shortNameEn === stateEdited?.associationType);
     console.log({ foundAssociation });
+    console.log("faltu document", this.state.reuploadDocument);
 
     let disableAssociationSelect = getAssociationNameByUserType(this.props.userType) === "" ? false : true;
 
@@ -808,7 +936,7 @@ class EditWorkforceFactoryPage extends Component {
                                 <DescriptionIcon style={{ marginRight: "8px", color: this.props.theme.palette.primary.main }} />
                                 <Box>
                                   <Typography variant="body2" style={{ fontWeight: "bold" }}>
-                                    {doc.workforceDocumentType?.nameEn || "Document"}
+                                    {doc.workforceDocumentType?.nameEn || this.formatKey(doc?.documentType)}
                                   </Typography>
                                   <Typography variant="caption" color="textSecondary">
                                     {doc.workforceDocumentType?.nameBn}
@@ -831,6 +959,25 @@ class EditWorkforceFactoryPage extends Component {
                             </TableCell>
                             <TableCell align="center">
                               <Tooltip title="Download Document">
+                                <Button
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => this.handleDownloadDocument(doc)}
+                                  disabled={!doc.url}
+                                  startIcon={<GetAppIcon />}
+                                >
+                                  <FormattedMessage id="workforce.factory.viewDocument" defaultMessage="View" />
+                                </Button>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell align="center">
+                              <Tooltip title="Reupload Document">
+                                <Button size="small" color="primary" startIcon={<EditIcon />} onClick={() => this.openReuploadModal(doc)}>
+                                  Reupload
+                                </Button>
+                              </Tooltip>
+
+                              <Tooltip title="View Document">
                                 <Button
                                   size="small"
                                   color="primary"
@@ -892,6 +1039,44 @@ class EditWorkforceFactoryPage extends Component {
             </Box>
           </Grid>
         </Grid>
+
+        <Dialog open={this.state.reuploadOpen} onClose={this.closeReuploadModal} fullWidth maxWidth="sm">
+          <DialogTitle>
+            Reupload Document
+            <IconButton onClick={this.closeReuploadModal} style={{ float: "right" }}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent>
+            {this.state.reuploadDocument && (
+              <>
+                <Typography variant="subtitle1" gutterBottom>
+                  {this.state.reuploadDocument.workforceDocumentType?.nameEn || this.formatKey(this.state.reuploadDocument?.documentType)}
+                </Typography>
+
+                <FileUploader
+                  fieldKey={`factory-reupload-${this.state.reuploadDocument.id}`}
+                  documentId={this.state.reuploadDocument.id}
+                  documentType={this.state.reuploadDocument.documentType}
+                  documentProp={this.state.reuploadDocument.workforceDocumentType}
+                  uploadedBy="factory"
+                  onFileChange={this.handleReuploadChange}
+                />
+              </>
+            )}
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={this.closeReuploadModal} disabled={this.state.reuploadSubmitting}>
+              Cancel
+            </Button>
+
+            <Button variant="contained" color="primary" onClick={this.submitReupload} disabled={!this.state.reuploadFile || this.state.reuploadSubmitting}>
+              {this.state.reuploadSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
@@ -902,4 +1087,15 @@ const mapStateToProps = (state) => ({
   userType: getUserTypeFromRights(state.core.user.i_user.rights),
 });
 
-export default connect(mapStateToProps)(withModulesManager(withStyles(styles)(EditWorkforceFactoryPage)));
+const mapDispatchToProps = (dispatch) => ({
+  ...bindActionCreators(
+    {
+      updateWorkforceDocument,
+      fetchWorkforceDocument,
+    },
+    dispatch,
+  ),
+  dispatch,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withModulesManager(withStyles(styles)(EditWorkforceFactoryPage)));

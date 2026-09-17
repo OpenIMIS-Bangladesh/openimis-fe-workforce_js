@@ -8,7 +8,9 @@ import {
   historyPush,
 } from "@openimis/fe-core";
 import {
+  createWorkforceAssociation,
   createWorkforceEmployee,
+  updateWorkforceAssociation,
   updateWorkforceEmployee,
 } from "../../actions";
 import {
@@ -34,13 +36,13 @@ class WorkforceAsociationPage extends Component {
 
   save = (employee) => {
     if (!employee.id) {
-      this.props.createWorkforceEmployee(
+      this.props.createWorkforceAssociation(
         this.props.modulesManager,
         employee,
         "Create"
       );
     } else {
-      this.props.updateWorkforceEmployee(
+      this.props.updateWorkforceAssociation(
         this.props.modulesManager,
         employee,
         "Update"
@@ -97,6 +99,8 @@ const mapDispatchToProps = (dispatch) =>
     {
       createWorkforceEmployee,
       updateWorkforceEmployee,
+      createWorkforceAssociation,
+      updateWorkforceAssociation
     },
     dispatch
   );
