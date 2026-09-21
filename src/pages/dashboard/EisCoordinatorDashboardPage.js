@@ -794,7 +794,7 @@ const Dashboard = ({selectedMenu}) => {
           return true;
         });
 
-        setApplications(formData);
+        setApplications(filteredApplications);
         setMarriageStatus(getMarriageStatusCounts(filteredApplications));
         setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(filteredApplications));
         console.log({ fromEISAdvisor: formData });
