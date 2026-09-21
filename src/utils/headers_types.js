@@ -131,6 +131,7 @@ export const headerSectionAdmin = (component) => [
   "workforce.employee.application.receivedDate",
   "workforce.employee.application.sentDate",
   "workforce.employee.application.status",
+  ...(component?.props?.sentForVerificationApplications ?["workforce.employee.application.sentTo"]:[]),
 
   // ✅ Conditionally add "workforce.version"
   ...(component.isShowHistory() ? ["workforce.version"] : []),
