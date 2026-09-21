@@ -510,6 +510,38 @@ const StatRow = ({ label, count, onClick, color }) => (
   </Box>
 );
 
+const filterPaymentRecordsByOverallFilters = (records, filters) => {
+  if (!Array.isArray(records)) return [];
+
+  const { fromDate, toDate, accFromDate, accToDate, association } = filters;
+  const from = fromDate ? new Date(fromDate) : null;
+  const to = toDate ? new Date(toDate) : null;
+  const accidentFrom = accFromDate ? new Date(accFromDate) : null;
+  const accidentTo = accToDate ? new Date(accToDate) : null;
+  if (to) to.setHours(23, 59, 59, 999);
+  if (accidentTo) accidentTo.setHours(23, 59, 59, 999);
+
+  return records.filter((record) => {
+    const application = record?.workforceApplication;
+    if (!application) return false;
+    if (association !== "all" && application.associationType?.toLowerCase() !== association.toLowerCase()) return false;
+
+    const submissionDate = application.dateCreated ? new Date(application.dateCreated) : null;
+    if (from && (!submissionDate || submissionDate < from)) return false;
+    if (to && (!submissionDate || submissionDate > to)) return false;
+
+    if (!accidentFrom && !accidentTo) return true;
+    const accidentInfo = typeof application.employeeAccidentInfo === "string"
+      ? safeParse(application.employeeAccidentInfo)
+      : application.employeeAccidentInfo;
+    const accidentDate = accidentInfo?.accidentDate ? new Date(accidentInfo.accidentDate) : null;
+    if (!accidentDate) return false;
+    if (accidentFrom && accidentDate < accidentFrom) return false;
+    if (accidentTo && accidentDate > accidentTo) return false;
+    return true;
+  });
+};
+
 const Dashboard = ({selectedMenu}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -815,6 +847,13 @@ const Dashboard = ({selectedMenu}) => {
     const found = applicationCounts.find((item) => item.type === applicantTypeNames[key]);
     return found ? found.count : 0;
   };
+  const filteredDisbursedApplication = filterPaymentRecordsByOverallFilters(disbursedApplication, {
+    fromDate,
+    toDate,
+    accFromDate,
+    accToDate,
+    association,
+  });
 
   return (
     <Grid container spacing={3}>
@@ -1103,11 +1142,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
+                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
+                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
             </Grid>
             <Grid item xs={6}>
@@ -1116,11 +1155,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
+                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${disbursedApplication !== null ? disbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2) : "0.00"}`}
+                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
               />
             </Grid>
           </Grid>
