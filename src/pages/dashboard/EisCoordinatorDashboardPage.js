@@ -26,7 +26,7 @@ import {
   ButtonGroup,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceAllAssociationSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard } from "../../actions";
+import { fetchSummaryApplications, fetchApplicationsSummary, fetchWorkforceAllAssociationSummary, fetchWorkforceEisPaymentDisbursementStage, fetchApplicationsSummaryDashboard, fetchApplicationStatusCounts } from "../../actions";
 import { calculateAge, getUserType, getUserTypeFromRights, safeParse } from "../../utils/utils";
 import { fetchApplicationByDate, fetchGenderWiseApplicationMatrixByDate, fetchApplicationMonthWise } from "../../actions";
 import { WORKFORCE_USER_TYPE, APP_TYPE_DASHBOARD_EN, APP_TYPE_DASHBOARD_BN, APPLICANT_TYPE_BN, APPLICANT_TYPE_EN, STATUS_MAP_EN, STATUS_MAP_BN } from "../../constants";
@@ -613,6 +613,7 @@ const Dashboard = ({selectedMenu}) => {
     processing: isBn ? "প্রক্রিয়াধীন" : "Processing",
     approved: isBn ? "অনুমোদিত" : "Approved",
     reverted: isBn ? "বাতিল" : "Reverted",
+    rejected: isBn ? "প্রত্যাখ্যান" : "Rejected",
     medical: isBn ? "চিকিৎসা" : "Medical",
     death: isBn ? "মৃত্যু" : "Death",
     educational: isBn ? "শিক্ষা" : "Educational",
@@ -706,24 +707,18 @@ const Dashboard = ({selectedMenu}) => {
           },
           { total: 0, approved: 0, cancelled: 0, processing: 0 },
         );
-
-        let approvedTotal = 0;
-        let cancelledTotal = 0;
-        let processingTotal = 0;
-        rows.map((r) => {
-          approvedTotal += Number(r.approved);
-          cancelledTotal += Number(r.cancelled);
-          processingTotal += Number(r.processing);
-        });
-
-        setPieData([
-          { name: chartLabels.processing, value: processingTotal, color: "#6cdfdfff" },
-          { name: chartLabels.approved, value: approvedTotal, color: "#68b88cff" },
-          { name: chartLabels.reverted, value: cancelledTotal, color: "#d48aa3ff" },
-        ]);
+        totalsCalc.processing = Math.max(
+          0,
+          totalsCalc.total - totalsCalc.approved - totalsCalc.cancelled,
+        );
 
         setTableRows(rows);
         setTotals(totalsCalc);
+        setPieData([
+          { name: chartLabels.processing, value: totalsCalc.processing, color: "#6cdfdfff" },
+          { name: chartLabels.approved, value: totalsCalc.approved, color: "#68b88cff" },
+          { name: chartLabels.rejected, value: totalsCalc.cancelled, color: "#d48aa3ff" },
+        ]);
 
         let genderRes = [];
         await dispatch(fetchGenderWiseApplicationMatrixByDate(months, fromDate, toDate, orgType)).then((response) => {
@@ -831,6 +826,19 @@ const Dashboard = ({selectedMenu}) => {
         setMarriageStatus(getMarriageStatusCounts(filteredApplications));
         setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(filteredApplications));
         console.log({ fromEISAdvisor: formData });
+      });
+
+      const statusCountFilters = dashboardFilters.filter((filterValue) => !filterValue.startsWith("orderBy"));
+      dispatch(fetchApplicationStatusCounts(statusCountFilters)).then((res) => {
+        const counts = res?.payload?.data || {};
+        const total = Number(counts.total?.totalCount) || 0;
+        const approved = Number(counts.approved?.totalCount) || 0;
+        const rejected = Number(counts.rejected?.totalCount) || 0;
+        setPieData([
+          { name: chartLabels.processing, value: Math.max(0, total - approved - rejected), color: "#6cdfdfff" },
+          { name: chartLabels.approved, value: approved, color: "#68b88cff" },
+          { name: chartLabels.rejected, value: rejected, color: "#d48aa3ff" },
+        ]);
       });
 
       dispatch(fetchWorkforceEisPaymentDisbursementStage({ isDisbursed: true }, modulesManager)).then((r) => {

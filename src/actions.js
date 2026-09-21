@@ -690,6 +690,26 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS_DASHBOARD");
 }
+
+export function fetchApplicationStatusCounts(filters = []) {
+  const filterString = filters.length > 0 ? `(${filters.join(", ")})` : "";
+  const approvedFilterString = `(statusIn: ["approved_by_committee"]${filters.length > 0 ? `, ${filters.join(", ")}` : ""})`;
+  const rejectedFilterString = `(statusIn: ["rejected"]${filters.length > 0 ? `, ${filters.join(", ")}` : ""})`;
+  const payload = `
+    query {
+      total: workforceApplication${filterString} {
+        totalCount
+      }
+      approved: workforceApplication${approvedFilterString} {
+        totalCount
+      }
+      rejected: workforceApplication${rejectedFilterString} {
+        totalCount
+      }
+    }
+  `;
+  return graphql(payload, "WORKFORCE_APPLICATION_STATUS_COUNTS");
+}
 export function fetchSummaryApplications(mm, filters) {
   const projections = ["id", "dateCreated", "organizationType", "applicationData", "status", "name", "meetingDate", "month", "year", "sectionType", "userIds"];
   const payload = formatPageQueryWithCount("workforceApplicationSummary", filters, projections);
@@ -3628,4 +3648,3 @@ export function markAllNotificationAsRead(userId) {
   `;
   return graphql(mutation, "MARK_ALL_NOTIFICATIONS_AS_READ");
 }
-
