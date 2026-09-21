@@ -587,6 +587,7 @@ const Dashboard = ({selectedMenu}) => {
   const [accToDate, setAccToDate] = useState("");
   const [association, setAssociation] = useState("all");
   const [associationOptions, setAssociationOptions] = useState([]);
+  const [beneficiaryCounts, setBeneficiaryCounts] = useState({ male: 0, female: 0, total: 0 });
 
   // --- 3. EIS ADVISOR STATE ---
   const [beneficiaryMonitoring, setBeneficiaryMonitoring] = useState({ almost18: 0, adultFemaleUnmarried: 0, elderly: 0, widowUnder35: 0 });
@@ -729,10 +730,9 @@ const Dashboard = ({selectedMenu}) => {
           genderRes = response.payload?.data?.workforceGenderwiseMatrix[0] || [];
         });
 
-        const appCounts = [
-          { type: applicantTypeNames["totalApplicant"], count: genderRes.totalApplicant },
-          { type: applicantTypeNames["maleApplicant"], count: genderRes.maleApplicant },
-          { type: applicantTypeNames["femaleApplicant"], count: genderRes.femaleApplicant },
+      const appCounts = [
+          { type: applicantTypeNames["maleDependent"], count: genderRes.maleDependent },
+          { type: applicantTypeNames["femaleDependent"], count: genderRes.femaleDependent },
           { type: applicantTypeNames["totalDependent"], count: genderRes.totalDependent },
         ];
         setApplicationCounts(appCounts);
@@ -827,6 +827,7 @@ const Dashboard = ({selectedMenu}) => {
         });
 
         setApplications(filteredApplications);
+        setBeneficiaryCounts(getFilteredBeneficiaryCounts(filteredApplications));
         setMarriageStatus(getMarriageStatusCounts(filteredApplications));
         setBeneficiaryMonitoring(getBeneficiaryMonitoringCounts(filteredApplications));
         console.log({ fromEISAdvisor: formData });
@@ -1035,18 +1036,18 @@ const Dashboard = ({selectedMenu}) => {
         >
           <StatRow
             label={<FormattedMessage id="workforce.dashboard.beneficiary.male" />}
-            count={getBeneficiaryCount("maleApplicant")}
+            count={getBeneficiaryCount("maleDependent")}
             onClick={() => handleBeneficiaryClick("approvedMale")}
           />
           <StatRow
             label={<FormattedMessage id="workforce.dashboard.beneficiary.female" />}
-            count={getBeneficiaryCount("femaleApplicant")}
+            count={getBeneficiaryCount("femaleDependent")}
             onClick={() => handleBeneficiaryClick("approvedFemale")}
           />
           <Box mt={2} p={1} bgcolor="#f9f9f9" borderRadius="8px">
             <StatRow
               label={<FormattedMessage id="workforce.dashboard.beneficiary.total" />}
-              count={getBeneficiaryCount("totalApplicant")}
+              count={getBeneficiaryCount("totalDependent")}
               onClick={() => handleBeneficiaryClick("approvedTotal")}
             />
           </Box>
@@ -1394,6 +1395,23 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
 };
 
 // ------------------------------------------------------------
+
+const getFilteredBeneficiaryCounts = (applications) => applications.reduce(
+  (counts, application) => {
+    const dependents = safeParse(application?.employeeDependentInfo);
+    if (!Array.isArray(dependents)) return counts;
+
+    dependents.forEach((dependent) => {
+      const gender = typeof dependent?.gender === "object" ? dependent.gender?.name : dependent?.gender;
+      if (gender === "workforce.gender.male") counts.male += 1;
+      if (gender === "workforce.gender.female") counts.female += 1;
+    });
+
+    counts.total = counts.male + counts.female;
+    return counts;
+  },
+  { male: 0, female: 0, total: 0 },
+);
 
 const getMarriageStatusCounts = (applications) => applications.reduce(
   (counts, application) => {
