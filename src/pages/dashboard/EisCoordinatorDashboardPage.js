@@ -701,6 +701,43 @@ const Dashboard = ({selectedMenu}) => {
   }, [graphMonths, isBn]);
 
   useEffect(() => {
+    const loadFinancialOverview = async () => {
+      try {
+        const response = await fetch("/api/workforce/dashboard/counts");
+        const payload = await response.json();
+        if (!response.ok || payload?.status !== "success") {
+          throw new Error(payload?.detail || payload?.message || "Failed to load financial overview");
+        }
+
+        const amountsByType = payload?.data?.amounts_by_application_type || [];
+        const totals = amountsByType.reduce((result, row) => {
+          const applicationType = String(row?.workforce_application__application_type || "").toLowerCase();
+          const isDeath = ["financialasistant", "financialassistance"].includes(applicationType);
+          const isDisability = applicationType === "disabilityassistance";
+          if (!isDeath && !isDisability) return result;
+
+          const key = isDeath ? "death" : "disability";
+          result.paid[key] += Number(row?.total_paid) || 0;
+          result.lifetime[key] += Number(row?.total_approved) || 0;
+          return result;
+        }, {
+          paid: { death: 0, disability: 0 },
+          lifetime: { death: 0, disability: 0 },
+        });
+        setFinancialCounts(totals);
+      } catch (error) {
+        console.error("Failed to load financial overview", error);
+        setFinancialCounts({
+          paid: { death: 0, disability: 0 },
+          lifetime: { death: 0, disability: 0 },
+        });
+      }
+    };
+
+    loadFinancialOverview();
+  }, []);
+
+  useEffect(() => {
     async function loadData() {
       try {
         const orgType = filter === "সব" || filter === "All" ? "" : filter.toLowerCase();
@@ -1194,11 +1231,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
+                count={`৳ ${financialCounts.paid.death.toFixed(2)}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.paidAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
+                count={`৳ ${financialCounts.paid.disability.toFixed(2)}`}
               />
             </Grid>
             <Grid item xs={6}>
@@ -1207,11 +1244,11 @@ const Dashboard = ({selectedMenu}) => {
               </Typography>
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.deathTotal" />}
-                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "financialAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
+                count={`৳ ${financialCounts.lifetime.death.toFixed(2)}`}
               />
               <StatRow
                 label={<FormattedMessage id="workforce.dashboard.financial.disabilityTotal" />}
-                count={`৳ ${filteredDisbursedApplication.filter((item) => item.workforceApplication?.applicationType === "disabilityAssistance").reduce((acc, obj) => acc + (Number(parseFloat(obj?.eisCalculatedAmount).toFixed(2)) || 0), 0).toFixed(2)}`}
+                count={`৳ ${financialCounts.lifetime.disability.toFixed(2)}`}
               />
             </Grid>
           </Grid>
