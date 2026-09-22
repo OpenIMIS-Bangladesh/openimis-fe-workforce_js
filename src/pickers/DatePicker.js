@@ -88,9 +88,7 @@ const DatePicker = ({
 }) => {
   const styles = useStyles();
 
-  const userLanguage = useSelector(
-    (state) => state.core?.user?.i_user?.language || "en"
-  );
+  const userLanguage = useSelector((state) => state.core?.user?.i_user?.language || "en");
 
   const isSecondaryCalendarEnabled = useMemo(() => {
     if (secondaryCalendarEnabled) {
@@ -109,7 +107,19 @@ const DatePicker = ({
   //   adjusted.setDate(adjusted.getDate() - 1);
   //   return adjusted;
   // }, [reset, value]);
-  const dateValue = reset ? null : value || null;
+  const dateValue = useMemo(() => {
+    if (reset) return null;
+
+    const original = typeof value === "string" ? new Date(value) : value;
+    if (!original || isNaN(original)) return value;
+
+    if (userLanguage !== "fr") return original;
+
+    const adjusted = new Date(original);
+    adjusted.setDate(adjusted.getDate() - 1);
+    return adjusted;
+  }, [reset, value, userLanguage]);
+  // const dateValue = reset ? null : value || null;
 
   return (
     <div className={styles.modernWrapper}>
@@ -118,11 +128,11 @@ const DatePicker = ({
         label={label}
         value={dateValue}
         onChange={(val) => {
-            if (val === null || val === "" || val === undefined) {
-                onChange(null);
-            } else {
-                onChange(val);
-            }
+          if (val === null || val === "" || val === undefined) {
+            onChange(null);
+          } else {
+            onChange(val);
+          }
         }}
         editable={false}
         readOnly={readOnly}

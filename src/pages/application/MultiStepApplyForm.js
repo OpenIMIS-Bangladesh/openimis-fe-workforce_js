@@ -87,7 +87,7 @@ const MultiStepApplyForm = ({ workforceFactoryId }) => {
       setParsedApplicationData(parsedData); // <- parsed data will now be set correctly
     };
     fetchData();
-  }, []);
+  }, [application_uuid, dispatch, modulesManager]);
 
   useEffect(() => {
     if (!workforceFactoryId && loggedInUserId && user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN) {

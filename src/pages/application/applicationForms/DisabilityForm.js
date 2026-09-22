@@ -24,7 +24,15 @@ import { WORKFORCE_STATUS } from "../../../constants";
 import ApplicationReasonForDisability from "../FormsComponents/Disability/ApplicationReasonForDisability";
 import NidVerification from "../../../components/application-forms/NidVerification";
 import PreviewDetails from "../../../components/application-forms/PreviewDetails";
-import { isAtLeast18YearsOld, isEisPath, safeApplicationId, safeDecodeId, validateMandatoryBankDocumentsForAccounts, validateMandatoryDocuments, validateRequiredFields } from "../../../utils/utils";
+import {
+  isAtLeast18YearsOld,
+  isEisPath,
+  safeApplicationId,
+  safeDecodeId,
+  validateMandatoryBankDocumentsForAccounts,
+  validateMandatoryDocuments,
+  validateRequiredFields,
+} from "../../../utils/utils";
 import { WORKFORCE_USER_TYPE } from "../../../constants";
 import { getUserType, getUserTypeFromRights } from "../../../utils/utils";
 import { ApplicationFormSubmitted } from "../../../components/shared/ApplicationFormSubmitted";
@@ -156,7 +164,10 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
   }, [reduxState.core.user.username]);
 
   useEffect(() => {
-    if (employeeData) {
+    if (!employeeData?.id && !parsedApplicationData?.workforceEmployee?.id) {
+      return;
+    }
+    // if (employeeData) {
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
@@ -211,7 +222,7 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
-    }
+    // }
   }, [employeeData?.id, parsedApplicationData]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
@@ -252,20 +263,20 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
       documentValidation = validateMandatoryBankDocumentsForAccounts(bankDocsConfig, uploadBankFile || [], formData.employeeBankInfo || []);
     } else {
       const generalDocsConfig = (documentType || [])
-              .filter((doc) => doc.documentType !== BANK_DOC)
-              .filter((doc) => {
-                if (
-                  !isEisPath() &&
-                  doc.documentType === "discharge certificate" &&
-                  (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)
-                ) {
-                  return false;
-                }
-                return true;
-              });
+        .filter((doc) => doc.documentType !== BANK_DOC)
+        .filter((doc) => {
+          if (
+            !isEisPath() &&
+            doc.documentType === "discharge certificate" &&
+            (formData?.employeeAccidentInfo?.admitted === "no" || formData?.employeeAccidentInfo?.admitted === undefined)
+          ) {
+            return false;
+          }
+          return true;
+        });
       documentValidation = validateMandatoryDocuments(generalDocsConfig, files);
     }
-    if (!documentValidation.isValid ) {
+    if (!documentValidation.isValid) {
       newErrors.documents = documentValidation.errors;
     }
 
@@ -441,15 +452,19 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
         : null;
     console.log({ tazwer: formData });
     if (uploadBankFile) {
-      await Promise.all( uploadBankFile.map((file) => {
-        return dispatch(
-          createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
-        );
-      }))
+      await Promise.all(
+        uploadBankFile.map((file) => {
+          return dispatch(
+            createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId, parsedApplicationData) }, `Created workforce document`),
+          );
+        }),
+      );
     }
-    await Promise.all(uploadFile.map((file, index) => {
-      dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
-    }))
+    await Promise.all(
+      uploadFile.map((file, index) => {
+        dispatch(createWorkforceDocument({ ...file, workforceApplicationId: safeApplicationId(applicationId) }, `Created workforce document `));
+      }),
+    );
     const submittedBy =
       user_type === WORKFORCE_USER_TYPE.APPLICANT ? "applicant" : user_type === WORKFORCE_USER_TYPE.FACTORY_ADMIN ? "factory_admin" : "UNKNOWN";
     const updateApplicationData = {
@@ -551,11 +566,11 @@ const DisabilityForm = ({ workforceFactoryId, organizationType, selectedApplicat
               variant="contained"
               color="primary"
               // disabled={disableConfirmSubmit}
-              onClick={async() => {
+              onClick={async () => {
                 // setIsSubmitted(true);
                 await handleSubmit();
                 setShowVerifyNid(false);
-                setIsSubmitted(true)
+                setIsSubmitted(true);
               }}
             >
               <FormattedMessage module="workforce" id="workforce.confirm.submit" />
