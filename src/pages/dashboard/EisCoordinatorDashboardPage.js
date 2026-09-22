@@ -600,6 +600,7 @@ const Dashboard = ({selectedMenu}) => {
     unmarriedGrandDaughter: 0,
   });
   const [paymentStatus, setPaymentStatus] = useState({ disbursed: 0, pending: 0, onHold: 0 });
+  const [monthlyPaymentStatus, setMonthlyPaymentStatus] = useState([]);
 
   // --- 4. PREVIOUS OVERVIEW STATES ---
   const [pipelineCounts, setPipelineCounts] = useState({ factory: 0, association: 0, eis: 0 });
@@ -656,6 +657,48 @@ const Dashboard = ({selectedMenu}) => {
       setAssociationOptions(response?.payload?.data?.workforceAllAssociation?.edges || []);
     });
   }, [dispatch]);
+
+  useEffect(() => {
+    const loadMonthlyPaymentStatus = async () => {
+      try {
+        const monthCount = Number(graphMonths) > 0 ? Number(graphMonths) : 6;
+        const today = new Date();
+        const requests = Array.from({ length: monthCount }, (_, index) => {
+          const monthDate = new Date(today.getFullYear(), today.getMonth() - (monthCount - index - 1), 1);
+          const params = new URLSearchParams({
+            year: String(monthDate.getFullYear()),
+            month: String(monthDate.getMonth() + 1),
+          });
+          return fetch(`/api/workforce/dashboard/counts?${params.toString()}`).then(async (response) => {
+            const payload = await response.json();
+            if (!response.ok || payload?.status !== "success") {
+              throw new Error(payload?.detail || payload?.message || "Failed to load monthly payment status");
+            }
+            return {
+              month: monthDate.toLocaleString(isBn ? "bn-BD" : "en-US", { month: "short" }),
+              disbursed: Number(payload?.data?.status_counts?.disbursed_count) || 0,
+              pending: Number(payload?.data?.status_counts?.pending_count) || 0,
+              onHold: Number(payload?.data?.status_counts?.on_hold_count) || 0,
+            };
+          });
+        });
+        const rows = await Promise.all(requests);
+        setMonthlyPaymentStatus(rows);
+        const latestMonth = rows[rows.length - 1];
+        setPaymentStatus({
+          disbursed: latestMonth?.disbursed || 0,
+          pending: latestMonth?.pending || 0,
+          onHold: latestMonth?.onHold || 0,
+        });
+      } catch (error) {
+        console.error("Failed to load monthly payment status", error);
+        setMonthlyPaymentStatus([]);
+        setPaymentStatus({ disbursed: 0, pending: 0, onHold: 0 });
+      }
+    };
+
+    loadMonthlyPaymentStatus();
+  }, [graphMonths, isBn]);
 
   useEffect(() => {
     async function loadData() {
@@ -1300,6 +1343,20 @@ const Dashboard = ({selectedMenu}) => {
 
       <Grid item xs={12} md={6}>
         <DashboardCard title={<FormattedMessage id="workforce.dashboard.payment" />} subtitle={<FormattedMessage id="workforce.dashboard.payment.subtitle" />}>
+          {/* {monthlyPaymentStatus.length > 0 && (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={monthlyPaymentStatus}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="disbursed" name={isBn ? "পরিশোধিত" : "Disbursed"} fill="#2e7d32" />
+                <Bar dataKey="pending" name={isBn ? "অমীমাংসিত" : "Pending"} fill="#ed6c02" />
+                <Bar dataKey="onHold" name={isBn ? "স্থগিত" : "On hold"} fill="#d32f2f" />
+              </BarChart>
+            </ResponsiveContainer>
+          )} */}
           <StatRow
             label={<FormattedMessage id="workforce.dashboard.payment.disbursed" />}
             count={paymentStatus.disbursed}
