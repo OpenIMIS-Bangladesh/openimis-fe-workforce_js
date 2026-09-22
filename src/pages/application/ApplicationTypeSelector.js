@@ -31,8 +31,8 @@ const ApplicationTypeSelector = ({
   const [isExportOriented, setIsExportOriented] = useState("no");
   const classes = useStyles();
   const dispatch = useDispatch();
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
-  const selectedEmployee = useSelector((state) => state.selectedEmployee);
+  const employeeData = useSelector((state) => state.workforce?.workforceEmployee);
+  const selectedEmployee = useSelector((state) => state.workforce?.selectedEmployee);
   const [localApplicationType, setLocalApplicationType] = useState("");
   const history = useHistory();
   const user_type = getUserType();
@@ -52,21 +52,26 @@ const ApplicationTypeSelector = ({
 
   // 2. Initial load logic (for edit mode)
   useEffect(() => {
-  if (!parsedApplicationData) return;
+    if (!parsedApplicationData) return;
 
-  const applicationType = parsedApplicationData.applicationType || "";
-  const exportStatus =
-    parsedApplicationData.organizationType === "cf" ? "yes" : "no";
+    const applicationType = parsedApplicationData.applicationType || "";
+    const exportStatus = parsedApplicationData.organizationType === "cf" ? "yes" : "no";
 
-  setLocalApplicationType(applicationType);
-  setIsExportOriented(exportStatus);
+    setLocalApplicationType(applicationType);
+    setIsExportOriented(exportStatus);
 
-  onSelect(applicationType, exportStatus);
+    onSelect(applicationType, exportStatus);
 
-  dispatch({
-    type: "SET_SELECTED_EMPLOYEE",
-    payload: parsedApplicationData.workforceEmployee,
-  });
+    // dispatch({
+    //   type: "SET_SELECTED_EMPLOYEE",
+    //   payload: parsedApplicationData.workforceEmployee,
+    // });
+    if (parsedApplicationData.workforceEmployee) {
+      dispatch({
+        type: "SET_SELECTED_EMPLOYEE",
+        payload: parsedApplicationData.workforceEmployee,
+      });
+    }
   }, [parsedApplicationData, onSelect, dispatch]);
 
   const handleApplicationTypeChange = (event) => {
@@ -98,11 +103,7 @@ const ApplicationTypeSelector = ({
               />
             </Grid>
             <Grid item xs={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => historyPush(modulesManager, history, "workforce.route.employees.employee")}
-              >
+              <Button variant="contained" color="primary" onClick={() => historyPush(modulesManager, history, "workforce.route.employees.employee")}>
                 <FormattedMessage module="workforce" id="workforce.application.add.employee" />
               </Button>
             </Grid>
@@ -110,36 +111,58 @@ const ApplicationTypeSelector = ({
         </Box>
       )}
 
-      {!isBlwfPath() &&(<Box mt={3}>
-        <FactoryPicker
-          id="application-type-factory"
-          // FIX: Pass the ID directly from the object (fallback to nested only if necessary)
-          value={safeDecodeId(selectedFactory?.id) || safeDecodeId(selectedFactory?.factory?.id) || safeDecodeId(workforceFactoryId)}
-          label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
-          required
-          companyId={employeeData?.company?.id}
-          onChange={(v) => {
-            // v is the whole factory object
-            setSelectedFactory(v); 
-          }}
-          readOnly={false}
-        />
-      </Box>)}
+      {!isBlwfPath() && (
+        <Box mt={3}>
+          <FactoryPicker
+            id="application-type-factory"
+            // FIX: Pass the ID directly from the object (fallback to nested only if necessary)
+            value={safeDecodeId(selectedFactory?.id) || safeDecodeId(selectedFactory?.factory?.id) || safeDecodeId(workforceFactoryId)}
+            label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
+            required
+            companyId={employeeData?.company?.id}
+            onChange={(v) => {
+              // v is the whole factory object
+              setSelectedFactory(v);
+            }}
+            readOnly={false}
+          />
+        </Box>
+      )}
 
       <FormControl component="fieldset" className={classes.section}>
         {/* We use the state 'isExportOriented' which is now automatically driven by the FactoryPicker */}
-        
-        {!isBlwfPath()|| isExportOriented === "yes" ? (
+
+        {!isBlwfPath() || isExportOriented === "yes" ? (
           <>
             <Typography variant="h6" className={classes.title}>
               {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
             <RadioGroup value={localApplicationType} onChange={handleApplicationTypeChange}>
-              <FormControlLabel value="medicalAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
-              <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
-              <FormControlLabel value="scholarship" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
-              <FormControlLabel value="disabilityAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce" />} />
-              <FormControlLabel value="financialAssistance" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />} />
+              <FormControlLabel
+                value="medicalAssistance"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />}
+              />
+              <FormControlLabel
+                value="maternityGrant"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />}
+              />
+              <FormControlLabel
+                value="scholarship"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />}
+              />
+              <FormControlLabel
+                value="disabilityAssistance"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.medical.disability" module="workforce" />}
+              />
+              <FormControlLabel
+                value="financialAssistance"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />}
+              />
             </RadioGroup>
           </>
         ) : (
@@ -148,10 +171,26 @@ const ApplicationTypeSelector = ({
               {<FormattedMessage id="workforce.application.type.title" module="workforce" />}
             </Typography>
             <RadioGroup value={localApplicationType} onChange={handleApplicationTypeChange}>
-              <FormControlLabel value="medicalDonation" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />} />
-              <FormControlLabel value="maternityGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />} />
-              <FormControlLabel value="educationGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />} />
-              <FormControlLabel value="deadlyGrant" control={<Radio color="primary" />} label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />} />
+              <FormControlLabel
+                value="medicalDonation"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.medical.donation" module="workforce" />}
+              />
+              <FormControlLabel
+                value="maternityGrant"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.maternal.grant" module="workforce" />}
+              />
+              <FormControlLabel
+                value="educationGrant"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.education.grant" module="workforce" />}
+              />
+              <FormControlLabel
+                value="deadlyGrant"
+                control={<Radio color="primary" />}
+                label={<FormattedMessage id="workforce.application.type.deadly.grant" module="workforce" />}
+              />
             </RadioGroup>
           </>
         )}
