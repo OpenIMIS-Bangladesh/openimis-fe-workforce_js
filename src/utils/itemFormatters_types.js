@@ -842,6 +842,10 @@ export const itemFormattersSectionAdmin = (isShowHistory, modulesManager, histor
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
     },
+    ...(component?.props?.sentForVerificationApplications ? [(application) => {
+      const targettedApplication = application?.workforceApplicationMovements?.filter(app => app?.status === "forward_for_verification")
+      return targettedApplication[0]?.applicationTo?.loginName
+    }]:[]),
     isShowHistory() ? application?.version : null,
   ];
 

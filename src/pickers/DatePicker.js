@@ -99,16 +99,17 @@ const DatePicker = ({
     return userLanguage !== "en";
   }, [secondaryCalendarEnabled, userLanguage]);
 
-  const dateValue = useMemo(() => {
-    if (reset) return null;
+  // const dateValue = useMemo(() => {
+  //   if (reset) return null;
 
-    const original = typeof value === "string" ? new Date(value) : value;
-    if (!original || isNaN(original)) return value;
+  //   const original = typeof value === "string" ? new Date(value) : value;
+  //   if (!original || isNaN(original)) return value;
 
-    const adjusted = new Date(original);
-    adjusted.setDate(adjusted.getDate() - 1);
-    return adjusted;
-  }, [reset, value]);
+  //   const adjusted = new Date(original);
+  //   adjusted.setDate(adjusted.getDate() - 1);
+  //   return adjusted;
+  // }, [reset, value]);
+  const dateValue = reset ? null : value || null;
 
   return (
     <div className={styles.modernWrapper}>

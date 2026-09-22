@@ -633,7 +633,8 @@ export function fetchApplicationsSummary(mm, filters) {
     "doctorsRecommendedDonation",
     "doctorsDiagnosis",
     "committeeRemarks",
-    "rejectedIds"
+    "rejectedIds",
+    "workforceApplicationMovements{id,dateCreated,status,applicationTo {id,loginName}}"
   ];
   const payload = formatPageQueryWithCount("workforceApplication", filters, projections);
   return graphql(payload, "WORKFORCE_APPLICATIONS");
@@ -3317,6 +3318,7 @@ export function fetchNotificationData(filters) {
     "isRead",
     "notification",
     "notificationBn",
+    "dateCreated",
     "user{id, loginName}",
     "workforceApplication{id, trackingNumber}",
     "status"
