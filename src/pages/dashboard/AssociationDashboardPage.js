@@ -122,6 +122,13 @@ const SidebarMenu = [
     ),
     icon: <ArrowForwardIcon />,
   },
+  {
+    id: "approvedApplications",
+    text: (
+      <FormattedMessage module="workforce" id="workforce.application.approved" />
+    ),
+    icon: <ArrowForwardIcon />,
+  },
   // {
   //   id: "revertedApplication",
   //   text: (
@@ -327,6 +334,62 @@ const ForwardedApplications = () => {
   )
 }
 
+const ApprovedApplications = () => {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const language = useSelector((state) => state.core?.user?.i_user?.language);
+  const [associationNames, setAssociationNames] = useState("");
+  const [associations, setAssociations] = useState([]);
+  useEffect(() => {
+    if (!loggedInUserId) return;
+
+    const filters = [];
+    filters.push("userId:" + loggedInUserId);
+
+    dispatch(fetchWorkforceAssociationUserMaps(filters))
+      .then(response => {
+        const edges =
+          response?.payload?.data?.workforceAssociationUserMap?.edges ?? [];
+
+        setAssociations(edges.map(a => a?.node?.allAssociation.id));
+
+        const names = edges
+          .map(a =>
+            language === "en"
+              ? a?.node?.allAssociation?.shortNameEn
+              : a?.node?.allAssociation?.shortNameBn
+          )
+          .join(", ");
+
+        setAssociationNames(names);
+      })
+      .catch(err => {
+        console.error("Association fetch error:", err);
+      });
+
+  }, [dispatch, loggedInUserId, language]);
+  return (
+    <>
+      <ApplicationProcessSearcher
+        approvedApplications={true}
+        associationIds={associations}
+        disableButtons={1}
+        dynamicTableTitle={"workforce.application.forwarded"}
+      />
+      {/* Pagination */}
+      <div className={classes.pagination}>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.back" />
+        </Button>
+        <Button>
+          <FormattedMessage module="workforce" id="workforce.next" />
+        </Button>
+      </div>
+    </>
+  )
+}
+
 // ------------------------------------------------------------
 
 const AssociationDashboard = () => {
@@ -347,6 +410,8 @@ const AssociationDashboard = () => {
         return <FiledApplications />;
       case "forwardedApplications":
         return <ForwardedApplications />;
+      case "approvedApplications":
+        return <ApprovedApplications />;
       // case "revertedApplication":
       //   return <RevertApplication />;
       case "returnedApplication":

@@ -91,7 +91,7 @@ const ApplicationTypeSelector = ({
             <Grid item xs={8}>
               <WorkforceEmployeePicker
                 modulesManager={modulesManager}
-                workforceFactoryId={workforceFactoryId}
+                workforceFactoryId={workforceFactoryId?.id}
                 value={selectedEmployee?.id || parsedApplicationData?.workforceEmployee?.id}
                 onChange={handleEmployeeChange}
                 required={true}
@@ -116,7 +116,7 @@ const ApplicationTypeSelector = ({
           <FactoryPicker
             id="application-type-factory"
             // FIX: Pass the ID directly from the object (fallback to nested only if necessary)
-            value={safeDecodeId(selectedFactory?.id) || safeDecodeId(selectedFactory?.factory?.id) || safeDecodeId(workforceFactoryId)}
+            value={safeDecodeId(selectedFactory?.id) || safeDecodeId(selectedFactory?.factory?.id) || safeDecodeId(workforceFactoryId?.id)}
             label={<FormattedMessage id="workforce.employee.workforce_factory" module="workforce" />}
             required
             companyId={employeeData?.company?.id}

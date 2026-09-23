@@ -20,7 +20,7 @@ import {
 import "react-quill/dist/quill.snow.css";
 import ApplicationProcessFilter from "./ApplicationProcessFilter";
 import ForwardApplicationModal from "./modals/ForwardApplicationModal";
-import { getUserTypeFromRights, isBlwfPath, isEisPath, isEmptyObject, safeDecodeId, safeParse } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights, isBlwfPath, isEisPath, isEmptyObject, safeDecodeId, safeParse } from "../../utils/utils";
 import PrintIcon from "@material-ui/icons/Print";
 import ForwardApplicationAdminModal from "./modals/ForwardApplicationAdminModal";
 import ForwardApplicationCheckerMoal from "./modals/ForwardApplicationCheckerModal";
@@ -860,6 +860,19 @@ class ApplicationProcessSearcher extends Component {
       }
       else if (this.props.forwardedApplications) {
         defaultStatusFilters.push('statusIn: ["forward_to_eis_coordinator","revert_to_applicant"]');
+      }
+      else if (this.props.approvedApplications) {
+        defaultStatusFilters.push(`applicationFrom:"${this.props?.i_user?.id}"`);
+        // if (isEisPath()) {
+        // }else if(!isBlwfPath() && !isEisPath()){
+        //   if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
+        //     defaultStatusFilters.push('statusIn: ["forward_to_cf_section_two","revert_to_applicant"],applicationTo:"163"');
+        //   }else{
+        //     defaultStatusFilters.push('statusIn: ["forward_to_cf_section_one","revert_to_applicant"],applicationTo:"139"');
+        //   }
+        // }else{
+        //     defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","revert_to_applicant"],applicationTo:"187"');
+        // }
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]'];
