@@ -367,7 +367,7 @@ export const handleBulkSelectedByAssociationLogic = async ({
       setTimeout(() => {
         history.push("/");
         //window.location.reload();
-      }, 200);
+      }, 5000);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);
       setCloseLoader(false)
