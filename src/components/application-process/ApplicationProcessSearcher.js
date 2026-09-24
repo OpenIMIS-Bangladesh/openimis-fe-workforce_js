@@ -863,16 +863,6 @@ class ApplicationProcessSearcher extends Component {
       }
       else if (this.props.approvedApplications) {
         defaultStatusFilters.push(`applicationFrom:"${this.props?.i_user?.id}"`);
-        // if (isEisPath()) {
-        // }else if(!isBlwfPath() && !isEisPath()){
-        //   if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECTION_ADMIN_TWO) {
-        //     defaultStatusFilters.push('statusIn: ["forward_to_cf_section_two","revert_to_applicant"],applicationTo:"163"');
-        //   }else{
-        //     defaultStatusFilters.push('statusIn: ["forward_to_cf_section_one","revert_to_applicant"],applicationTo:"139"');
-        //   }
-        // }else{
-        //     defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","revert_to_applicant"],applicationTo:"187"');
-        // }
       }
       else if (this.props.returnedApplications) {
         defaultStatusFilters = ['statusIn: ["revert"]'];
@@ -1589,8 +1579,8 @@ class ApplicationProcessSearcher extends Component {
           if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
         }
         else if (this.props.forwardedApplications) {
-          defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
-          if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+          // defaultStatusFilters.push('statusIn: ["approved_by_doctor"]');
+          defaultStatusFilters.push(`applicationFrom:"${this.props?.i_user?.id}"`);
         }
         else if (this.props.returnedApplications) {
           defaultStatusFilters.push('statusIn: ["revert"]');
@@ -1666,6 +1656,17 @@ class ApplicationProcessSearcher extends Component {
         ) {
           finalFilters.push(`eisApplicationSummary_Id:"${summaryId}"`);
         }
+
+        const hasApplicationFrom = finalFilters.some((f) =>
+          f.includes("applicationFrom")
+        );
+
+        if (!hasApplicationFrom) {
+          finalFilters = [
+            ...defaultStatusFilters.filter((f) => f.includes("applicationFrom")),
+            ...finalFilters,
+          ];
+        }
       } else {
 
         finalFilters = [
@@ -1711,8 +1712,8 @@ class ApplicationProcessSearcher extends Component {
         defaultStatusFilters = ['statusIn: ["revert"]'];
         if (loggedInUserId) defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
       } else if (this.props.forwardedApplications) {
-        defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
-        if (loggedInUserId) defaultStatusFilters.push(`applicationFrom: "${loggedInUserId}"`);
+        // defaultStatusFilters = ['statusIn: ["approved_by_doctor"]'];
+        defaultStatusFilters.push(`applicationFrom:"${this.props?.i_user?.id}"`);
       } else if (loggedInUserId) {
         defaultStatusFilters = ['statusIn: ["forward_to_doctor"]'];
         defaultStatusFilters.push(`applicationTo: "${loggedInUserId}"`);
