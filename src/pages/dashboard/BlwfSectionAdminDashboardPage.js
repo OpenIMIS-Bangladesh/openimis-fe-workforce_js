@@ -641,7 +641,7 @@ const BlwfSectionAdminDashboard = () => {
   const modulesManager = useModulesManager()
   const [selectedMenu, setSelectedMenu] = useState("pendingApplications"); // Default first menu
  useEffect(() => {
-      return dispatch(fetchSummaryApplications(modulesManager,['status:"approved_by_dg"','organizationType:"blwf"']));
+      return dispatch(fetchSummaryApplications(modulesManager,['organizationType:"blwf"']));
     }, []);
   const data = useSelector(
       (state) => state.workforce[`applicationsSummary`] ?? []

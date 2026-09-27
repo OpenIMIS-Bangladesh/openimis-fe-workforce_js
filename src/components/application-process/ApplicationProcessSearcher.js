@@ -1079,9 +1079,9 @@ class ApplicationProcessSearcher extends Component {
       ];
 
       if (this.props.summaryId) {
-        filters.push(`blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`);
+        filters.push(`blwfApplicationSummary_Id: "${safeDecodeId(this.props.summaryId)}"`);
         if (!this.props.statusInSummary){
-          filters.push(`statusIn:["forward_to_comiitee","proposed_for_rejection"]`)
+          filters.push(`statusIn:["forward_to_comiitee","proposed_for_rejection","selected","forward_to_dg","forward_to_director"]`)
         }
         if (loggedInUserId) {
           filters.push(`applicationTo: "${loggedInUserId}"`);

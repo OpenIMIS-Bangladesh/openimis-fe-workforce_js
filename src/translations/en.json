@@ -910,6 +910,7 @@
   "profile.otherNames": "Name BN",
   "profile.lastName": "Name EN",
   "workforce.factoryAdmin.employee.lastAmount": "Last basic salary",
+  "workforce.employee.application.printAndForwardToDirector": "Print and send to the director",
 
   "view": "view",
   "reject": "reject",
