@@ -11,7 +11,7 @@ import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
 import CountryPicker from "../../pickers/CountryPicker";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
-import { isBlwfPath } from "../../utils/utils";
+import { filterBangla, filterEnglish, isBlwfPath } from "../../utils/utils";
 // import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -73,7 +73,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   id="nameBn"
                   label="workforce.employee.name.bn"
                   value={formData?.workforceEmployee?.nameBn || ""}
-                  onChange={(v) => handleChange("nameBn", v)}
+                  formatInput={filterBangla}
+                  onChange={(v) => handleChange("nameBn", filterBangla(v))}
                   required
                   readOnly={false}
                   error={!!errors.nameBn}
@@ -85,7 +86,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   id="nameEn"
                   label="workforce.employee.name.en"
                   value={formData?.workforceEmployee?.nameEn || ""}
-                  onChange={(v) => handleChange("nameEn", v)}
+                  formatInput={filterEnglish}
+                  onChange={(v) => handleChange("nameEn",filterEnglish(v))}
                   required
                   readOnly={false}
                   error={!!errors.nameEn}
@@ -345,8 +347,9 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       <TextInput
                         id="spouseNameEn"
                         label="workforce.employee.spouse.name.en"
+                        formatInput={filterEnglish}
                         value={formData?.workforceEmployee?.spouseNameEn || ""}
-                        onChange={(v) => handleChange("spouseNameEn", v)}
+                        onChange={(v) => handleChange("spouseNameEn", filterEnglish(v))}
                         readOnly={false}
                         // required
                         error={!!errors.spouseNameEn}
@@ -359,7 +362,8 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       id="spouseNameBn"
                       label={formData?.organizationType === "eis" ? "workforce.employee.spouse.name.bn" : "workforce.employee.spouse.name"}
                       value={formData?.workforceEmployee?.spouseNameBn || ""}
-                      onChange={(v) => handleChange("spouseNameBn", v)}
+                      formatInput={filterBangla}
+                      onChange={(v) => handleChange("spouseNameBn", filterBangla(v))}
                       readOnly={false}
                       // required
                       error={!!errors.spouseNameBn}

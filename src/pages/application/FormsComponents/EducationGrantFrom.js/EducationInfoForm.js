@@ -5,6 +5,7 @@ import { TextInput, useTranslations, FormattedMessage, PublishedComponent } from
 import BoardPicker from "../../../../pickers/BoardPicker";
 import YearPicker from "../../../../pickers/YearPicker";
 import EmployeeDetailsForm2 from "../../EmployeeDetailsForm2";
+import { filterBangla, filterEnglish } from "../../../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -46,7 +47,8 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
             id="nameEn"
             label="workforce.child.name.en"
             value={formData?.employeeChildrenInfo?.nameEn || ""}
-            onChange={(v) => handleChange("nameEn", v)}
+            formatInput={filterEnglish}
+            onChange={(v) => handleChange("nameEn", filterEnglish(v))}
             required
             readOnly={false}
             error={!!errors.nameEn}
@@ -58,7 +60,8 @@ const EducationInfoForm = ({ modulesManager, handleChange, formData, application
             id="nameBn"
             label="workforce.child.name.bn"
             value={formData?.employeeChildrenInfo?.nameBn || ""}
-            onChange={(v) => handleChange("nameBn", v)}
+            formatInput={filterBangla}
+            onChange={(v) => handleChange("nameBn", filterBangla(v))}
             required
             readOnly={false}
             error={!!errors.nameBn}

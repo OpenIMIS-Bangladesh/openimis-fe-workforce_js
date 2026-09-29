@@ -1623,6 +1623,12 @@ export const getOrdinalNumber = (number) => {
   }
 }
 
+// English field: remove Bangla characters (Unicode block U+0980–U+09FF)
+export const filterEnglish = (val = "") => val.replace(/[\u0980-\u09FF]/g, "");
+
+// Bangla field: remove English letters (keeps Bangla, digits, spaces, punctuation/special chars)
+export const filterBangla = (val = "") => val.replace(/[A-Za-z]/g, "");
+
 export const isCfPath = () => {
   if (typeof window !== "undefined") {
     return window.location.href.includes("cf");

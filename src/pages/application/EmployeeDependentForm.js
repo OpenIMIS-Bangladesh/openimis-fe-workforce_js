@@ -26,7 +26,7 @@ import FileUploader from "../../pickers/FileUploader";
 import CustomDependentLocation from "../../components/application-forms/CustomDependentLocation";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import EmployeeMaritalStatusPicker from "../../pickers/EmployeeMaritalStatusPicker";
-import { getRelationForApi, isBlwfPath, isCfPath, isVerify, normalizeNumberInput } from "../../utils/utils";
+import { filterBangla, filterEnglish, getRelationForApi, isBlwfPath, isCfPath, isVerify, normalizeNumberInput } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -264,7 +264,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       id="nameBn"
                       label={getRelationAwareLabel(dependent, "workforce.employee.name.bn")}
                       value={dependent.nameBn || ""}
-                      onChange={(v) => handleChange(index, "nameBn", v)}
+                      formatInput={filterBangla}
+                      onChange={(v) => handleChange(index, "nameBn", filterBangla(v))}
                       required
                       error={!!errors.nameBn}
                       helperText={errors.nameBn}
@@ -275,7 +276,8 @@ const EmployeeDependentForm = ({ applicationType, dependents, handleChange, addI
                       id="nameEn"
                       label={getRelationAwareLabel(dependent, "workforce.employee.name.en")}
                       value={dependent.nameEn || ""}
-                      onChange={(v) => handleChange(index, "nameEn", v)}
+                      formatInput={filterEnglish}
+                      onChange={(v) => handleChange(index, "nameEn", filterEnglish(v))}
                       required
                       error={!!errors.nameEn}
                       helperText={errors.nameEn}

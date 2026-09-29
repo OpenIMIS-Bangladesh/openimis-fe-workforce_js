@@ -7,7 +7,7 @@ import OtpInput from "react-otp-input";
 import { createWorkforceOtp, createWorkforceUser, fetchWorkforceOtp } from "../../actions";
 import { useSelector, useDispatch } from "react-redux";
 import CustomSnackbar from "../../components/shared/CustomSnackbar";
-import { getReturnUrl, isBlwfPath, isEisPath } from "../../utils/utils";
+import { filterBangla, filterEnglish, getReturnUrl, isBlwfPath, isEisPath, normalizeNumberInput } from "../../utils/utils";
 // import { REGISTRATION_ERROR_BN } from "../../constants";
 
 
@@ -186,10 +186,12 @@ const RegistrationPage = () => {
       password: formData.password,
     };
     await dispatch(createWorkforceUser(payload)).then(() => {
-      window.location.href = getReturnUrl() || '/';
+      
+      // window.location.href = getReturnUrl() || '/';
+      window.location.href = window.location.href= window.location.origin+`/login`;
     });
   };
-
+console.log({registration:formData})
   return (
     <>
       {isSubmitting && <LinearProgress />}
@@ -198,7 +200,7 @@ const RegistrationPage = () => {
           {/* Original Back Button Layout */}
           <Box display="flex" justifyContent="flex-start">
             <Button startIcon={<ArrowBackIcon />} href={getReturnUrl()} variant="text" color="primary" style={{ padding: "3px" }}>
-              Back
+              {lang=="bn"?"হোম পেজে ফিরে যান":"Back to home"}
             </Button>
             {/* <Button startIcon={<ArrowBackIcon />} href={isEisPath()? "https://mis.eis-pilot-bd.org" : "https://labourwelfare.gov.bd"} variant="text" color="primary" style={{ padding: "3px" }}>
               Back
@@ -227,7 +229,8 @@ const RegistrationPage = () => {
                       label={lang=="bn" ? "নাম (বাংলা)" : "Name (Bangla)"}
                       fullWidth
                       value={formData.firstNameBn}
-                      onChange={handleInputChange("firstNameBn")}
+                      formatInput={filterBangla}
+                      onChange={(v) => handleInputChange("firstNameBn")(filterBangla(v))}
                       error={!!errors.firstNameBn}
                     />
                     {errors.firstNameBn && <FormHelperText error>{errors.firstNameBn}</FormHelperText>}
@@ -240,7 +243,8 @@ const RegistrationPage = () => {
                       label={lang=="bn" ? "নাম (ইংরেজি)" : "Name (English)"}
                       fullWidth
                       value={formData.firstNameEn}
-                      onChange={handleInputChange("firstNameEn")}
+                      formatInput={filterEnglish}
+                      onChange={(v) => handleInputChange("firstNameEn")(filterEnglish(v))}
                       error={!!errors.firstNameEn}
                     />
                     {errors.firstNameEn && <FormHelperText error>{errors.firstNameEn}</FormHelperText>}
@@ -266,7 +270,7 @@ const RegistrationPage = () => {
                       label={lang=="bn" ? "মোবাইল নম্বর (ইউজারনেম)" : "Mobile Number (Username)"}
                       fullWidth
                       value={formData.mobile}
-                      onChange={(value) => handleInputChange("mobile")(value.replace(/\D/g, ""))}
+                      onChange={(value) => handleInputChange("mobile")(normalizeNumberInput(value).replace(/\D/g, ""))}
                       error={!!errors.phoneNumber}
                     />
                     {errors.phoneNumber && <FormHelperText error>{errors.phoneNumber}</FormHelperText>}
