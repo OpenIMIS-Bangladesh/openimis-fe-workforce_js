@@ -276,9 +276,16 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
     async (acceptedFiles) => {
       if (isUploading || acceptedFiles.length === 0) return;
 
+      const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+      const validFiles = acceptedFiles.filter(file => file.size <= MAX_SIZE_BYTES);
+      if (validFiles.length === 0) {
+        alert("File size exceeds 50MB limit."); // Replace with your app's toast/snackbar notification if preferred
+        return;
+      }
+
       // Check if cropping is needed first
       if (needsCropping()) {
-        const file = acceptedFiles[0];
+        const file = validFiles[0];
         const reader = new FileReader();
         reader.onload = () => {
           setImageToCrop(reader.result);
@@ -294,7 +301,7 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
       try {
         const uploadedResponses = [];
 
-        for (const file of acceptedFiles) {
+        for (const file of validFiles) {
           const res = await uploadFileToApi(file);
           if (res) uploadedResponses.push(res);
         }
@@ -427,6 +434,15 @@ const FileUploader = ({ fieldKey, documentId, onFileChange, applicationId, docum
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
+    onDropRejected: (fileRejections) => {
+      const isTooLarge = fileRejections.some(rejection => 
+        rejection.errors.some(error => error.code === "file-too-large")
+      );
+      if (isTooLarge) {
+        alert("File size exceeds 50MB limit.");
+      }
+    },
+    maxSize: 50 * 1024 * 1024,
     accept: {
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],

@@ -9,6 +9,7 @@ import CustomDetailedLocation from "../../components/application-forms/CustomDet
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import CountryPicker from "../../pickers/CountryPicker";
+import { filterDigits } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -131,11 +132,12 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   id="phoneNumber"
                   label="workforce.employee.phone"
                   value={formData?.workforceApplicant?.phoneNumber || ""}
-                  onChange={(v) => handleChange("phoneNumber", v)}
+                  formatInput={filterDigits}
+                  onChange={(v) => handleChange("phoneNumber", filterDigits(v))}
                   type={"text"}
                   required
                   readOnly={false}
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
+                  inputProps={{ inputMode: "numeric", maxLength: 11 }}
                   error={!!errors.phoneNumber}
                   helperText={errors.phoneNumber}
                 />

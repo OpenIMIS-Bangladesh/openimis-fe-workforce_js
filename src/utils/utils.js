@@ -1625,6 +1625,8 @@ export const getOrdinalNumber = (number) => {
 
 // English field: remove Bangla characters (Unicode block U+0980–U+09FF)
 export const filterEnglish = (val = "") => val.replace(/[\u0980-\u09FF]/g, "");
+// helper: keep only Western digits and Bangla digits (০-৯)
+export const filterDigits = (val = "") => (val || "").toString().replace(/[^0-9\u09E6-\u09EF]/g, "");
 
 // Bangla field: remove English letters (keeps Bangla, digits, spaces, punctuation/special chars)
 export const filterBangla = (val = "") => val.replace(/[A-Za-z]/g, "");

@@ -11,7 +11,7 @@ import CompanyPicker from "../../pickers/CompanyPicker";
 import FactoryPicker from "../../pickers/FactoryPicker";
 import CountryPicker from "../../pickers/CountryPicker";
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
-import { filterBangla, filterEnglish, isBlwfPath } from "../../utils/utils";
+import { filterBangla, filterDigits, filterEnglish, isBlwfPath } from "../../utils/utils";
 // import CustomDateTimePicker from "../../pickers/CustomDatePicker";
 
 const useStyles = makeStyles((theme) => ({
@@ -123,11 +123,12 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       id="phoneNumber"
                       label="workforce.employee.phone"
                       value={formData?.workforceEmployee?.phoneNumber || ""}
-                      onChange={(v) => handleChange("phoneNumber", v)}
+                      formatInput={filterDigits}
+                      onChange={(v) => handleChange("phoneNumber", filterDigits(v))}
                       type={"text"}
                       required
                       readOnly={false}
-                      inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
+                      inputProps={{ inputMode: "numeric", maxLength: 11 }}
                       error={!!errors.phoneNumber}
                       helperText={errors.phoneNumber}
                     />
@@ -362,7 +363,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       id="spouseNameBn"
                       label={formData?.organizationType === "eis" ? "workforce.employee.spouse.name.bn" : "workforce.employee.spouse.name"}
                       value={formData?.workforceEmployee?.spouseNameBn || ""}
-                      formatInput={filterBangla}
+                      formatInput={formData?.organizationType === "eis" && filterBangla}
                       onChange={(v) => handleChange("spouseNameBn", filterBangla(v))}
                       readOnly={false}
                       // required
