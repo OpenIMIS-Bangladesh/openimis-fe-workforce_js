@@ -87,7 +87,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   label="workforce.employee.name.en"
                   value={formData?.workforceEmployee?.nameEn || ""}
                   formatInput={filterEnglish}
-                  onChange={(v) => handleChange("nameEn",filterEnglish(v))}
+                  onChange={(v) => handleChange("nameEn", filterEnglish(v))}
                   required
                   readOnly={false}
                   error={!!errors.nameEn}
@@ -194,10 +194,10 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                   onChange={(v) => {
                     const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
                     setNidOrBcn({ ...nidOrBcn, nid: numericValue });
-                    handleChange("nid", v);
+                    handleChange("nid", numericValue);
                   }}
                   type="text"
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*" }}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*", maxLength: 17 }}
                   required
                   readOnly={false}
                   error={!!errors.nid}
@@ -363,10 +363,9 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       id="spouseNameBn"
                       label={formData?.organizationType === "eis" ? "workforce.employee.spouse.name.bn" : "workforce.employee.spouse.name"}
                       value={formData?.workforceEmployee?.spouseNameBn || ""}
-                      formatInput={formData?.organizationType === "eis" && filterBangla}
-                      onChange={(v) => handleChange("spouseNameBn", filterBangla(v))}
+                      formatInput={(val) => (formData?.organizationType === "eis" ? filterBangla(val) : (val || "").toString())}
+                      onChange={(v) => handleChange("spouseNameBn", formData?.organizationType === "eis" ? filterBangla(v) : v)}
                       readOnly={false}
-                      // required
                       error={!!errors.spouseNameBn}
                       helperText={errors.spouseNameBn}
                     />
@@ -429,8 +428,13 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       id="spouseNid"
                       label="workforce.application.employee.children.nidOrBirthRegistry"
                       value={formData?.metadata?.spouseNid || ""}
-                      onChange={(v) => setFormData("spouseNid", v, "metadata")}
-                      type={"number"}
+                      formatInput={(val) => (val || "").toString().replace(/\D/g, "").slice(0, 17)}
+                      onChange={(v) => {
+                        const numericValue = (v || "").replace(/\D/g, "").slice(0, 17);
+                        setFormData("spouseNid", numericValue, "metadata");
+                      }}
+                      type={"text"}
+                      inputProps={{ inputMode: "numeric", pattern: "[0-9০-৯]*", maxLength: 17 }}
                       readOnly={false}
                       required
                       error={!!errors.spouseNid}
@@ -451,6 +455,7 @@ const EmployeeDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, se
                       readOnly={false}
                       required
                     />
+                    {errors.rdmp && <FormHelperText error>{<FormattedMessage id={errors?.rdmp} />}</FormHelperText>}
                   </Grid>
                 </Grid>
               </>

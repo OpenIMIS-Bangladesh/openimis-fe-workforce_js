@@ -60,7 +60,7 @@ const ScholarshipApplicationForm = ({
   selectedFactory,
   parsedApplicationData,
 }) => {
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"]);
 
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
@@ -164,7 +164,7 @@ const ScholarshipApplicationForm = ({
   }, [reduxState.core.user.username]);
 
   useEffect(() => {
-    if (employeeData) {
+    if (!employeeData?.id) return
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
@@ -219,7 +219,7 @@ const ScholarshipApplicationForm = ({
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         employeeChildrenInfo: parsedApplicationData?.employeeChildrenInfo || employeeData.employeeChildrenInfo || {},
       });
-    }
+    // }
   }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes

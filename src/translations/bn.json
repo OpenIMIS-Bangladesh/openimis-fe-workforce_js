@@ -1137,5 +1137,11 @@
   "workforce.reject.reason.placeholder": "প্রত্যাখ্যানের কারণ লিখুন...",
   "workforce.application.rejected":"বাতিলকৃত আবেদনসমূহ",
   "workforce.previous.history.button" :"পূর্ববর্তী আবেদনের তথ্য",
-  "workforce.previous.history.list" :"পূর্ববর্তী আবেদনের তালিকা"
+  "workforce.previous.history.list" :"পূর্ববর্তী আবেদনের তালিকা",
+
+  "workforce.accidentType.insideFactory": "কারখানার ভিতরে",
+  "workforce.accidentType.fromWorkplaceToHome": "কর্মস্থল থেকে বাসায় যাওয়ার পথে",
+  "workforce.accidentType.fromHomeToWorkplace": "বাসা থেকে কর্মস্থলে যাওয়ার পথে",
+  "workforce.accidentType.workRelatedTravel": "কর্মস্থল থেকে অফিসের কাজে অন্যত্র যাওয়া/আসার পথে",
+  "workforce.accidentType.otherPlace": "অন্যস্থানে"
 }

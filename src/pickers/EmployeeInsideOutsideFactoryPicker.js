@@ -21,7 +21,7 @@ const EmployeeInsideOutsideFactoryPicker = ({
 
   // Adjust the options to match the EMPLOYEE_INSIDE_OUTSIDE_FACTORY format
   // const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["Inside Factory", "Outside Factory"];
-  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["কারখানার ভিতরে", "কর্মস্থল থেকে বাসায় যাওয়ার পথে","বাসা থেকে কর্মস্থলে যাওয়ার পথে","কর্মস্থল থেকে অফিসের কাজে অন্যত্র যাওয়া/আসার পথে","অন্যস্থানে"];
+  const EMPLOYEE_INSIDE_OUTSIDE_FACTORY = ["workforce.accidentType.insideFactory", "workforce.accidentType.fromWorkplaceToHome","workforce.accidentType.fromHomeToWorkplace","workforce.accidentType.workRelatedTravel","workforce.accidentType.otherPlace"];
 
   // Find the selected option
   const selectedOption = useMemo(
@@ -42,7 +42,7 @@ const EmployeeInsideOutsideFactoryPicker = ({
       isLoading={false} // Set to false if not loading data dynamically
       options={EMPLOYEE_INSIDE_OUTSIDE_FACTORY}
       value={selectedOption}
-      getOptionLabel={(option) => option} // Since options are strings, return the string directly
+      getOptionLabel={(option) => formatMessage(option)} // Since options are strings, return the string directly
       onChange={(option) => onChange(option, option ?? null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

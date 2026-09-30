@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, selectedFactory, parsedApplicationData }) => {
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"]);
 
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
@@ -150,7 +150,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
   }, [reduxState.core.user.username]);
 
   useEffect(() => {
-    if (employeeData) {
+    if (!employeeData?.id) return
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
@@ -206,7 +206,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
         employeeAccidentInfo: parsedApplicationData?.employeeAccidentInfo || employeeData?.employeeAccidentInfo || {},
         metadata: parsedApplicationData?.metadata || employeeData?.metadata || {},
       });
-    }
+    // }
   }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
@@ -257,7 +257,7 @@ const MaternalGrantForm = ({ workforceFactoryId, organizationType, selectedAppli
 
     if (Object.keys(newErrors).length === 0) {
       const nextStep = activeStep + 1;
-      if (nextStep === 1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)) {
+      if (nextStep === 1 && !isAtLeast18YearsOld(formData?.workforceEmployee?.birthDate)&& !isAtLeast18YearsOld(formData?.metadata?.spouseBirthDate)) {
         let fakeErrors = { ...newErrors, rdmp: "core.error.workerAge" };
         setErrors(fakeErrors);
         console.log({ fakeErrors });

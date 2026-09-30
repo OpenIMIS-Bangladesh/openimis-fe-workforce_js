@@ -1225,6 +1225,12 @@
   "workforce.reject.reason.placeholder": "Enter reject reason...",
   "workforce.application.rejected":"Rejected Applications",
   "workforce.previous.history.button" :"Previous application information",
-  "workforce.previous.history.list" :"List of previous applications"
+  "workforce.previous.history.list" :"List of previous applications",
+
+  "workforce.accidentType.insideFactory": "Inside the factory",
+  "workforce.accidentType.fromWorkplaceToHome": "On the way from workplace to home",
+  "workforce.accidentType.fromHomeToWorkplace": "On the way from home to workplace",
+  "workforce.accidentType.workRelatedTravel": "On the way to/from another place for official work",
+  "workforce.accidentType.otherPlace": "Other place"
 
 }

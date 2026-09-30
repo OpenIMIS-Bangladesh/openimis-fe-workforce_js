@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedApplicationType, applicationForSelf, parsedApplicationData, selectedFactory }) => {
-  const employeeData = useSelector((state) => state.workforce["workforceEmployee"] ?? []);
+  const employeeData = useSelector((state) => state.workforce["workforceEmployee"]);
 
   const modulesManager = useModulesManager();
   const { formatMessage } = useTranslations("workforce");
@@ -164,7 +164,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
   }, [reduxState.core.user.username]);
 
   useEffect(() => {
-    if (employeeData) {
+    if (!employeeData?.id) return
       // When employeeData is fetched, set it into the form state
       setFormData({
         id: parsedApplicationData?.id || "",
@@ -219,7 +219,7 @@ const EducationGrantForm = ({ workforceFactoryId, organizationType, selectedAppl
         previousGrantInfo: employeeData.previousGrantInfo || {},
         otherInfo: employeeData.otherInfo || {},
       });
-    }
+    // }
   }, [employeeData?.id, parsedApplicationData,user_type]); // Trigger this useEffect when `employeeData` changes.
 
   // Handle form input changes
