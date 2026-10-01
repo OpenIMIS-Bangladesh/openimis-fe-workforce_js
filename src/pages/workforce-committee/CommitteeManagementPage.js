@@ -233,23 +233,27 @@ const CommitteeManagementPage = () => {
     }
   };
 
-  const handleRepresentativeToggle = async (mapping) => {
-    try {
-      const payload = {
-        id: safeDecodeId(mapping.id),
-        committeeId: safeDecodeId(mapping.committee?.id),
-        userId: safeDecodeId(mapping.user?.id),
-        isRepresentative: !mapping.isRepresentative,
-      };
-      await dispatch(updateWorkforceCommitteeUserMap(payload, "updateWorkforceCommitteeUserMap"));
-      setSuccessMessage("Representative status updated successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-      fetchPreloadData();
-    } catch (error) {
-      console.error("Failed to update representative status:", error);
-      alert("Failed to update representative status: " + error.message);
-    }
-  };
+  const handleRepresentativeToggle = async (mapping, event) => {
+  try {
+    const payload = {
+      id: safeDecodeId(mapping.id),
+      committeeId: safeDecodeId(mapping.committee?.id),
+      userId: safeDecodeId(mapping.user?.id),
+      isRepresentative: event.target.checked,
+    };
+
+    await dispatch(
+      updateWorkforceCommitteeUserMap(payload, "updateWorkforceCommitteeUserMap"),
+    );
+
+    setSuccessMessage("Representative status updated successfully!");
+    setTimeout(() => setSuccessMessage(""), 3000);
+    await fetchPreloadData();
+  } catch (error) {
+    console.error("Failed to update representative status:", error);
+    alert("Failed to update representative status: " + error.message);
+  }
+};
 
   const fetchPreloadData = async () => {
     try {
@@ -832,7 +836,7 @@ const CommitteeManagementPage = () => {
                                         control={
                                           <Checkbox
                                             checked={Boolean(mapping.isRepresentative)}
-                                            onChange={() => handleRepresentativeToggle(mapping)}
+                                            onChange={(e) => handleRepresentativeToggle(mapping,e)}
                                             color="primary"
                                           />
                                         }

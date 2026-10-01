@@ -1,6 +1,4 @@
-import {
-  formatGQLString, decodeId,
-} from "@openimis/fe-core";
+import { formatGQLString, decodeId } from "@openimis/fe-core";
 import { WORKFORCE_STATUS } from "../constants";
 import { safeDecodeId } from "./utils";
 
@@ -21,9 +19,7 @@ export function formatRepresentativeGQL(representative) {
   `;
 }
 
-
 export function formatOrganizationGQL(organization) {
-
   return `
     ${organization.type ? `type: "${formatGQLString(organization.type)}"` : ""}
     ${organization.id ? `id: "${organization.id}"` : ""}
@@ -48,7 +44,7 @@ export function formatUnitGQL(unit) {
     ${unit.phoneNumber ? `phoneNumber: "${formatGQLString(unit.phoneNumber)}"` : ""}
     ${unit.email ? `email: "${formatGQLString(unit.email)}"` : ""}
     ${unit.level ? `unitLevel: "${unit.level}"` : ""}
-    ${(unit.parent && unit.parent.id) ? `parentId: "${decodeId(unit.parent.id)}"` : ""}
+    ${unit.parent && unit.parent.id ? `parentId: "${decodeId(unit.parent.id)}"` : ""}
     ${unit.organization?.id ? `organizationId: "${decodeId(unit.organization.id)}"` : ""}
   `;
 }
@@ -74,22 +70,22 @@ export function formatBankGQL(bank) {
 export function formatEducationInfoGQL(education) {
   console.log({ education });
   return `
-    ${education?.id ? `id: "${(education?.id)}"` : ""}
-    ${education?.applicationId ? `applicationId: "${(education?.applicationId)}"` : ""}
-    ${education?.educationLevel ? `educationLevel: "${(education?.educationLevel)}"` : ""}
-    ${education?.educationBoard ? `educationBoard: "${(education?.educationBoard)}"` : ""}
-    ${education?.passingYear ? `passingYear: "${(education?.passingYear)}"` : ""}
+    ${education?.id ? `id: "${education?.id}"` : ""}
+    ${education?.applicationId ? `applicationId: "${education?.applicationId}"` : ""}
+    ${education?.educationLevel ? `educationLevel: "${education?.educationLevel}"` : ""}
+    ${education?.educationBoard ? `educationBoard: "${education?.educationBoard}"` : ""}
+    ${education?.passingYear ? `passingYear: "${education?.passingYear}"` : ""}
     ${education?.locationId ? `locationId: "${decodeId(education?.locationId.id)}"` : ""}
-    ${education?.rollNumber ? `rollNumber: "${(education?.rollNumber)}"` : ""}
-    ${education?.registrationNumber ? `registrationNumber: "${(education?.registrationNumber)}"` : ""}
-    ${education?.childNidNo ? `childNidNo: "${(education?.childNidNo)}"` : ""}
-    ${education?.childNameEn ? `childNameEn: "${(education?.childNameEn)}"` : ""}
-    ${education?.childNameBn ? `childNameBn: "${(education?.childNameBn)}"` : ""}
-    ${education?.childBirthDate ? `childBirthDate: "${(education?.childBirthDate)}"` : ""}
-    ${education?.childBirthCertificateNo ? `childBirthCertificateNo: "${(education?.childBirthCertificateNo)}"` : ""}
-    ${education?.studyClass ? `studyClass: "${(education?.studyClass)}"` : ""}
-    ${education?.result ? `result: "${(education?.result)}"` : ""}
-    ${education?.institution ? `institution: "${(education?.institution)}"` : ""}
+    ${education?.rollNumber ? `rollNumber: "${education?.rollNumber}"` : ""}
+    ${education?.registrationNumber ? `registrationNumber: "${education?.registrationNumber}"` : ""}
+    ${education?.childNidNo ? `childNidNo: "${education?.childNidNo}"` : ""}
+    ${education?.childNameEn ? `childNameEn: "${education?.childNameEn}"` : ""}
+    ${education?.childNameBn ? `childNameBn: "${education?.childNameBn}"` : ""}
+    ${education?.childBirthDate ? `childBirthDate: "${education?.childBirthDate}"` : ""}
+    ${education?.childBirthCertificateNo ? `childBirthCertificateNo: "${education?.childBirthCertificateNo}"` : ""}
+    ${education?.studyClass ? `studyClass: "${education?.studyClass}"` : ""}
+    ${education?.result ? `result: "${education?.result}"` : ""}
+    ${education?.institution ? `institution: "${education?.institution}"` : ""}
   `;
 }
 
@@ -149,15 +145,16 @@ export function formatWorkforceOfficeGQL(office) {
 
 export function formatWorkforceOtherCompensationGQL(otherCompensation) {
   return `
-    ${otherCompensation?.id ? `id: "${(otherCompensation?.id)}"` : ""}
-    ${otherCompensation?.entryBy ? `entryBy: "${(otherCompensation?.entryBy)}"` : ""}
-    ${otherCompensation?.dateOfCompensation ? `dateOfCompensation: "${(otherCompensation?.dateOfCompensation)}"` : ""}
-    ${otherCompensation?.amount ? `amount: "${(otherCompensation?.amount)}"` : ""}
-    ${otherCompensation?.statusOfPayment ? `statusOfPayment: "${(otherCompensation?.statusOfPayment)}"` : ""}
-    ${otherCompensation?.isEisBenefitAdjustmentEligible !== undefined &&
-      otherCompensation?.isEisBenefitAdjustmentEligible !== null
+    ${otherCompensation?.id ? `id: "${otherCompensation?.id}"` : ""}
+    ${otherCompensation?.entryBy ? `entryBy: "${otherCompensation?.entryBy}"` : ""}
+    ${otherCompensation?.dateOfCompensation ? `dateOfCompensation: "${otherCompensation?.dateOfCompensation}"` : ""}
+    ${otherCompensation?.amount ? `amount: "${otherCompensation?.amount}"` : ""}
+    ${otherCompensation?.statusOfPayment ? `statusOfPayment: "${otherCompensation?.statusOfPayment}"` : ""}
+    ${
+      otherCompensation?.isEisBenefitAdjustmentEligible !== undefined && otherCompensation?.isEisBenefitAdjustmentEligible !== null
         ? `isEisBenefitAdjustmentEligible: "${otherCompensation.isEisBenefitAdjustmentEligible}"`
-    : ""}
+        : ""
+    }
     ${otherCompensation?.remarks ? `remarks: "${otherCompensation?.remarks}"` : ""}
     ${otherCompensation?.paymentType ? `paymentType: "${otherCompensation?.paymentType}"` : ""}
     ${otherCompensation?.receivedFromOrganization ? `receivedFromOrganization: "${otherCompensation?.receivedFromOrganization}"` : ""}
@@ -167,7 +164,7 @@ export function formatWorkforceOtherCompensationGQL(otherCompensation) {
 export function formatWorkforceFactoryGQL(factory) {
   return `
     ${factory?.id ? `id: "${formatGQLString(factory?.id)}"` : ""}
-    ${factory?.company?.id ? `workforceEmployerId: "${(factory?.company.id)}"` : ""}
+    ${factory?.company?.id ? `workforceEmployerId: "${factory?.company.id}"` : ""}
     ${factory?.nameEn ? `nameEn: "${formatGQLString(factory?.nameEn)}"` : ""}
     ${factory?.nameBn ? `nameBn: "${formatGQLString(factory?.nameBn)}"` : ""}
     ${factory?.phoneNumber ? `phoneNumber: "${formatGQLString(factory?.phoneNumber)}"` : ""}
@@ -269,23 +266,23 @@ export function formatWorkforceAssociationGQL(association) {
 
 export function formatWorkforceDependentGQL(dependent) {
   return `
-    ${dependent?.id ? `id: "${(dependent.id)}"` : ""}
-    ${dependent.workforceApplicationId ? `workforceApplicationId: "${(dependent.workforceApplicationId)}"` : ""}
-    ${dependent.nameBn ? `nameBn: "${(dependent.nameBn)}"` : ""}
-    ${dependent.nameEn ? `nameEn: "${(dependent.nameEn)}"` : ""}
-    ${dependent.fatherNameBn ? `fatherNameBn: "${(dependent.fatherNameBn)}"` : ""}
-    ${dependent.fatherNameEn ? `fatherNameEn: "${(dependent.fatherNameEn)}"` : ""}
-    ${dependent.motherNameBn ? `motherNameBn: "${(dependent.motherNameBn)}"` : ""}
-    ${dependent.motherNameEn ? `motherNameEn: "${(dependent.motherNameEn)}"` : ""}
-    ${dependent.maritalStatus ? `maritalStatus: "${(dependent.maritalStatus)}"` : ""}
-    ${dependent.gender ? `gender: "${(dependent.gender)}"` : ""}
-    ${dependent.occupation ? `occupation: "${(dependent.occupation)}"` : ""}
-    ${dependent.email ? `email: "${(dependent.email)}"` : ""}
-    ${dependent.phoneNumber ? `phoneNumber: "${(dependent.phoneNumber)}"` : ""}
+    ${dependent?.id ? `id: "${dependent.id}"` : ""}
+    ${dependent.workforceApplicationId ? `workforceApplicationId: "${dependent.workforceApplicationId}"` : ""}
+    ${dependent.nameBn ? `nameBn: "${dependent.nameBn}"` : ""}
+    ${dependent.nameEn ? `nameEn: "${dependent.nameEn}"` : ""}
+    ${dependent.fatherNameBn ? `fatherNameBn: "${dependent.fatherNameBn}"` : ""}
+    ${dependent.fatherNameEn ? `fatherNameEn: "${dependent.fatherNameEn}"` : ""}
+    ${dependent.motherNameBn ? `motherNameBn: "${dependent.motherNameBn}"` : ""}
+    ${dependent.motherNameEn ? `motherNameEn: "${dependent.motherNameEn}"` : ""}
+    ${dependent.maritalStatus ? `maritalStatus: "${dependent.maritalStatus}"` : ""}
+    ${dependent.gender ? `gender: "${dependent.gender}"` : ""}
+    ${dependent.occupation ? `occupation: "${dependent.occupation}"` : ""}
+    ${dependent.email ? `email: "${dependent.email}"` : ""}
+    ${dependent.phoneNumber ? `phoneNumber: "${dependent.phoneNumber}"` : ""}
     ${dependent.birthDate ? `birthDate: "${dependent.birthDate}"` : ""}
-    ${dependent.nid ? `nid: "${(dependent.nid)}"` : ""}
-    ${dependent.birthCertificateNo ? `birthCertificateNo: "${(dependent.birthCertificateNo)}"` : ""}
-    ${dependent.lifeStatus ? `lifeStatus: "${(dependent.lifeStatus)}"` : ""}
+    ${dependent.nid ? `nid: "${dependent.nid}"` : ""}
+    ${dependent.birthCertificateNo ? `birthCertificateNo: "${dependent.birthCertificateNo}"` : ""}
+    ${dependent.lifeStatus ? `lifeStatus: "${dependent.lifeStatus}"` : ""}
     ${dependent.deathDate ? `deathDate: "${dependent.deathDate}"` : ""}
     ${dependent.disabilityStatus ? `disabilityStatus: "${formatGQLString(dependent.disabilityStatus)}"` : ""}
     ${dependent.disabilityType ? `disabilityType: "${formatGQLString(dependent.disabilityType)}"` : ""}
@@ -297,35 +294,35 @@ export function formatWorkforceDependentGQL(dependent) {
     ${dependent.permanentAddress ? `permanentAddress: ${dependent.permanentAddress ? `"${escapeQuotes(dependent.permanentAddress)}"` : null}` : ""}
     ${dependent.presentAddress ? `presentAddress: ${dependent.presentAddress ? `"${escapeQuotes(dependent.presentAddress)}"` : null}` : ""}
     ${dependent.isEligible ? `isEligible: ${dependent.isEligible}` : ""}
-    ${dependent.bankId ? `bankId: "${(dependent.bankId)}"` : ""}
-    ${dependent.bankAccountHolderName ? `bankAccountHolderName: "${(dependent.bankAccountHolderName)}"` : ""}
-    ${dependent.bankAccountNo ? `bankAccountNo: "${(dependent.bankAccountNo)}"` : ""}
-    ${dependent.accountHolderType ? `accountHolderType: "${(dependent.accountHolderType)}"` : ""}
+    ${dependent.bankId ? `bankId: "${dependent.bankId}"` : ""}
+    ${dependent.bankAccountHolderName ? `bankAccountHolderName: "${dependent.bankAccountHolderName}"` : ""}
+    ${dependent.bankAccountNo ? `bankAccountNo: "${dependent.bankAccountNo}"` : ""}
+    ${dependent.accountHolderType ? `accountHolderType: "${dependent.accountHolderType}"` : ""}
     ${dependent.accountHolderDob ? `accountHolderDob: "${dependent.accountHolderDob}"` : ""}
-    ${dependent.accountHolderNid ? `accountHolderNid: "${(dependent.accountHolderNid)}"` : ""}
-    ${dependent.accountHolderRelationWithDependent ? `accountHolderRelationWithDependent: "${(dependent.accountHolderRelationWithDependent)}"` : ""}
-    ${dependent.bankingInfoId ? `bankingInfoId: "${(dependent.bankingInfoId)}"` : ""}
-    ${dependent.parentDependentId ? `parentDependentId: "${(dependent.parentDependentId)}"` : ""}
-    ${dependent.percentageOfCfGrant ? `percentageOfCfGrant: "${(dependent.percentageOfCfGrant)}"` : ""}
+    ${dependent.accountHolderNid ? `accountHolderNid: "${dependent.accountHolderNid}"` : ""}
+    ${dependent.accountHolderRelationWithDependent ? `accountHolderRelationWithDependent: "${dependent.accountHolderRelationWithDependent}"` : ""}
+    ${dependent.bankingInfoId ? `bankingInfoId: "${dependent.bankingInfoId}"` : ""}
+    ${dependent.parentDependentId ? `parentDependentId: "${dependent.parentDependentId}"` : ""}
+    ${dependent.percentageOfCfGrant ? `percentageOfCfGrant: "${dependent.percentageOfCfGrant}"` : ""}
     ${dependent.eisApprovedAmount ? `eisApprovedAmount: ${dependent.eisApprovedAmount ?? null}` : ""}
     ${dependent.eisCalculatedAmount ? `eisCalculatedAmount: ${dependent.eisCalculatedAmount ?? null}` : ""}
     ${dependent.eisMonthlyAmount ? `eisMonthlyAmount: ${dependent.eisMonthlyAmount ?? null}` : ""}
-    ${dependent.eisPaymentType ? `eisPaymentType: "${(dependent.eisPaymentType)}"` : ""}
+    ${dependent.eisPaymentType ? `eisPaymentType: "${dependent.eisPaymentType}"` : ""}
     ${dependent.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: ${dependent.eisInitialMonthlyAmount ?? null}` : ""}
     ${dependent.initialReplacementRate ? `initialReplacementRate: ${dependent.initialReplacementRate ?? null}` : ""}
     ${dependent.pvFactor ? `pvFactor: ${dependent.pvFactor ?? null}` : ""}
-  `
+  `;
 }
 
 ///application   ////
 export function formatApplicationeGQL(application) {
   return `
-  ${application?.id ? `id: "${(application?.id)}"` : ""}
-  ${application?.workforceEmployeeId ? `workforceEmployeeId: "${(application?.workforceEmployeeId)}"` : ""}
+  ${application?.id ? `id: "${application?.id}"` : ""}
+  ${application?.workforceEmployeeId ? `workforceEmployeeId: "${application?.workforceEmployeeId}"` : ""}
   ${application?.organizationId ? `organizationId: "${decodeId(application?.organizationId?.id)}"` : ""}
   ${application?.organizationType ? `organizationType: "${formatGQLString(application?.organizationType)}"` : ""}
   ${application?.applicationType ? `applicationType: "${formatGQLString(application?.applicationType)}"` : ""}
-  ${application?.grantAmount ? `grantAmount: "${(application?.grantAmount)}"` : ""}
+  ${application?.grantAmount ? `grantAmount: "${application?.grantAmount}"` : ""}
   ${application?.status ? `status: "${application?.status}"` : ""}
   ${application?.trackingNumber ? `trackingNumber: "${application?.trackingNumber}"` : ""}
   ${application?.employeeDependentInfo ? `employeeDependentInfo: ${escapeQuotes(application?.employeeDependentInfo)}` : ""}
@@ -337,105 +334,105 @@ export function formatApplicationeGQL(application) {
   ${application?.metadata ? `metadata: ${escapeQuotes(application?.metadata)}` : ""}
   ${application?.employeeChildrenInfo ? `employeeChildrenInfo: ${escapeQuotes(application?.employeeChildrenInfo)}` : ""}
   ${application?.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(application?.employeeDesignationInfo)}` : ""}
-  ${application?.isSubmitted ? `isSubmitted: "${(application?.isSubmitted)}"` : ""}
-  ${application?.submittedBy ? `submittedBy: "${(application?.submittedBy)}"` : ""}
-  ${application?.associationType ? `associationType: "${(application?.associationType)}"` : ""}
-  ${application?.company ? `employeeEmployerId: "${(application?.company)}"` : ""}
-  ${application?.factory ? `employeeFactoryId: "${(application?.factory)}"` : ""}
-  ${application?.cfApplicationSummaryId ? `cfApplicationSummaryId: "${(application?.cfApplicationSummaryId)}"` : ""}
-  ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${(application?.eisApplicationSummaryId)}"` : ""}
-  ${application?.blwfApplicationSummaryId ? `blwfApplicationSummaryId: "${(application?.blwfApplicationSummaryId)}"` : ""}
-  ${application?.applicationFor ? `applicationFor: "${(application?.applicationFor)}"` : ""}
-  ${application?.doctorsDiagnosis ? `doctorsDiagnosis: "${(application?.doctorsDiagnosis)}"` : ""}
-  ${application?.doctorsFlag ? `doctorsFlag: "${(application?.doctorsFlag)}"` : ""}
-  ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${(application?.doctorsRecommendedDonation)}"` : ""}
-  ${application?.doctorComment ? `doctorsFlagNote: "${(application?.doctorComment)}"` : ""}
-  ${application?.lastBaseSalary ? `lastBaseSalary: "${(application?.lastBaseSalary)}"` : ""}
+  ${application?.isSubmitted ? `isSubmitted: "${application?.isSubmitted}"` : ""}
+  ${application?.submittedBy ? `submittedBy: "${application?.submittedBy}"` : ""}
+  ${application?.associationType ? `associationType: "${application?.associationType}"` : ""}
+  ${application?.company ? `employeeEmployerId: "${application?.company}"` : ""}
+  ${application?.factory ? `employeeFactoryId: "${application?.factory}"` : ""}
+  ${application?.cfApplicationSummaryId ? `cfApplicationSummaryId: "${application?.cfApplicationSummaryId}"` : ""}
+  ${application?.eisApplicationSummaryId ? `eisApplicationSummaryId: "${application?.eisApplicationSummaryId}"` : ""}
+  ${application?.blwfApplicationSummaryId ? `blwfApplicationSummaryId: "${application?.blwfApplicationSummaryId}"` : ""}
+  ${application?.applicationFor ? `applicationFor: "${application?.applicationFor}"` : ""}
+  ${application?.doctorsDiagnosis ? `doctorsDiagnosis: "${application?.doctorsDiagnosis}"` : ""}
+  ${application?.doctorsFlag ? `doctorsFlag: "${application?.doctorsFlag}"` : ""}
+  ${application?.doctorsRecommendedDonation ? `doctorsRecommendedDonation: "${application?.doctorsRecommendedDonation}"` : ""}
+  ${application?.doctorComment ? `doctorsFlagNote: "${application?.doctorComment}"` : ""}
+  ${application?.lastBaseSalary ? `lastBaseSalary: "${application?.lastBaseSalary}"` : ""}
   ${application?.deceasedWorkerInfo ? `deceasedWorkerInfo: ${escapeQuotes(application?.deceasedWorkerInfo)}` : ""}
-   ${application?.eisApprovedAmount ? `eisApprovedAmount: "${(application?.eisApprovedAmount)}"` : ""}
-  ${application?.eisCalculatedAmount ? `eisCalculatedAmount: "${(application?.eisCalculatedAmount)}"` : ""}
-  ${application?.eisPaymentType ? `eisPaymentType: "${(application?.eisPaymentType)}"` : ""}
-  ${application?.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: "${(application?.eisInitialMonthlyAmount)}"` : ""}
-  ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${(application?.eisMonthlyAmount)}"` : ""}
-  ${application?.initialReplacementRate ? `initialReplacementRate: "${(application?.initialReplacementRate)}"` : ""}
-  ${application?.pvFactor ? `pvFactor: "${(application?.pvFactor)}"` : ""}
-  ${application?.applicantInfoVerification ? `applicantInfoVerification: "${(application?.applicantInfoVerification)}"` : ""}
-  ${application?.applicantInfoVerificationRemarks ? `applicantInfoVerificationRemarks: "${(application?.applicantInfoVerificationRemarks)}"` : ""}
-  ${application?.deceasedWorkerInfoVerification ? `deceasedWorkerInfoVerification: "${(application?.deceasedWorkerInfoVerification)}"` : ""}
-  ${application?.deceasedWorkerInfoVerificationRemarks ? `deceasedWorkerInfoVerificationRemarks: "${(application?.deceasedWorkerInfoVerificationRemarks)}"` : ""}
-  ${application?.doctorsEntryVerification ? `doctorsEntryVerification: "${(application?.doctorsEntryVerification)}"` : ""}
-  ${application?.doctorsEntryVerificationRemarks ? `doctorsEntryVerificationRemarks: "${(application?.doctorsEntryVerificationRemarks)}"` : ""}
-  ${application?.employeeAccidentInfoVerification ? `employeeAccidentInfoVerification: "${(application?.employeeAccidentInfoVerification)}"` : ""}
-  ${application?.employeeAccidentInfoVerificationRemarks ? `employeeAccidentInfoVerificationRemarks: "${(application?.employeeAccidentInfoVerificationRemarks)}"` : ""}
-  ${application?.employeeBankInfoVerification ? `employeeBankInfoVerification: "${(application?.employeeBankInfoVerification)}"` : ""}
-  ${application?.employeeBankInfoVerificationRemarks ? `employeeBankInfoVerificationRemarks: "${(application?.employeeBankInfoVerificationRemarks)}"` : ""}
-  ${application?.employeeChildrenInfoVerification ? `employeeChildrenInfoVerification: "${(application?.employeeChildrenInfoVerification)}"` : ""}
-  ${application?.employeeChildrenInfoVerificationRemarks ? `employeeChildrenInfoVerificationRemarks: "${(application?.employeeChildrenInfoVerificationRemarks)}"` : ""}
-  ${application?.employeeDependentInfoVerification ? `employeeDependentInfoVerification: "${(application?.employeeDependentInfoVerification)}"` : ""}
-  ${application?.employeeDependentInfoVerificationRemarks ? `employeeDependentInfoVerificationRemarks: "${(application?.employeeDependentInfoVerificationRemarks)}"` : ""}
-  ${application?.institutionInfoVerification ? `institutionInfoVerification: "${(application?.institutionInfoVerification)}"` : ""}
-  ${application?.institutionInfoVerificationRemarks ? `institutionInfoVerificationRemarks: "${(application?.institutionInfoVerificationRemarks)}"` : ""}
-  ${application?.metadataVerification ? `metadataVerification: "${(application?.metadataVerification)}"` : ""}
-  ${application?.metadataVerificationRemarks ? `metadataVerificationRemarks: "${(application?.metadataVerificationRemarks)}"` : ""}
-  ${application?.workforceEmployeeVerification ? `workforceEmployeeVerification: "${(application?.workforceEmployeeVerification)}"` : ""}
-  ${application?.workforceEmployeeVerificationRemarks ? `workforceEmployeeVerificationRemarks: "${(application?.workforceEmployeeVerificationRemarks)}"` : ""}
+   ${application?.eisApprovedAmount ? `eisApprovedAmount: "${application?.eisApprovedAmount}"` : ""}
+  ${application?.eisCalculatedAmount ? `eisCalculatedAmount: "${application?.eisCalculatedAmount}"` : ""}
+  ${application?.eisPaymentType ? `eisPaymentType: "${application?.eisPaymentType}"` : ""}
+  ${application?.eisInitialMonthlyAmount ? `eisInitialMonthlyAmount: "${application?.eisInitialMonthlyAmount}"` : ""}
+  ${application?.eisMonthlyAmount ? `eisMonthlyAmount: "${application?.eisMonthlyAmount}"` : ""}
+  ${application?.initialReplacementRate ? `initialReplacementRate: "${application?.initialReplacementRate}"` : ""}
+  ${application?.pvFactor ? `pvFactor: "${application?.pvFactor}"` : ""}
+  ${application?.applicantInfoVerification ? `applicantInfoVerification: "${application?.applicantInfoVerification}"` : ""}
+  ${application?.applicantInfoVerificationRemarks ? `applicantInfoVerificationRemarks: "${application?.applicantInfoVerificationRemarks}"` : ""}
+  ${application?.deceasedWorkerInfoVerification ? `deceasedWorkerInfoVerification: "${application?.deceasedWorkerInfoVerification}"` : ""}
+  ${application?.deceasedWorkerInfoVerificationRemarks ? `deceasedWorkerInfoVerificationRemarks: "${application?.deceasedWorkerInfoVerificationRemarks}"` : ""}
+  ${application?.doctorsEntryVerification ? `doctorsEntryVerification: "${application?.doctorsEntryVerification}"` : ""}
+  ${application?.doctorsEntryVerificationRemarks ? `doctorsEntryVerificationRemarks: "${application?.doctorsEntryVerificationRemarks}"` : ""}
+  ${application?.employeeAccidentInfoVerification ? `employeeAccidentInfoVerification: "${application?.employeeAccidentInfoVerification}"` : ""}
+  ${application?.employeeAccidentInfoVerificationRemarks ? `employeeAccidentInfoVerificationRemarks: "${application?.employeeAccidentInfoVerificationRemarks}"` : ""}
+  ${application?.employeeBankInfoVerification ? `employeeBankInfoVerification: "${application?.employeeBankInfoVerification}"` : ""}
+  ${application?.employeeBankInfoVerificationRemarks ? `employeeBankInfoVerificationRemarks: "${application?.employeeBankInfoVerificationRemarks}"` : ""}
+  ${application?.employeeChildrenInfoVerification ? `employeeChildrenInfoVerification: "${application?.employeeChildrenInfoVerification}"` : ""}
+  ${application?.employeeChildrenInfoVerificationRemarks ? `employeeChildrenInfoVerificationRemarks: "${application?.employeeChildrenInfoVerificationRemarks}"` : ""}
+  ${application?.employeeDependentInfoVerification ? `employeeDependentInfoVerification: "${application?.employeeDependentInfoVerification}"` : ""}
+  ${application?.employeeDependentInfoVerificationRemarks ? `employeeDependentInfoVerificationRemarks: "${application?.employeeDependentInfoVerificationRemarks}"` : ""}
+  ${application?.institutionInfoVerification ? `institutionInfoVerification: "${application?.institutionInfoVerification}"` : ""}
+  ${application?.institutionInfoVerificationRemarks ? `institutionInfoVerificationRemarks: "${application?.institutionInfoVerificationRemarks}"` : ""}
+  ${application?.metadataVerification ? `metadataVerification: "${application?.metadataVerification}"` : ""}
+  ${application?.metadataVerificationRemarks ? `metadataVerificationRemarks: "${application?.metadataVerificationRemarks}"` : ""}
+  ${application?.workforceEmployeeVerification ? `workforceEmployeeVerification: "${application?.workforceEmployeeVerification}"` : ""}
+  ${application?.workforceEmployeeVerificationRemarks ? `workforceEmployeeVerificationRemarks: "${application?.workforceEmployeeVerificationRemarks}"` : ""}
   ${application?.eisApprovalIds ? `eisApprovalIds: ${escapeQuotes(application?.eisApprovalIds)}` : ""}
   ${application?.eisApprovedByIds ? `eisApprovedByIds: ${escapeQuotes(application?.eisApprovedByIds)}` : ""}
-  ${application?.committeeId ? `committeeId: "${(application?.committeeId)}"` : ""}
-  ${application?.committeeRemarks ? `committeeRemarks: "${(application?.committeeRemarks)}"` : ""}
+  ${application?.committeeId ? `committeeId: "${application?.committeeId}"` : ""}
+  ${application?.committeeRemarks ? `committeeRemarks: "${application?.committeeRemarks}"` : ""}
   ${application?.rejectedIds ? `rejectedIds: ${escapeQuotes(application?.rejectedIds)}` : ""}
 `;
 }
 ///application movement ////
 export function formatApplicationMovementGQL(application) {
   return `
-  ${application?.id ? `id: "${(application?.id)}"` : ""}
-  ${application?.applicationId ? `applicationId: "${(application?.applicationId)}"` : ""}
-  ${application?.note ? `note: "${(application?.note)}"` : ""}
-  ${application?.action ? `action: "${(application?.action)}"` : ""}
-  ${application?.toEmployeeRecordId ? `toEmployeeRecordId: "${(application?.toEmployeeRecordId)}"` : ""}
-  ${application?.fromEmployeeRecordId ? `fromEmployeeRecordId: "${(application?.fromEmployeeRecordId)}"` : ""}
-  ${application?.toOfficeUnitOrganogramId ? `toOfficeUnitOrganogramId: "${(application?.toOfficeUnitOrganogramId)}"` : ""}
-  ${application?.fromOfficeUnitOrganogramId ? `fromOfficeUnitOrganogramId: "${(application?.fromOfficeUnitOrganogramId)}"` : ""}
-  ${application?.toOfficeId ? `toOfficeId: "${(application?.toOfficeId)}"` : ""}
-  ${application?.fromOfficeId ? `fromOfficeId: "${(application?.fromOfficeId)}"` : ""}
-  ${application?.toOfficeUnitId ? `toOfficeUnitId: "${(application?.toOfficeUnitId)}"` : ""}
-  ${application?.fromOfficeUnitId ? `fromOfficeUnitId: "${(application?.fromOfficeUnitId)}"` : ""}
-  ${application?.isCurrent ? `isCurrent: "${(application?.isCurrent)}"` : ""}
-  ${application?.isCc ? `isCc: "${(application?.isCc)}"` : ""}
-  ${application?.isCommitteeHead ? `isCommitteeHead: "${(application?.isCommitteeHead)}"` : ""}
-  ${application?.isCommitteeMember ? `isCommitteeMember: "${(application?.isCommitteeMember)}"` : ""}
-  ${application?.toEmployeeNameBng ? `toEmployeeNameBng: "${(application?.toEmployeeNameBng)}"` : ""}
-  ${application?.fromEmployeeNameBng ? `fromEmployeeNameBng: "${(application?.fromEmployeeNameBng)}"` : ""}
-  ${application?.toEmployeeNameEng ? `toEmployeeNameEng: "${(application?.toEmployeeNameEng)}"` : ""}
-  ${application?.fromEmployeeNameEng ? `fromEmployeeNameEng: "${(application?.fromEmployeeNameEng)}"` : ""}
-  ${application?.toEmployeeDesignationBng ? `toEmployeeDesignationBng: "${(application?.toEmployeeDesignationBng)}"` : ""}
-  ${application?.fromEmployeeDesignationBng ? `fromEmployeeDesignationBng: "${(application?.fromEmployeeDesignationBng)}"` : ""}
-  ${application?.toOfficeNameBng ? `toOfficeNameBng: "${(application?.toOfficeNameBng)}"` : ""}
-  ${application?.fromOfficeNameBng ? `fromOfficeNameBng: "${(application?.fromOfficeNameBng)}"` : ""}
-  ${application?.toEmployeeUnitNameBng ? `toEmployeeUnitNameBng: "${(application?.toEmployeeUnitNameBng)}"` : ""}
-  ${application?.fromEmployeeUnitNameBng ? `fromEmployeeUnitNameBng: "${(application?.fromEmployeeUnitNameBng)}"` : ""}
-  ${application?.fromEmployeeUsername ? `fromEmployeeUsername: "${(application?.fromEmployeeUsername)}"` : ""}
-  ${application?.deadlineDate ? `deadlineDate: "${(application?.deadlineDate)}"` : ""}
-  ${application?.status ? `status: "${(application?.status)}"` : ""}
-  ${application?.revertNote ? `revertNote: "${(application?.revertNote)}"` : ""}
+  ${application?.id ? `id: "${application?.id}"` : ""}
+  ${application?.applicationId ? `applicationId: "${application?.applicationId}"` : ""}
+  ${application?.note ? `note: "${application?.note}"` : ""}
+  ${application?.action ? `action: "${application?.action}"` : ""}
+  ${application?.toEmployeeRecordId ? `toEmployeeRecordId: "${application?.toEmployeeRecordId}"` : ""}
+  ${application?.fromEmployeeRecordId ? `fromEmployeeRecordId: "${application?.fromEmployeeRecordId}"` : ""}
+  ${application?.toOfficeUnitOrganogramId ? `toOfficeUnitOrganogramId: "${application?.toOfficeUnitOrganogramId}"` : ""}
+  ${application?.fromOfficeUnitOrganogramId ? `fromOfficeUnitOrganogramId: "${application?.fromOfficeUnitOrganogramId}"` : ""}
+  ${application?.toOfficeId ? `toOfficeId: "${application?.toOfficeId}"` : ""}
+  ${application?.fromOfficeId ? `fromOfficeId: "${application?.fromOfficeId}"` : ""}
+  ${application?.toOfficeUnitId ? `toOfficeUnitId: "${application?.toOfficeUnitId}"` : ""}
+  ${application?.fromOfficeUnitId ? `fromOfficeUnitId: "${application?.fromOfficeUnitId}"` : ""}
+  ${application?.isCurrent ? `isCurrent: "${application?.isCurrent}"` : ""}
+  ${application?.isCc ? `isCc: "${application?.isCc}"` : ""}
+  ${application?.isCommitteeHead ? `isCommitteeHead: "${application?.isCommitteeHead}"` : ""}
+  ${application?.isCommitteeMember ? `isCommitteeMember: "${application?.isCommitteeMember}"` : ""}
+  ${application?.toEmployeeNameBng ? `toEmployeeNameBng: "${application?.toEmployeeNameBng}"` : ""}
+  ${application?.fromEmployeeNameBng ? `fromEmployeeNameBng: "${application?.fromEmployeeNameBng}"` : ""}
+  ${application?.toEmployeeNameEng ? `toEmployeeNameEng: "${application?.toEmployeeNameEng}"` : ""}
+  ${application?.fromEmployeeNameEng ? `fromEmployeeNameEng: "${application?.fromEmployeeNameEng}"` : ""}
+  ${application?.toEmployeeDesignationBng ? `toEmployeeDesignationBng: "${application?.toEmployeeDesignationBng}"` : ""}
+  ${application?.fromEmployeeDesignationBng ? `fromEmployeeDesignationBng: "${application?.fromEmployeeDesignationBng}"` : ""}
+  ${application?.toOfficeNameBng ? `toOfficeNameBng: "${application?.toOfficeNameBng}"` : ""}
+  ${application?.fromOfficeNameBng ? `fromOfficeNameBng: "${application?.fromOfficeNameBng}"` : ""}
+  ${application?.toEmployeeUnitNameBng ? `toEmployeeUnitNameBng: "${application?.toEmployeeUnitNameBng}"` : ""}
+  ${application?.fromEmployeeUnitNameBng ? `fromEmployeeUnitNameBng: "${application?.fromEmployeeUnitNameBng}"` : ""}
+  ${application?.fromEmployeeUsername ? `fromEmployeeUsername: "${application?.fromEmployeeUsername}"` : ""}
+  ${application?.deadlineDate ? `deadlineDate: "${application?.deadlineDate}"` : ""}
+  ${application?.status ? `status: "${application?.status}"` : ""}
+  ${application?.revertNote ? `revertNote: "${application?.revertNote}"` : ""}
   ${application?.isReverted !== undefined ? `isReverted: ${application?.isReverted}` : ""}
-  ${application?.revertedById ? `revertedById: "${(application?.revertedById)}"` : ""}
-  ${application?.revertingDate ? `revertingDate: "${(application?.revertingDate)}"` : ""}
-  ${application?.applicationFromId ? `applicationFromId: "${(application?.applicationFromId)}"` : ""}
-  ${application?.applicationToId ? `applicationToId: "${(application?.applicationToId)}"` : ""}
-  ${application?.toRoleId ? `toRoleId: "${(application?.toRoleId)}"` : ""}
-  ${application?.fromRoleId ? `fromRoleId: "${(application?.fromRoleId)}"` : ""}
-  ${application?.fromOfficeDesignationId ? `fromOfficeDesignationId: "${(application?.fromOfficeDesignationId)}"` : ""}
-  ${application?.toOfficeDesignationId ? `toOfficeDesignationId: "${(application?.toOfficeDesignationId)}"` : ""}
+  ${application?.revertedById ? `revertedById: "${application?.revertedById}"` : ""}
+  ${application?.revertingDate ? `revertingDate: "${application?.revertingDate}"` : ""}
+  ${application?.applicationFromId ? `applicationFromId: "${application?.applicationFromId}"` : ""}
+  ${application?.applicationToId ? `applicationToId: "${application?.applicationToId}"` : ""}
+  ${application?.toRoleId ? `toRoleId: "${application?.toRoleId}"` : ""}
+  ${application?.fromRoleId ? `fromRoleId: "${application?.fromRoleId}"` : ""}
+  ${application?.fromOfficeDesignationId ? `fromOfficeDesignationId: "${application?.fromOfficeDesignationId}"` : ""}
+  ${application?.toOfficeDesignationId ? `toOfficeDesignationId: "${application?.toOfficeDesignationId}"` : ""}
 `;
 }
 
 ///beneficiary registration   ////
 export function formatWorkforceBeneficiaryGQL(beneficiary) {
   return `
-  ${beneficiary?.id ? `id: "${(beneficiary?.id)}"` : ""}
-  ${beneficiary.lastName ? `lastName: "${(beneficiary.lastName)}"` : ""}
+  ${beneficiary?.id ? `id: "${beneficiary?.id}"` : ""}
+  ${beneficiary.lastName ? `lastName: "${beneficiary.lastName}"` : ""}
   ${beneficiary.loginName ? `loginName: "${decodeId(beneficiary.loginName)}"` : ""}
   ${beneficiary.otherNames ? `otherNames: "${formatGQLString(beneficiary.otherNames)}"` : ""}
   ${beneficiary.applicationType ? `applicationType: "${formatGQLString(beneficiary.applicationType)}"` : ""}
@@ -444,17 +441,17 @@ export function formatWorkforceBeneficiaryGQL(beneficiary) {
   ${beneficiary.employeeBankInfo ? `employeeBankInfo: ${escapeQuotes(beneficiary.employeeBankInfo)}` : ""}
   ${beneficiary.employeeAccidentInfo ? `employeeAccidentInfo: ${escapeQuotes(beneficiary.employeeAccidentInfo)}` : ""}
   ${beneficiary.employeeDesignationInfo ? `employeeDesignationInfo: ${escapeQuotes(beneficiary.employeeDesignationInfo)}` : ""}
-  ${beneficiary.isSubmitted ? `isSubmitted: "${(beneficiary.isSubmitted)}"` : ""}
+  ${beneficiary.isSubmitted ? `isSubmitted: "${beneficiary.isSubmitted}"` : ""}
 `;
 }
 
 function escapeQuotes(data) {
   // Check if it's a string and needs escaping
   if (typeof data === "string") {
-    return `"${data.replace(/"/g, "\\\"")}"`;
+    return `"${data.replace(/"/g, '\\"')}"`;
   }
   // If it's not a string, stringify it properly
-  return `"${JSON.stringify(data).replace(/"/g, "\\\"")}"`;
+  return `"${JSON.stringify(data).replace(/"/g, '\\"')}"`;
 }
 
 export function formatEmployeeDependentGQL(employee) {
@@ -528,7 +525,6 @@ export function formatUnitDesignationGQL(unitDesignation) {
 
 ///employee designation gql///
 export function formatEmployeeDesignationGQL(employeeDesignation) {
-
   return `
     ${employeeDesignation.id ? `id: "${formatGQLString(employeeDesignation.id)}"` : ""}
     ${employeeDesignation.designationId ? `designationId: "${formatGQLString(employeeDesignation.designationId)}"` : ""}
@@ -539,7 +535,6 @@ export function formatEmployeeDesignationGQL(employeeDesignation) {
 }
 
 export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
-
   return `
     ${employeeAssignDesignation.designationId ? `designationId: "${formatGQLString(employeeAssignDesignation.designationId)}"` : ""}
     ${employeeAssignDesignation.employeeId ? `employeeId: "${formatGQLString(employeeAssignDesignation.employeeId)}"` : ""}
@@ -548,7 +543,6 @@ export function formatEmployeeAssignDesignationGQL(employeeAssignDesignation) {
   `;
 }
 export function formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignation) {
-
   return `
     ${employeeAssignDesignation?.id ? `id: "${employeeAssignDesignation?.id}"` : ""}
     ${employeeAssignDesignation?.workforceEmployeeId ? `workforceEmployeeId: "${employeeAssignDesignation?.workforceEmployeeId}"` : ""}
@@ -560,10 +554,8 @@ export function formatFactoryEmployeeAssignDesignationGQL(employeeAssignDesignat
     ${employeeAssignDesignation?.workforceCompany ? `workforceCompanyId: "${employeeAssignDesignation?.workforceCompany}"` : ""}
   `;
 }
- 
 
 export function formatWorkforceOtpGQL(workforceOtp) {
-
   return `
     ${workforceOtp.firstNameBn ? `nameBn: "${formatGQLString(workforceOtp.firstNameBn)}"` : ""}
     ${workforceOtp.firstNameEn ? `firstNameEn: "${formatGQLString(workforceOtp.firstNameEn)}"` : ""}
@@ -574,7 +566,6 @@ export function formatWorkforceOtpGQL(workforceOtp) {
   `;
 }
 export function formatWorkforceDocumentGQL(workforceDocumentType) {
-
   return `
     ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
     ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
@@ -587,7 +578,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
 
     ${workforceDocumentType?.documentType ? `documentType: "${formatGQLString(workforceDocumentType?.documentType)}"` : ""}
     ${workforceDocumentType?.holderType ? `holderType: "${workforceDocumentType?.holderType}"` : ""}
-    ${workforceDocumentType?.verifierId ? `verifierId: "${(workforceDocumentType?.verifierId)}"` : ""}
+    ${workforceDocumentType?.verifierId ? `verifierId: "${workforceDocumentType?.verifierId}"` : ""}
     ${workforceDocumentType?.approverId ? `approverId: "${formatGQLString(workforceDocumentType?.approverId)}"` : ""}
     ${workforceDocumentType?.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType?.submissionDate)}"` : ""}
     ${workforceDocumentType?.verificationDate ? `verificationDate: "${workforceDocumentType?.verificationDate}"` : ""}
@@ -600,7 +591,6 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
 }
 
 export function formatWorkforceDocumentMapGQL(workforceDocumentType) {
-
   return `
     ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
     ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
@@ -623,7 +613,6 @@ export function formatWorkforceCompanyStatusGql(company) {
   `;
 }
 
-
 export function formatWorkforceAssociationUserMapGQL(associationUserMap) {
   return `
     ${associationUserMap?.id ? `id: "${formatGQLString(associationUserMap?.id)}"` : ""}
@@ -632,18 +621,16 @@ export function formatWorkforceAssociationUserMapGQL(associationUserMap) {
   `;
 }
 
-
 export function formatWorkforceCommitteeGQL(committee) {
   return `
     ${committee?.id ? `id: "${committee.id}"` : ""}
     ${committee.nameBn ? `nameBn: "${committee.nameBn}"` : ""}
     ${committee.nameEn ? `nameEn: "${committee.nameEn}"` : ""}  
     ${committee.associations ? `associations: ${escapeQuotes(committee.associations)}` : ""}
-    ${committee.organizationType ? `organizationType: "${(committee.organizationType)}"` : ""}
-    ${committee.approvalType ? `approvalType: "${(committee.approvalType)}"` : ""}
+    ${committee.organizationType ? `organizationType: "${committee.organizationType}"` : ""}
+    ${committee.approvalType ? `approvalType: "${committee.approvalType}"` : ""}
   `;
 }
-
 
 export function formatWorkforceCommitteeUserMapGQL(usermap) {
   return `
@@ -652,10 +639,9 @@ export function formatWorkforceCommitteeUserMapGQL(usermap) {
     ${usermap.userId ? `userId: ${usermap.userId}` : ""}
     ${usermap?.isNoaSignatureUser !== undefined ? `isNoaSignatureUser: ${usermap.isNoaSignatureUser}` : ""}  
     ${usermap?.roleInCommittee ? `roleInCommittee: "${usermap.roleInCommittee}"` : ""}  
-    ${usermap?.isRepresentative ? `isRepresentative: ${usermap.isRepresentative}` : ""}  
+    ${typeof usermap?.isRepresentative === "boolean" ? `isRepresentative: ${usermap.isRepresentative}` : ""}  
   `;
 }
-
 
 export function formatWorkforceCommitteeUserGQL(user) {
   return `
@@ -699,5 +685,4 @@ export function formatWebsiteLegalGuidelineGQL(legalGuideline) {
     ${legalGuideline?.documentUrl ? `documentUrl: "${legalGuideline.documentUrl}"` : ""}
     ${legalGuideline?.documentPath ? `documentPath: "${legalGuideline.documentPath}"` : ""}
   `;
-
 }

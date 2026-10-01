@@ -22,6 +22,7 @@ import {
   updateApplicationSummary,
   fetchWorkforceEmployeeDependent,
   fetchWorkforceCommitteeUserMap,
+  createApplicationMovement,
 } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import React, { Component, useEffect, useState } from "react";
@@ -146,6 +147,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       if (isRepresentative) {
         console.log("hello");
         for (const mapItem of mappings || []) {
+          console.log({mapItem});
           if (mapItem?.isRepresentative && String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
             console.log("hello3");
             for (const app of filteredApplications) {
@@ -164,9 +166,17 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
               updatePayload.status = targetStatus;
 
-              await dispatch(updateApplication(updatePayload, "update workforce application"));
+              await dispatch(updateApplication(updatePayload, "update workforce application")).then((res)=>{
+                const createApplicationMovementData = {
+                            applicationId: decodedId,
+                            status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+                            note: "আবেদন পরিচালকের কাছে পাঠানো হয়েছে",
+                            action: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+                          };
+                dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"))
+                dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
+              })
             }
-            await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
           }
         }
       }
@@ -177,6 +187,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     } finally {
       setLoader(false);
       onClose();
+      window.location.reload()
     }
   };
 
