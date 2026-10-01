@@ -201,9 +201,10 @@ export default function LoginFormAdministrative() {
                     </Button>
                   </Grid>
 
-                  <Grid item>
+                  {/* <Grid item>
                     <Button onClick={redirectToForgotPassword}>{lang === "bn" ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot Password?"}</Button>
-                  </Grid>
+                  </Grid> */}
+                  
                   {/* <Grid item className={classes.footerContainer}>
                     <Typography variant="body2" style={{ color: "grey", fontWeight: "bold", marginBottom: 12 }}>
                       {lang === "bn" ? "সহযোগিতায়" : "Powered by"}

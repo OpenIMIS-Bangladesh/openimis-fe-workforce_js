@@ -3766,7 +3766,7 @@ class ApplicationProcessSearcher extends Component {
 
             {disableButtons == 1 ? (
               <>
-                {userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && (
+                {(userType !== WORKFORCE_USER_TYPE.EIS_COORDINATOR && !this.props.returnedApplications) && (
                   <>
                   <IconButton onClick={this.handleOpenBFTN}>
                     <PrintIcon />

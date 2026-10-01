@@ -80,7 +80,7 @@ const DocumentReviewAccordion = ({ file, index, documentId, onCommentChange, onV
                 onChange={(e) => onCommentChange(index, e.target.value)}
               />
             </Grid> */}
-            {fromResend && (file.status === "rejected"||file.status ==="rejected_by_eis_officer") && (
+            {fromResend && (["rejected","rejected_by_eis_office","rejected_by_data_entry_officer","rejected_by_factoryAdmin","rejected_by_association","rejected_by_eis_officer","rejected_by_dol_dife"].includes(file?.status)) && (
               <Grid item xs={6}>
                 <Typography>{locale === "en" ? file?.workforceDocumentType.nameEn : file?.workforceDocumentType.nameBn}</Typography>
                 <FileUploader

@@ -529,7 +529,7 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
 
   // --- VERIFY BUTTON ---
   {
-    !component?.props?.forwardedApplications &&
+    !component?.props?.forwardedApplications && !component?.props?.revertedApplication &&
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Verify">

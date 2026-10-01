@@ -2612,6 +2612,145 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
 
   return graphql(payload, "EIS_PAYMENT_PROCESS");
 }
+export function fetchEisPaymentProcessWithoutFilters(filters, mm) {
+  const present_location_projection = "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection = "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const payload = `
+    {
+      workforceEisPaymentProcess(
+        processId: "${filters?.processId ?? ""}"
+        workforceApplicationId: "${filters?.workforceApplicationId ?? ""}"
+        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber ?? ""}"
+        workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
+        allAssociationId: "${filters?.allAssociationId ?? ""}"
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+        status: "${filters?.status ?? ""}"
+        beneficiaryStatus: "${filters?.beneficiaryStatus ?? ""}"
+        approved: "${filters?.approved ?? ""}"
+        approvalDateFrom: "${filters?.approvalDateFrom ?? ""}"
+        approvalDateTo: "${filters?.approvalDateTo ?? ""}"
+        accidentDateFrom: "${filters?.accidentDateFrom ?? ""}"
+        accidentDateTo: "${filters?.accidentDateTo ?? ""}"
+        month: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        notInStage: "${filters?.notInStage ?? ""}"
+      ) {
+          id
+          beneficiaryId
+          beneficiaryStatus
+          payableAmount
+          eisApprovedAmount
+          eisPaymentType
+          routingNumber
+          bankAccountNo
+          bank {
+            nameEn
+            routingNumber
+            parent {
+              nameEn
+            }
+          }
+          workforceEmployeeDependent {
+            nameEn
+            nameBn
+            birthDate
+            relationWithWorker
+            maritalStatus
+            disabilityStatus
+          }
+          workforceApplication {
+            trackingNumber
+            applicationType
+            deceasedWorkerInfo
+            workforceEmployee {
+              firstNameEn
+            }
+            employeeFactory {
+              nameEn
+              allAssociation {
+                shortNameEn
+                nameEn
+              }
+            }
+          }
+        }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
+
+export function fetchEisPaymentProcessFiltersBeneficiary(filters, mm) {
+  const present_location_projection = "presentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const permanent_location_projection = "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const payload = `
+    {
+      workforceEisPaymentProcess(
+        processId: "${filters?.processId ?? ""}"
+        workforceApplicationId: "${filters?.workforceApplicationId ?? ""}"
+        workforceApplicationTrackingNumber: "${filters?.workforceApplicationTrackingNumber ?? ""}"
+        workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
+        allAssociationId: "${filters?.allAssociationId ?? ""}"
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+        status: "${filters?.status ?? ""}"
+        beneficiaryStatus: "${filters?.beneficiaryStatus ?? ""}"
+        approved: "${filters?.approved ?? ""}"
+        approvalDateFrom: "${filters?.approvalDateFrom ?? ""}"
+        approvalDateTo: "${filters?.approvalDateTo ?? ""}"
+        accidentDateFrom: "${filters?.accidentDateFrom ?? ""}"
+        accidentDateTo: "${filters?.accidentDateTo ?? ""}"
+        month: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        notInStage: "${filters?.notInStage ?? ""}"
+      ) {
+        id
+        beneficiaryId
+        beneficiaryStatus
+        payableAmount
+        eisApprovedAmount
+        eisPaymentType
+        arrearAmount
+        arrearPaymentMonth
+        arrearPaymentYear
+        lastLiveCheckDate
+        remarriageOrDeathDate
+        routingNumber
+        bankAccountNo
+        bank {
+          nameEn
+          routingNumber
+          parent {
+            nameEn
+          }
+        }
+        workforceEmployeeDependent {
+          nameEn
+          nameBn
+          birthDate
+          relationWithWorker
+          maritalStatus
+          disabilityStatus
+        }
+        workforceApplication {
+          applicationType
+          deceasedWorkerInfo
+          trackingNumber
+          workforceEmployee {
+            firstNameEn
+          }
+          employeeFactory {
+            id
+            allAssociation {
+              id
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
 
 export function updateWorkforceEisBeneficiary(beneficiary) {
   const mutation = `

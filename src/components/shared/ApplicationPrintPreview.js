@@ -87,50 +87,50 @@ export const ApplicationPrintPreview = ({ data, documents, logoLeftUrl, logoLeft
     }
   };
 
-  useEffect(() => {
-    if (!data?.id || hasFetchedRef.current) return;
+  // useEffect(() => {
+  //   if (!data?.id || hasFetchedRef.current) return;
 
-    hasFetchedRef.current = true;
-    setIsLoadingPath(true);
+  //   hasFetchedRef.current = true;
+  //   setIsLoadingPath(true);
 
-    dispatch(
-      fetchApplicationWiseMovementList(modulesManager, {
-        applicationId: data?.id,
-        orderBy: ["-dateCreated"],
-      })
-    )
-      .then((res) => {
-        console.log(res);
-        const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
-        const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
-        console.log({ edges });
-        console.log({ allUsers });
-        const users = [
-          {
-            id: "applicant001",
-            name: data?.workforceEmployee?.firstNameBn || "আবেদনকারী",
-            note: "একটি নতুন আবেদন করা হয়েছে",
-            status: "new",
-            role: "Applicant",
-            date: conditionalEnToBn(data?.dateCreated?.split("T")[0], locale),
-          },
-          ...allUsers.map((u, index) => ({
-            id: u.id,
-            name: u.loginName,
-            role: u?.userRoles?.[0]?.role?.name || "User",
-            note: edges?.[index]?.node?.note,
-            status: edges?.[index]?.node?.status,
-            revertNote: edges?.[index]?.node?.revertNote,
-            date: conditionalEnToBn(edges?.[index]?.node?.dateCreated?.split("T")[0], locale),
-          })),
-        ];
+  //   dispatch(
+  //     fetchApplicationWiseMovementList(modulesManager, {
+  //       applicationId: data?.id,
+  //       orderBy: ["-dateCreated"],
+  //     })
+  //   )
+  //     .then((res) => {
+  //       console.log(res);
+  //       const edges = res?.payload?.data?.workforceApplicationMovement?.edges || [];
+  //       const allUsers = edges.flatMap(({ node }) => (node.applicationTo ? [node.applicationTo] : [])).filter(Boolean);
+  //       console.log({ edges });
+  //       console.log({ allUsers });
+  //       const users = [
+  //         {
+  //           id: "applicant001",
+  //           name: data?.workforceEmployee?.firstNameBn || "আবেদনকারী",
+  //           note: "একটি নতুন আবেদন করা হয়েছে",
+  //           status: "new",
+  //           role: "Applicant",
+  //           date: conditionalEnToBn(data?.dateCreated?.split("T")[0], locale),
+  //         },
+  //         ...allUsers.map((u, index) => ({
+  //           id: u.id,
+  //           name: u.loginName,
+  //           role: u?.userRoles?.[0]?.role?.name || "User",
+  //           note: edges?.[index]?.node?.note,
+  //           status: edges?.[index]?.node?.status,
+  //           revertNote: edges?.[index]?.node?.revertNote,
+  //           date: conditionalEnToBn(edges?.[index]?.node?.dateCreated?.split("T")[0], locale),
+  //         })),
+  //       ];
 
-        console.log(users);
-        setMovementLogs(users);
-      })
-      .catch((err) => console.error("Movement fetch failed", err))
-      .finally(() => setIsLoadingPath(false));
-  }, []);
+  //       console.log(users);
+  //       setMovementLogs(users);
+  //     })
+  //     .catch((err) => console.error("Movement fetch failed", err))
+  //     .finally(() => setIsLoadingPath(false));
+  // }, []);
 
   if (!data || !data.workforceEmployee) return <p>আবেদনের কোনো তথ্য পাওয়া যায়নি।</p>;
 

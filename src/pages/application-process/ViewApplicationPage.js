@@ -478,6 +478,7 @@ class ViewApplicationPage extends Component {
             onOpen={() => this.setState({ open: true })}
             data={formData}
             documents={documents}
+            movementLogs={this.state.movementLogs}
             logoLeft={application?.organizationType === "blwf" ? "/front/workforce_assets/blwf.png" : "/front/workforce_assets/centralfund.png"}
             logoLeftUrl="/front/workforce_assets/bdgov.png"
           />
