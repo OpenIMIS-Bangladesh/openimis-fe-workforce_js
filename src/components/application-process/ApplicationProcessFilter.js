@@ -80,7 +80,11 @@ class ApplicationProcessFilter extends Component {
     let organizationTypeIn;
 
     const type = userType?.toLowerCase() || "";
-    const selectedOrgType = this._filterValue("organizationType") || "";
+    const selectedOrgType =
+      userType === WORKFORCE_USER_TYPE.BLWF_CHECKER ||
+      userType === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE
+        ? "blwf"
+        : this._filterValue("organizationType") || "";
 
     let applicationTypeOptions = [];
     if (selectedOrgType === "eis") {

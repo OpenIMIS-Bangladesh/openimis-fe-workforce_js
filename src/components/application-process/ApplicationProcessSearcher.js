@@ -196,7 +196,10 @@ class ApplicationProcessSearcher extends Component {
       this.setState({ displayVersion: showHistoryFilter });
 
       const defaultStatusFilters = [
-        'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"], organizationTypeIn: ["blwf"]'];
+        prms?.find((filter) => filter.includes("applicationTypeIn")) ||
+          'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"]',
+        'organizationTypeIn: ["blwf"]',
+      ];
 
       if (this.props.filedApplications) {
         defaultStatusFilters.push('statusIn:["forward_for_verification"]');
@@ -233,8 +236,10 @@ class ApplicationProcessSearcher extends Component {
     } else if (getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DOL_DIFE) {
       this.setState({ displayVersion: showHistoryFilter });
 
-      const defaultStatusFilters = [
-        'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"], organizationTypeIn: ["blwf"]'
+        const defaultStatusFilters = [
+        prms?.find((filter) => filter.includes("applicationTypeIn")) ||
+          'applicationTypeIn: ["educationGrant", "medicalDonation", "deadlyGrant", "maternityGrant"]',
+        'organizationTypeIn: ["blwf"]',
       ];
 
       if (this.props.filedApplications) {
