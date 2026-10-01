@@ -2012,8 +2012,8 @@ function reducer(
     case "WORKFORCE_APPLICATIONS_MOVEMENT_ERR":
       return {
         ...state,
-        fetching: false,
-        error: formatServerError(action.payload),
+        fetchingApplicationMovements: false,
+        errorApplicationMovements: formatServerError(action.payload),
       };
 
     case "WORKFORCE_APPLICATION_MOVEMENT_REQ":

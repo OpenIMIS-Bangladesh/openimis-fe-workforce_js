@@ -78,7 +78,7 @@ export const headerChecker = (component) => [
   "workforce.employee.application.status",
   "view",
   // ✅ Conditionally add verify & revert (when buttons are enabled)
-  ...(component.props.disableButtons !== 1 && !component?.props?.forwardedApplications
+  ...(component.props.disableButtons !== 1 && !component?.props?.forwardedApplications && !component?.props?.revertedApplication
     ? ["verify", "revert"]
     : []),
   // ✅ Conditionally add resend (when reverted applications exist)
