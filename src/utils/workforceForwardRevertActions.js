@@ -365,8 +365,9 @@ export const handleBulkSelectedByAssociationLogic = async ({
       });
     } finally {
       setTimeout(() => {
-        history.push("/");
-        //window.location.reload();
+        if (history.location.pathname !== "/") {
+          history.push("/");
+        }
       }, 5000);
       setConfirmModalOpen(false);
       setConfirmModalCallback(null);

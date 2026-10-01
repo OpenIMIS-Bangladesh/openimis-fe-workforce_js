@@ -2941,6 +2941,7 @@ class ApplicationProcessSearcher extends Component {
       setConfirmModalOpen: (val) => this.setState({ confirmModalOpen: val }),
       setConfirmModalMessage: (msg) => this.setState({ confirmModalMessage: msg }),
       setConfirmModalCallback: (cb) => this.setState({ confirmModalCallback: cb }),
+      history: this.props.history,
       dispatch: this.props.dispatch,
       setCloseLoader:(l)=>this.setState({loader:l}),
       loader:this.state.loader
