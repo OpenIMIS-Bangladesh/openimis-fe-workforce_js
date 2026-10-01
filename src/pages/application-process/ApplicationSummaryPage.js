@@ -17,7 +17,7 @@ import GenerateBFTN from "./GenereteBFTN";
 import { fetchSummaryApplications } from "../../actions";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserTypeFromRights } from "../../utils/utils";
+import { getUserTypeFromRights, isBlwfPath } from "../../utils/utils";
 import { useSelector, useDispatch } from "react-redux";
 import RescheduleMeetingDialog from "../../components/shared/modals/RescheduleMeetingDialog";
 
@@ -158,18 +158,18 @@ class ApplicationSummaryPage extends Component {
       if(status === "pending")
       {
         renderSummaryData = summaryData.filter(item =>
-          item.status === "forward_to_director" && item.organizationType==='cf'
+          item.status === "forward_to_director" && (isBlwfPath()?item.organizationType="blwf": item.organizationType==='cf')
         );
       }
       else if(status === "rejected")
       {
         renderSummaryData = summaryData.filter(item =>
-          item.status === "rejected" && item.organizationType==='cf'
+          item.status === "rejected" && (isBlwfPath()?item.organizationType="blwf":item.organizationType==='cf')
         );
       }
       else if(status === "approved")
       {
-        renderSummaryData = summaryData.filter(item => item.status === "forward_to_dg" && item.organizationType==='cf');
+        renderSummaryData = summaryData.filter(item => item.status === "forward_to_dg" && (isBlwfPath()?item.organizationType="blwf":item.organizationType==='cf'));
       }
     }
     else if(currentUserType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR)
@@ -196,7 +196,7 @@ class ApplicationSummaryPage extends Component {
       if(status === "pending")
       {
         renderSummaryData = summaryData.filter(item =>
-          item.status === "approved_by_director"
+          (item.status === "approved_by_director"||item?.status ==="forward_to_director")
         );
       }
       else if(status === "rejected")
@@ -207,7 +207,7 @@ class ApplicationSummaryPage extends Component {
       }
       else if(status === "approved")
       {
-        renderSummaryData = summaryData.filter(item => item.status === "approved_by_dg");
+        renderSummaryData = summaryData.filter(item => (item.status === "approved_by_dg"||item.status === "approved_by_director"));
       }
     }
     else if(currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR)
