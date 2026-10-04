@@ -9,7 +9,7 @@ import CustomDetailedLocation from "../../components/application-forms/CustomDet
 import EmployeeDetailsForm2 from "./EmployeeDetailsForm2";
 import RelationWithWorkerPicker from "../../pickers/RelationWithWorkerPicker";
 import CountryPicker from "../../pickers/CountryPicker";
-import { filterDigits } from "../../utils/utils";
+import { filterBangla, filterDigits, filterEnglish } from "../../utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -230,7 +230,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   id="fatherNameEn"
                   label="workforce.employee.fathers_name.en"
                   value={formData?.workforceApplicant?.fatherNameEn || ""}
-                  onChange={(v) => handleChange("fatherNameEn", v)}
+                  formatInput={filterEnglish}
+                  onChange={(v) => handleChange("fatherNameEn", filterEnglish(v))}
                   readOnly={false}
                   required
                   error={!!errors.fatherNameEn}
@@ -242,7 +243,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   id="fatherNmaeBn"
                   label="workforce.employee.fathers_name.bn"
                   value={formData?.workforceApplicant?.fatherNameBn || ""}
-                  onChange={(v) => handleChange("fatherNameBn", v)}
+                  formatInput={filterBangla}
+                  onChange={(v) => handleChange("fatherNameBn", filterBangla(v))}
                   readOnly={false}
                   required
                   error={!!errors.fatherNameBn}
