@@ -256,7 +256,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                   id="motherNameEn"
                   label="workforce.employee.mothers_name.en"
                   value={formData?.workforceApplicant?.motherNameEn || ""}
-                  onChange={(v) => handleChange("motherNameEn", v)}
+                  formatInput={filterEnglish}
+                  onChange={(v) => handleChange("motherNameEn", filterEnglish(v))}
                   readOnly={false}
                   required
                   error={!!errors.motherNameEn}
@@ -267,7 +268,8 @@ const ApplicantDetailsForm = ({ handleChange, formData, setFormData, nidOrBcn, s
                 <TextInput
                   label="workforce.employee.mothers_name.bn"
                   value={formData?.workforceApplicant?.motherNameBn || ""}
-                  onChange={(v) => handleChange("motherNameBn", v)}
+                  formatInput={filterBangla}
+                  onChange={(v) => handleChange("motherNameBn", filterBangla(v))}
                   readOnly={false}
                   required
                 />
