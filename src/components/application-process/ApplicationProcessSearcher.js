@@ -1189,7 +1189,7 @@ class ApplicationProcessSearcher extends Component {
           'orderBy: ["-dateCreated"]',
         ];
 
-        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+        const cfFilters = [...filtersBase, `cfApplicationSummary_Id: "${safeDecodeId(this.props.summaryId)}"`];
 
         const [] = await Promise.all([
           this.props.fetchApplicationsSummary(this.props.modulesManager, cfFilters),
@@ -1217,7 +1217,7 @@ class ApplicationProcessSearcher extends Component {
           'orderBy: ["-dateCreated"]',
         ];
 
-        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${decodeId(this.props.summaryId)}"`];
+        const blwfFilters = [...filtersBase, `blwfApplicationSummary_Id: "${safeDecodeId(this.props.summaryId)}"`];
 
         const [] = await Promise.all([
           this.props.fetchApplicationsSummary(this.props.modulesManager, blwfFilters),

@@ -34,12 +34,13 @@ export function getUserType() {
 
 export function getUserTypeFromRights(user_rights) {
   let user_type = WORKFORCE_USER_TYPE.APPLICANT;
-  if (user_rights.length > 380) {
+  if (user_rights.length > 380 && !user_rights.includes(815001) && !user_rights.includes(812009)) {
     user_type = WORKFORCE_USER_TYPE.ADMIN;
   }
   else
   {
     if (user_rights.includes(812001)) {
+      console.log("checker er moddhe asi");
       user_type = WORKFORCE_USER_TYPE.CHECKER;
     } else if (user_rights.includes(819001)) {
       user_type = WORKFORCE_USER_TYPE.CHECKER_TWO;

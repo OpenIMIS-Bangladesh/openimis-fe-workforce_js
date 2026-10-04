@@ -196,7 +196,7 @@ class ApplicationSummaryPage extends Component {
       if(status === "pending")
       {
         renderSummaryData = summaryData.filter(item =>
-          (item.status === "approved_by_director"||item?.status ==="forward_to_director")
+          (item.status === "approved_by_director")
         );
       }
       else if(status === "rejected")
@@ -207,7 +207,7 @@ class ApplicationSummaryPage extends Component {
       }
       else if(status === "approved")
       {
-        renderSummaryData = summaryData.filter(item => (item.status === "approved_by_dg"||item.status === "approved_by_director"));
+        renderSummaryData = summaryData.filter(item => (item.status === "approved_by_dg"));
       }
     }
     else if(currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR)
@@ -325,7 +325,7 @@ class ApplicationSummaryPage extends Component {
                     <CardContent>
                       {expanded === item.id && (
                         <ApplicationProcessSearcher
-                          summaryId={item.id}
+                          summaryId={item?.id}
                           cacheFiltersKey="pending"
                           onDoubleClick={this.onDoubleClick}
                           loggedInUserId={loggedInUserId}
