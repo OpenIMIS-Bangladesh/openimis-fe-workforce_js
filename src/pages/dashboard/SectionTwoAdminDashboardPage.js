@@ -643,7 +643,7 @@ const SectionTwoAdminDashboardPage = () => {
  
    const pendingSummaryData = data.filter(d => d.status !== "approved_by_dg");
   //  const approvedSummaryData = data.filter(d => d.status === "approved_by_dg");
-   const approvedSummaryData = data.filter(d => d.status === "approved_by_secretary"|| d.status === "approved_by_minister");
+   const approvedSummaryData = data.filter(d =>d.status === "approved_by_dg" || d.status ==="approved_by_minister" || d.status ==="approved_by_secretary");
    const sentSummaryData = data.filter(d => d.status === "forward_to_comiitee");
 
   const renderContent = () => {

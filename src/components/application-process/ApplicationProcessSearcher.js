@@ -3203,7 +3203,7 @@ class ApplicationProcessSearcher extends Component {
   handleBulkApproveByDirector = async () => {
     const { selectedApplicationIds } = this.state;
     const { updateApplication, createApplicationMovement, updateApplicationSummary } = this.props;
-    const { loggedInUserId } = this.props;
+    const { loggedInUserId,history } = this.props;
     if (selectedApplicationIds.length === 0) {
       alert("Please select at least one application.");
       return;
@@ -3261,7 +3261,7 @@ class ApplicationProcessSearcher extends Component {
             });
           } finally {
             //historyPush(modulesManager, history, "/home");
-              history.push("/")
+            history.push("/")
             window.location.reload();
           }
         }
