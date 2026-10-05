@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Grid, Paper, Typography, Divider, IconButton, Button } from "@material-ui/core";
 import { Save } from "@material-ui/icons";
-import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId, encodeId } from "@openimis/fe-core";
+import { TextInput, journalize, PublishedComponent, FormattedMessage, formatMutation, decodeId, encodeId, useModulesManager } from "@openimis/fe-core";
 import { createWorkforceEmployee, fetchFactoryEmployee } from "../../actions";
 import { EMPTY_STRING, MODULE_NAME, WORKFORCE_STATUS } from "../../constants";
 import { withTheme, withStyles } from "@material-ui/core/styles";
@@ -25,6 +25,7 @@ const styles = (theme) => ({
 
 const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
   const dispatch = useDispatch();
+  const modulesManager = useModulesManager();
   const submittingMutation = useSelector((state) => state.workforce.submittingMutation);
   const workforceEmployee = useSelector((state) => state.workforce.workforceEmployee);
   const mutation = useSelector((state) => state.workforce.mutation);
@@ -46,20 +47,26 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const { loggedInUserId: userId } = { loggedInUserId };
-    // if (userId) {
-    //   console.log({userId})
-    //   const filters = [`relatedUser_Id: "${encodeId(modulesManager, "InteractiveUserGQLType", userId)}"`];
-    //   fetchFactoryEmployee(modulesManager, filters).then((res)=>{
-    //     const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
-    //     const node = edges[0]?.node;
-    //     const factoryId = node?.workforceFactory || null;
-    //     setWorkforceFactoryId(factoryId)
-    //   })
+    console.log({ userId });
+    if (userId) {
+      console.log({ userId });
+      const filters = [`relatedUser_Id: "${safeDecodeId(userId)}"`];
+      console.log({ filters });
+      dispatch(fetchFactoryEmployee(modulesManager, filters)).then((res) => {
+        const edges = res?.payload?.data?.workforceEmployerEmployees?.edges || [];
+        const node = edges[0]?.node;
+        const factoryId = node?.workforceFactory || null;
+        setWorkforceFactoryId(factoryId);
+      });
+    }
 
-    // }
+    return () => {
+      isMounted = false;
+    };
     // toggleSecondaryCalendar()
-  }, []);
+  }, [loggedInUserId, modulesManager]);
 
   const save = async () => {
     const workforceEmployeeData = {
@@ -88,9 +95,9 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
     await dispatch(createWorkforceEmployee(workforceEmployeeData, `Created Workforce Employee ${stateEdited.title}`));
 
     setIsSaved(true);
-    setTimeout(()=>{
+    setTimeout(() => {
       window.location.reload();
-    }, 2000)
+    }, 2000);
   };
 
   const updateAttribute = (key, value) => {
@@ -182,7 +189,6 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
                   // readOnly={isSaved}
                 />
               </Grid> */}
-
 
               {/* <Grid item xs={6} className={classes.item}>
                 <PublishedComponent
@@ -447,7 +453,14 @@ const AddWorkforceEmployeePage = withStyles(styles)(({ classes }) => {
 
               <Grid item xs={11} className={classes.item} />
               <Grid item xs={1} className={classes.item}>
-                <Button variant="primary" component="label" color="primary" onClick={() => save()} disabled={isSaveDisabled || isSaved}  title={isSaveDisabled ? "Please Check all the required fields" : "Save"}>
+                <Button
+                  variant="primary"
+                  component="label"
+                  color="primary"
+                  onClick={() => save()}
+                  disabled={isSaveDisabled || isSaved}
+                  title={isSaveDisabled ? "Please Check all the required fields" : "Save"}
+                >
                   <Save /> Save
                 </Button>
               </Grid>

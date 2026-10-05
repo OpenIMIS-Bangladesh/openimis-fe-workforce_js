@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useTranslations, Autocomplete,decodeId } from "@openimis/fe-core";
+import { useTranslations, Autocomplete, decodeId } from "@openimis/fe-core";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchFactoriesPick, fetchWorkforceEmployee, fetchWorkforceEmployeeWithoutProjection } from "../actions";
-import {encodeId, useModulesManager } from "@openimis/fe-core";
+import { encodeId, useModulesManager } from "@openimis/fe-core";
 import { safeDecodeId } from "../utils/utils";
 const FactoryPicker = ({
   id,
@@ -18,46 +18,55 @@ const FactoryPicker = ({
   filterOptions,
   filterSelectedOptions,
   multiple,
-  companyId
+  companyId,
 }) => {
   const [searchString, setSearchString] = useState(null);
   const { formatMessage } = useTranslations("workforce");
   const [userFactory, setUserFactory] = useState([]);
-  const loggedInUserId= useSelector((state) => state.core?.user?.i_user?.id);
-  const mm= useModulesManager();
+  const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
+  const mm = useModulesManager();
 
   const dispatch = useDispatch();
-  const locale = useSelector(
-      (state) => state.core?.user?.i_user?.language || "en"
-    );
+  const locale = useSelector((state) => state.core?.user?.i_user?.language || "en");
+  const [userFactoryId, setUserFactoryId] = useState(null);
 
-    useEffect(async () => {
-      const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUserId: "${safeDecodeId(loggedInUserId)}"`]));
-      const edges = response?.payload?.data?.workforceEmployerEmployees?.edges || [];
-      const node = edges[0]?.node || {};
-      const factoryId = safeDecodeId(value) ?? safeDecodeId(node?.workforceFactory?.id) ?? null;
-      return dispatch(fetchFactoriesPick(mm, factoryId!=null?[`id: "${factoryId}"`]:[`status:"active"`]));
-    }, [value]);
+  useEffect(() => {
+    let cancelled = false;
 
-  const isLoading = useSelector(
-    (state) => state.workforce[`fetchingWorkforceFactoriesPick`],
-  );
-  const data = useSelector(
-    (state) => state.workforce[`workforceFactoriesPick`] ?? []
-  );
-  const error = useSelector(
-    (state) => state.workforce["errorWorkforceFactoriesPick"]
-  );
+    const loadUserFactory = async () => {
+      if (!loggedInUserId) return;
+
+      const response = await dispatch(fetchWorkforceEmployee(mm, [`relatedUser_Id: "${safeDecodeId(loggedInUserId)}"`]));
+
+      const node = response?.payload?.data?.workforceEmployerEmployees?.edges?.[0]?.node;
+      const factoryId = node?.workforceFactory?.id ?? null;
+
+      if (!cancelled) setUserFactoryId(factoryId);
+    };
+
+    loadUserFactory();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch, loggedInUserId, mm]);
+
+  useEffect(() => {
+    const rawFactoryId = value ?? userFactoryId;
+    const factoryId = rawFactoryId ? safeDecodeId(rawFactoryId) : null;
+
+    dispatch(fetchFactoriesPick(mm, factoryId != null ? [`id: "${factoryId}"`] : [`status: "active"`]));
+  }, [dispatch, mm, value, userFactoryId]);
+
+  const isLoading = useSelector((state) => state.workforce[`fetchingWorkforceFactoriesPick`]);
+  const data = useSelector((state) => state.workforce[`workforceFactoriesPick`] ?? []);
+  const error = useSelector((state) => state.workforce["errorWorkforceFactoriesPick"]);
 
   // const data = useMemo(() => {
   //   return data.filter(factory => decodeId(factory.workforceEmployer.id) === companyId);
   // }, [data, companyId]);
 
-  
-   const selectedOption = useMemo(
-      () => data.find((option) => option.id === value) || null,
-      [value,data]
-    )
+  const selectedOption = useMemo(() => data.find((option) => option.id === value) || null, [value, data]);
   return (
     <Autocomplete
       id={id}
@@ -72,7 +81,7 @@ const FactoryPicker = ({
       options={data}
       isLoading={isLoading}
       value={selectedOption}
-      getOptionLabel={(option) =>locale === "en" ? `${option.nameEn}`:`${option.nameBn}`}
+      getOptionLabel={(option) => (locale === "en" ? `${option.nameEn}` : `${option.nameBn}`)}
       onChange={(option) => onChange(option, option ? `${option}` : null)}
       filterOptions={filterOptions}
       filterSelectedOptions={filterSelectedOptions}

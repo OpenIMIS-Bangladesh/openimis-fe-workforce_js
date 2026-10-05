@@ -778,7 +778,7 @@ const FactoryAdminDashboard = () => {
   //     setSelectedMenu("newApplications");
   //   }
   // }, [workforceFactoryId]);
-  // console.log({ workforceFactoryId });
+  console.log({ workforceFactoryId });
 
   const renderContent = () => {
     switch (selectedMenu) {
