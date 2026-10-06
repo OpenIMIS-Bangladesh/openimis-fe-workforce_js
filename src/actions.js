@@ -658,6 +658,7 @@ export function fetchApplicationsSummaryDashboard(mm, filters) {
     "employeeFactory{id,nameEn,nameBn}",
     "trackingNumber",
     "employeeDependentInfo",
+    "workforceEmployeeDependentApplication{edges{node{id,relationWithWorker}}}",
     "employeeBankInfo",
     "employeeAccidentInfo",
     "employeeChildrenInfo",

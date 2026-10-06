@@ -933,6 +933,13 @@ const Dashboard = ({selectedMenu}) => {
   }, [selectedMenu, fromDate, toDate, accFromDate, accToDate, association]);
 
   const getBeneficiaryCount = (key) => {
+    const beneficiaryCountKeys = {
+      maleDependent: "male",
+      femaleDependent: "female",
+      totalDependent: "total",
+    };
+    if (beneficiaryCountKeys[key]) return beneficiaryCounts[beneficiaryCountKeys[key]];
+
     const found = applicationCounts.find((item) => item.type === applicantTypeNames[key]);
     return found ? found.count : 0;
   };
@@ -1498,15 +1505,35 @@ const PendingMeetingSheet = ({ summaryData = [] }) => {
 
 // ------------------------------------------------------------
 
+const FEMALE_BENEFICIARY_RELATIONS = new Set([
+  "workforce.relation.daughter",
+  "workforce.relation.mother",
+  "workforce.relation.wife",
+  "workforce.relation.sister",
+]);
+
+const flattenDependents = (value) => {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== "object") return [];
+  if (Array.isArray(value.edges)) return value.edges.map((edge) => edge?.node || edge);
+  return [value];
+};
+
 const getFilteredBeneficiaryCounts = (applications) => applications.reduce(
   (counts, application) => {
-    const dependents = safeParse(application?.employeeDependentInfo);
-    if (!Array.isArray(dependents)) return counts;
+    if (application?.status === "draft") return counts;
+    const tableDependents = application?.workforceEmployeeDependentApplication
+      || application?.workforceEmployeeDependent;
+    const dependents = flattenDependents(tableDependents);
 
     dependents.forEach((dependent) => {
-      const gender = typeof dependent?.gender === "object" ? dependent.gender?.name : dependent?.gender;
-      if (gender === "workforce.gender.male") counts.male += 1;
-      if (gender === "workforce.gender.female") counts.female += 1;
+      const relation = dependent?.relationWithWorker || dependent?.relationType || dependent?.relation || "";
+
+      if (FEMALE_BENEFICIARY_RELATIONS.has(relation)) {
+        counts.female += 1;
+      } else {
+        counts.male += 1;
+      }
     });
 
     counts.total = counts.male + counts.female;
