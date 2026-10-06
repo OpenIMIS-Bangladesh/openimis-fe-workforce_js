@@ -111,7 +111,7 @@ const BeneficiaryProcessedPaymentList = () => {
 
   useEffect(() => {
     loadData();
-  }, [dispatch, modulesManager, filters]);
+  }, [dispatch, modulesManager]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
