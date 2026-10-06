@@ -13,7 +13,8 @@ import {
   fetchEisPaymentProcess,
   fetchWorkforceFactoriesSummary,
   fetchWorkforceAllAssociationSummary,
-  fetchEisPaymentProcessWithFilters
+  fetchEisPaymentProcessWithFilters,
+  fetchEisPaymentProcessWithoutFilters
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
@@ -122,7 +123,7 @@ const BeneficiaryManagement = () => {
         setAssociations(assocRes?.payload?.data?.workforceAllAssociation?.edges || []);
       });
       const [processRes] = await Promise.all([
-        dispatch(fetchEisPaymentProcessWithFilters({
+        dispatch(fetchEisPaymentProcessWithoutFilters({
           workforceApplicationTrackingNumber: filters.trackingNo,
           workforceFactoryId: safeDecodeId(filters.factory) ?? "",
           allAssociationId: safeDecodeId(filters.association) ?? "",
@@ -453,7 +454,7 @@ const BeneficiaryManagement = () => {
           handleCloseModal();
           loadData();
         }}
-        beneficiary={selectedBeneficiary}
+        beneficiaryId={selectedBeneficiary?.id}
       />
       <BeneficiaryEditModal
         open={openEditModal}
@@ -462,7 +463,7 @@ const BeneficiaryManagement = () => {
           handleCloseEditModal();
           loadData();
         }}
-        beneficiary={selectedBeneficiary}
+        beneficiaryId={selectedBeneficiary?.id}
       />
       <AssociationManageModal
         open={openAssociationModal}

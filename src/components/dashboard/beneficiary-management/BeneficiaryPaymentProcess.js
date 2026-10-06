@@ -11,7 +11,8 @@ import {
   fetchEisPaymentProcessWithFilters,
   createWorkforceEisPaymentStage,
   fetchWorkforceFactoriesSummary,
-  fetchWorkforceAllAssociationSummary
+  fetchWorkforceAllAssociationSummary,
+  fetchEisPaymentProcessWithoutFilters
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
@@ -65,7 +66,7 @@ const BeneficiaryPaymentProcess = () => {
       dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(res => setFactories(res?.payload?.data?.workforceEmployerFactories?.edges|| []));
       dispatch(fetchWorkforceAllAssociationSummary([])).then(res => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
       const [processRes] = await Promise.all([
-        dispatch(fetchEisPaymentProcessWithFilters({
+        dispatch(fetchEisPaymentProcessWithoutFilters({
           month: filters.month,
           year: filters.year,
           workforceFactoryId: safeDecodeId(filters.factory) ?? "",
