@@ -99,16 +99,34 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     // if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
     setLoader(true);
     const filteredApplications = applications;
+    console.log({filteredApplications})
 
-    // if (filteredApplications.length === 0) {
-    //   return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
-    // }
+    if (!filteredApplications || filteredApplications.length === 0) {
+       setLoader(false);
+       return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
+    }
 
-    const isQuorum = mappings?.[0]?.committee?.approvalType === "quorum";
-    const isRepresentative = mappings?.find(
-      (item) => item?.committee?.approvalType === "representative" || item?.committee?.approvalType === null || item?.committee?.approvalType === "",
+    // 1. Identify the organization type for the current batch of applications
+    // (Since they are all the same, checking the first one is safe and highly efficient)
+    const currentOrgType = filteredApplications[0]?.organizationType;
+
+    // 2. Find the exact mapping that corresponds to this organization type
+    const activeMapping = mappings?.find(
+      (item) => item?.committee?.organizationType === currentOrgType
     );
-    const totalApprovers = mappings?.length || 1;
+
+    // 3. Extract the approval type
+    const approvalType = activeMapping?.committee?.approvalType;
+
+    // 4. Safely determine isQuorum and isRepresentative
+    const isQuorum = approvalType === "quorum" || !approvalType; // true for "quorum", null, or ""
+    const isRepresentative = approvalType === "representative";
+
+    // NOTE: You previously used `mappings.length` for totalApprovers. 
+    // Since 'mappings' contains ALL of the user's committee roles (both eis and blwf), 
+    // mappings.length would equal 2 here. You probably only want the approvers for the ACTIVE committee.
+    const totalApprovers = activeMapping ? 1 : (mappings?.length || 1);
+    // const totalApprovers = mappings?.length || 1;
 
     try {
       let allMajorityApproved = true;
@@ -149,6 +167,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
         for (const mapItem of mappings || []) {
           console.log({mapItem});
           if (mapItem?.isRepresentative && String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
+          // if ( String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
             console.log("hello3");
             for (const app of filteredApplications) {
               console.log("hello4");
@@ -166,15 +185,15 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
               updatePayload.status = targetStatus;
 
-              await dispatch(updateApplication(updatePayload, "update workforce application")).then((res)=>{
+              await dispatch(updateApplication(updatePayload, "update workforce application")).then(async(res)=>{
                 const createApplicationMovementData = {
                             applicationId: decodedId,
                             status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
                             note: "আবেদন পরিচালকের কাছে পাঠানো হয়েছে",
                             action: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
                           };
-                dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"))
-                dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
+                await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"))
+                await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
               })
             }
           }
