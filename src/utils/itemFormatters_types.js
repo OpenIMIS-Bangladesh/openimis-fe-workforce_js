@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
-import SaveIcon from '@material-ui/icons/Save';
+import SaveIcon from "@material-ui/icons/Save";
 import ForwardIcon from "@material-ui/icons/Forward";
 import UndoIcon from "@material-ui/icons/Undo";
 import CloseIcon from "@material-ui/icons/Close";
@@ -10,14 +10,7 @@ import HistoryIcon from "@material-ui/icons/History";
 import { Tab as TabIcon, Delete as DeleteIcon, Send as SendIcon, Check as CheckIcon } from "@material-ui/icons";
 import { historyPush, decodeId, TextInput } from "@openimis/fe-core";
 import { IconButton, Tooltip, Checkbox } from "@material-ui/core";
-import {
-  STATUS_MAP_BN,
-  STATUS_MAP_EN,
-  WORKFORCE_USER_TYPE_MAP_EN,
-  WORKFORCE_USER_TYPE_MAP_BN,
-  ORGANIZATION_TYPE_NAME_EN,
-  ORGANIZATION_TYPE_NAME_BN,
-} from "../constants";
+import { STATUS_MAP_BN, STATUS_MAP_EN, WORKFORCE_USER_TYPE_MAP_EN, WORKFORCE_USER_TYPE_MAP_BN, ORGANIZATION_TYPE_NAME_EN, ORGANIZATION_TYPE_NAME_BN } from "../constants";
 import { conditionalEnToBn, isBlwfPath, isEisPath, safeParse } from "./utils";
 import { useSelector } from "react-redux";
 
@@ -168,10 +161,7 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
             <IconButton
               onClick={() => component.handleRejectByDG(application)}
               disabled={
-                application?.isHistory ||
-                application?.status === "approved_by_dg" ||
-                application?.status === "forward_to_director" ||
-                application?.status === "rejected_by_dg"
+                application?.isHistory || application?.status === "approved_by_dg" || application?.status === "forward_to_director" || application?.status === "rejected_by_dg"
               }
               color="error"
             >
@@ -182,27 +172,26 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
       </div>
     ) : null,
   );
-  formatters.push((application) => (
-    <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
-          }}
-        >
-          <VerifiedUserIcon style={{ color: "green" }} />
-        </IconButton>
-      </Tooltip>
-    </div>
-  ));
+  formatters.push((application) =>
+    component.props.status !== "approved" ? (
+      <div className={component.props.classes.horizontalButtonContainer}>
+        <Tooltip title="Verify">
+          <IconButton
+            disabled={application?.isHistory}
+            onClick={() => {
+              historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+            }}
+          >
+            <VerifiedUserIcon style={{ color: "green" }} />
+          </IconButton>
+        </Tooltip>
+      </div>
+    ) : null,
+  );
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="save">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleUpdateGrantMoney(application)}
-        >
+        <IconButton disabled={application?.isHistory} onClick={() => component.handleUpdateGrantMoney(application)}>
           <SaveIcon style={{ color: "primary" }} />
         </IconButton>
       </Tooltip>
@@ -225,7 +214,7 @@ export const itemFormattersSecretaryMinister = (isShowHistory, modulesManager, h
           : application?.workforceEmployee?.firstNameBn,
     (application) => (locale === "en" ? application?.employeeFactory?.nameEn : application?.employeeFactory?.nameBn),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
-    (application) => (conditionalEnToBn(application?.grantAmount)),
+    (application) => conditionalEnToBn(application?.grantAmount),
     // ...(isEisPath() ? [] : [(application) => <TextInput value={application?.grantAmount} onChange={(v) => component.setState({ editedGrantMoney: v })} />]),
 
     (application) => {
@@ -274,10 +263,7 @@ export const itemFormattersSecretaryMinister = (isShowHistory, modulesManager, h
             <IconButton
               onClick={() => component.handleRejectByDG(application)}
               disabled={
-                application?.isHistory ||
-                application?.status === "approved_by_dg" ||
-                application?.status === "forward_to_director" ||
-                application?.status === "rejected_by_dg"
+                application?.isHistory || application?.status === "approved_by_dg" || application?.status === "forward_to_director" || application?.status === "rejected_by_dg"
               }
               color="error"
             >
@@ -359,16 +345,20 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
   // ));
   formatters.push((application) => (
     <div className={component.props.classes.horizontalButtonContainer}>
-      <Tooltip title="Verify">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => {
-            historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
-          }}
-        >
-          <VerifiedUserIcon style={{ color: "green" }} />
-        </IconButton>
-      </Tooltip>
+      {component.props.status !== "approved" && (
+        <>
+          <Tooltip title="Verify">
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                historyPush(modulesManager, history, "workforce.route.applications.application.verify", [decodeId(application?.id)], false);
+              }}
+            >
+              <VerifiedUserIcon style={{ color: "green" }} />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
       <Tooltip title="View">
         <IconButton
           disabled={application?.isHistory}
@@ -388,11 +378,7 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
           </Tooltip>
           <Tooltip title="Reject">
             <span>
-              <IconButton
-                onClick={() => component.handleReject(application)}
-                disabled={application?.isHistory || application?.status !== "forward_to_director"}
-                color="error"
-              >
+              <IconButton onClick={() => component.handleReject(application)} disabled={application?.isHistory || application?.status !== "forward_to_director"} color="error">
                 <CloseIcon />
               </IconButton>
             </span>
@@ -400,16 +386,13 @@ export const itemFormattersDirector = (isShowHistory, modulesManager, history, c
         </>
       )}
       <Tooltip title="save">
-        <IconButton
-          disabled={application?.isHistory}
-          onClick={() => component.handleUpdateGrantMoney(application)}
-        >
+        <IconButton disabled={application?.isHistory} onClick={() => component.handleUpdateGrantMoney(application)}>
           <SaveIcon style={{ color: "primary" }} />
         </IconButton>
       </Tooltip>
     </div>
   ));
-  
+
   return formatters;
 };
 
@@ -426,9 +409,7 @@ export const itemFormattersApplicant = (isShowHistory, modulesManager, history, 
           ? application?.workforceEmployee?.firstNameEn
           : application?.workforceEmployee?.firstNameBn,
     // (application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়")),
-    ...(!isBlwfPath()
-      ? [(application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়"))]
-      : []),
+    ...(!isBlwfPath() ? [(application) => (locale === "en" ? (application?.employeeFactory?.nameEn ?? "N/A") : (application?.employeeFactory?.nameBn ?? "প্রযোজ্য নয়"))] : []),
     (application) => (locale === "en" ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType] : ORGANIZATION_TYPE_NAME_BN[application?.organizationType]),
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => {
@@ -529,7 +510,8 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
 
   // --- VERIFY BUTTON ---
   {
-    !component?.props?.forwardedApplications && !component?.props?.revertedApplication &&
+    !component?.props?.forwardedApplications &&
+      !component?.props?.revertedApplication &&
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Verify">
@@ -552,10 +534,13 @@ export const itemFormattersChecker = (isShowHistory, modulesManager, history, co
       formatters.push((application) => (
         <div className={component.props.classes.horizontalButtonContainer}>
           <Tooltip title="Revert">
-            <IconButton disabled={application?.isHistory} onClick={() => {
-              component.handleOpenRevertModal(application);
-              component.setState({ revertByChecker: true });
-            }}>
+            <IconButton
+              disabled={application?.isHistory}
+              onClick={() => {
+                component.handleOpenRevertModal(application);
+                component.setState({ revertByChecker: true });
+              }}
+            >
               <UndoIcon style={{ color: "red" }} />
             </IconButton>
           </Tooltip>
@@ -831,10 +816,12 @@ export const itemFormattersSectionAdmin = (isShowHistory, modulesManager, histor
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => application?.associationType,
     (application) => {
-      const parsedDeceasedInfo = JSON.parse(application?.deceasedWorkerInfo)
-      const doubleParsedDeceasedInfo = JSON.parse(parsedDeceasedInfo)
-      console.log({doubleParsedDeceasedInfo})
-      return (application?.applicationType ==="financialAssistance"||application?.applicationType ==="deadlyGrant")?doubleParsedDeceasedInfo?.nid:application?.workforceEmployee?.nid
+      const parsedDeceasedInfo = JSON.parse(application?.deceasedWorkerInfo);
+      const doubleParsedDeceasedInfo = JSON.parse(parsedDeceasedInfo);
+      console.log({ doubleParsedDeceasedInfo });
+      return application?.applicationType === "financialAssistance" || application?.applicationType === "deadlyGrant"
+        ? doubleParsedDeceasedInfo?.nid
+        : application?.workforceEmployee?.nid;
     },
     (application) => (application?.lastMovementDate ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A"),
     (application) => (application?.applicationForwardDate ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A"),
@@ -842,10 +829,14 @@ export const itemFormattersSectionAdmin = (isShowHistory, modulesManager, histor
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;
     },
-    ...(component?.props?.sentForVerificationApplications ? [(application) => {
-      const targettedApplication = application?.workforceApplicationMovements?.filter(app => app?.status === "forward_for_verification")
-      return targettedApplication[0]?.applicationTo?.loginName
-    }]:[]),
+    ...(component?.props?.sentForVerificationApplications
+      ? [
+          (application) => {
+            const targettedApplication = application?.workforceApplicationMovements?.filter((app) => app?.status === "forward_for_verification");
+            return targettedApplication[0]?.applicationTo?.loginName;
+          },
+        ]
+      : []),
     isShowHistory() ? application?.version : null,
   ];
 
@@ -1313,7 +1304,12 @@ export const itemFormattersAssociation = (isShowHistory, modulesManager, history
     (application) => (locale === "en" ? application?.grantMoney?.applicationTypeNameEn : application?.grantMoney?.applicationTypeNameBn),
     (application) => (application?.lastMovementDate ? conditionalEnToBn(application.lastMovementDate.split("T")[0], locale) : "N/A"),
     (application) => (application?.applicationForwardDate ? conditionalEnToBn(application.applicationForwardDate.split("T")[0], locale) : "N/A"),
-    (application) => (application?.organizationType ? (locale ==="en"?ORGANIZATION_TYPE_NAME_EN[application?.organizationType]:ORGANIZATION_TYPE_NAME_BN[application?.organizationType]) : "N/A"),
+    (application) =>
+      application?.organizationType
+        ? locale === "en"
+          ? ORGANIZATION_TYPE_NAME_EN[application?.organizationType]
+          : ORGANIZATION_TYPE_NAME_BN[application?.organizationType]
+        : "N/A",
     (application) => {
       const statusMap = locale === "en" ? STATUS_MAP_EN : STATUS_MAP_BN;
       return statusMap[application?.status] || application?.status;

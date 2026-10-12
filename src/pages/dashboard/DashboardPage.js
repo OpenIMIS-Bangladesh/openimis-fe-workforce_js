@@ -1055,11 +1055,11 @@ const DashboardPage = () => {
           <Dashboard />
         );
       case "waitingApplications":
-        return (<ApplicationSummaryPage status="pending" />);
+        return (<ApplicationSummaryPage key="pending" status="pending" />);
       case "rejectedApplications":
         return <RejectApplication />;
       case "approvedApplications":
-        return (<ApplicationSummaryPage status="approved" disableButtons={1} />);
+        return (<ApplicationSummaryPage key="approved" status="approved" disableButtons={1} />);
       case "returnedApplications":
         return (<ReturnedApplications />);
       default:

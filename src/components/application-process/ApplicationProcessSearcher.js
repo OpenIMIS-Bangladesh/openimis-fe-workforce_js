@@ -551,7 +551,7 @@ class ApplicationProcessSearcher extends Component {
         if (this.props.statusInSummary) {
         defaultStatusFilters.push(`statusIn: ["${this.props.statusInSummary}"], 'organizationTypeIn: ["blwf"]`);
         }else{
-          defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg"]', 'organizationTypeIn: ["blwf"]');
+          defaultStatusFilters.push('statusIn: ["forward_to_blwf_section","meeting_created","approved_by_dg","approved_by_director","approved_by_secretary","approved_by_minister"]', 'organizationTypeIn: ["blwf"]');
         }
         additionalFilters.push(`blwfApplicationSummary_Id:"${summaryId}"`);
       } else if (this.props.verifiedApplications) {

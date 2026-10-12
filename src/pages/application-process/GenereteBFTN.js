@@ -1,17 +1,4 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-  Button,
-  Divider,
-} from "@material-ui/core";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Table, TableHead, TableBody, TableRow, TableCell, Typography, Button, Divider } from "@material-ui/core";
 import { WORKFORCE_USER_TYPE, RELATION_LABEL_MAP, WORKFORCE_STATUS } from "../../constants";
 import { getUserTypeFromRights, safeDecodeId, safeParse, enToBn, isBlwfPath, formatAddress } from "../../utils/utils";
 import ForwardIcon from "@material-ui/icons/Forward";
@@ -99,11 +86,14 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     // if (!window.confirm("আবেদনগুলো মহাপরিচালক কাছে অগ্রায়ন নিশ্চিত করছেন?")) return;
     setLoader(true);
     const filteredApplications = applications;
-    console.log({filteredApplications})
+    console.log({ filteredApplications });
 
     if (!filteredApplications || filteredApplications.length === 0) {
-       setLoader(false);
-       return setServerResponse({ status: "ERROR", message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।" });
+      setLoader(false);
+      return setServerResponse({
+        status: "ERROR",
+        message: "কোনো উপযুক্ত আবেদন পাওয়া যায়নি।",
+      });
     }
 
     // 1. Identify the organization type for the current batch of applications
@@ -111,9 +101,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     const currentOrgType = filteredApplications[0]?.organizationType;
 
     // 2. Find the exact mapping that corresponds to this organization type
-    const activeMapping = mappings?.find(
-      (item) => item?.committee?.organizationType === currentOrgType
-    );
+    const activeMapping = mappings?.find((item) => item?.committee?.organizationType === currentOrgType);
 
     // 3. Extract the approval type
     const approvalType = activeMapping?.committee?.approvalType;
@@ -122,29 +110,37 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     const isQuorum = approvalType === "quorum" || !approvalType; // true for "quorum", null, or ""
     const isRepresentative = approvalType === "representative";
 
-    // NOTE: You previously used `mappings.length` for totalApprovers. 
-    // Since 'mappings' contains ALL of the user's committee roles (both eis and blwf), 
+    // NOTE: You previously used `mappings.length` for totalApprovers.
+    // Since 'mappings' contains ALL of the user's committee roles (both eis and blwf),
     // mappings.length would equal 2 here. You probably only want the approvers for the ACTIVE committee.
-    const totalApprovers = activeMapping ? 1 : (mappings?.length || 1);
-    // const totalApprovers = mappings?.length || 1;
+    // const totalApprovers = activeMapping ? 1 : mappings?.length || 1;
+    const totalApprovers = mappings?.length || 1;
 
     try {
       let allMajorityApproved = true;
 
       if (isQuorum) {
+        console.log("hello from qorum");
         for (const item of filteredApplications) {
+          console.log("hello from qorum 2", item);
           const decodedId = safeDecodeId(item.id);
           let targetStatus = WORKFORCE_STATUS.FORWARD_TO_DIRECTOR;
           let updatePayload = { id: decodedId };
-
+          let approvalUserIds = item.eisApprovalIds ? safeParse(item.eisApprovalIds) : [];
           let approvedUserIds = item.eisApprovedByIds ? safeParse(item.eisApprovedByIds) : [];
 
           if (approvedUserIds.includes(loggedInUserId)) {
-            return setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
+            return setServerResponse({
+              status: "ERROR",
+              message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!",
+            });
           }
 
           approvedUserIds.push(loggedInUserId);
-          const majorityApproved = approvedUserIds.length / totalApprovers >= 0.5;
+          // const majorityApproved =
+          //   approvedUserIds.length / approvalUserIds?.length >= 0.5;
+          const eligibleCount = Array.isArray(approvalUserIds) ? approvalUserIds.length : 0;
+          const majorityApproved = eligibleCount > 0 && approvedUserIds.length > eligibleCount / 2;
 
           targetStatus = majorityApproved ? WORKFORCE_STATUS.FORWARD_TO_DIRECTOR : WORKFORCE_STATUS.FORWARD_TO_COMIITEE;
 
@@ -155,9 +151,17 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
           }
 
           updatePayload.status = targetStatus;
+          console.log({ updatePayload });
           await dispatch(updateApplication(updatePayload, "update workforce application"));
+          const createApplicationMovementData = {
+            applicationId: decodedId,
+            status: targetStatus,
+            note: "আবেদন পরিচালকের কাছে পাঠানো হয়েছে",
+            action: targetStatus,
+          };
+          await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
+          await dispatch(updateApplicationSummary({ id: summary_Id, status: targetStatus }, "update workforce application summary"));
         }
-        await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
       }
       console.log("hello", isRepresentative);
       console.log("hello2", isQuorum);
@@ -165,9 +169,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       if (isRepresentative) {
         console.log("hello");
         for (const mapItem of mappings || []) {
-          console.log({mapItem});
+          console.log({ mapItem });
           if (mapItem?.isRepresentative && String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
-          // if ( String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
+            // if ( String(safeDecodeId(mapItem?.user?.id)) === String(loggedInUserId)) {
             console.log("hello3");
             for (const app of filteredApplications) {
               console.log("hello4");
@@ -177,7 +181,10 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               let approvedUserIds = app?.eisApprovedByIds ? safeParse(app?.eisApprovedByIds) : [];
 
               if (approvedUserIds?.includes(loggedInUserId)) {
-                setServerResponse({ status: "ERROR", message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!" });
+                setServerResponse({
+                  status: "ERROR",
+                  message: "আপনি ইতিমধ্যে অনুমোদন করেছেন!",
+                });
                 return;
               }
               console.log(approvedUserIds.includes(loggedInUserId));
@@ -212,17 +219,23 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
   const fetchApplicationMovement = async () => {
     try {
-      const mappingsData = await dispatch(fetchWorkforceCommitteeUserMap({ userIds: userIds || [`${loggedInUserId}`] }));
+      const mappingsData = await dispatch(
+        fetchWorkforceCommitteeUserMap({
+          userIds: userIds || [`${loggedInUserId}`],
+        }),
+      );
       setMappings(mappingsData?.payload?.data?.workforceCommitteeUserMaps || []);
-      const response = await dispatch(fetchApplicationWiseMovementList(modulesManager, { applicationId: applications?.[0]?.id }));
+      const response = await dispatch(
+        fetchApplicationWiseMovementList(modulesManager, {
+          applicationId: applications?.[0]?.id,
+        }),
+      );
       console.log("movement response", response);
       const movementsData = parseData(response?.payload?.data?.workforceApplicationMovement) || [];
       const senderObjects = movementsData
         .filter((m) => m.applicationFrom !== null)
         .map((m) => m.applicationFrom)
-        .filter(
-          (m) => m.userRoles?.[0]?.role?.name === "Doctor" || m.userRoles?.[0]?.role?.name === "Blwf Doctor" || m.userRoles?.[0]?.role?.name === "Eis Doctor",
-        );
+        .filter((m) => m.userRoles?.[0]?.role?.name === "Doctor" || m.userRoles?.[0]?.role?.name === "Blwf Doctor" || m.userRoles?.[0]?.role?.name === "Eis Doctor");
       console.log("movement senderData", senderObjects);
 
       const clean = (html) => html?.replace(/<\/?[^>]+(>|$)/g, "") || "";
@@ -464,7 +477,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       // Total amount row
       worksheet.addRow(["", "", "", "", "", "Total Amount", "", "", getTotalAmount() || 0]);
       worksheet.getRow(worksheet.rowCount).font = { bold: true };
-      worksheet.getCell(`I${worksheet.rowCount}`).alignment = { horizontal: "right" };
+      worksheet.getCell(`I${worksheet.rowCount}`).alignment = {
+        horizontal: "right",
+      };
 
       // Set column widths
       worksheet.columns = [
@@ -481,7 +496,9 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
       // Generate and download the file
       const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       saveAs(blob, "Applications.xlsx");
     } catch (error) {
       console.error("Error exporting to Excel:", error);
