@@ -19,7 +19,7 @@ import {
   TableHead,
   TableRow,
   Grid,
-  CircularProgress
+  CircularProgress,
 } from "@material-ui/core";
 import { PublishedComponent, parseData } from "@openimis/fe-core";
 import { useModulesManager } from "@openimis/fe-core";
@@ -130,9 +130,7 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
         console.log("Last Payment Date:", lastPaymentDate);
         const selectedDate = formData.remarriageOrDeathDate !== null ? new Date(formData.remarriageOrDeathDate) : null;
         if (selectedDate !== null && selectedDate < lastPaymentDate) {
-          alert(
-            `Selected date (${selectedDate.toLocaleDateString("en-BD")}) cannot be earlier than the last payment month (${formatter.format(lastPaymentDate)}).`,
-          );
+          alert(`Selected date (${selectedDate.toLocaleDateString("en-BD")}) cannot be earlier than the last payment month (${formatter.format(lastPaymentDate)}).`);
           setFormData((prev) => ({
             ...prev,
             remarriageOrDeathDate: null,
@@ -420,15 +418,15 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
                         onChange={(e) => handleChange("incrementAmount", e.target.value)}
                       />
                     </Grid>
-                    {/* <Grid item xs={12}>
-                                    <PublishedComponent
-                                        pubRef="workforce.DatePicker"
-                                        label="Effective Date"
-                                        value={formData.incrementDate}
-                                        onChange={(date) => handleChange("incrementDate", date)}
-                                        required
-                                    />
-                                </Grid> */}
+                    <Grid item xs={12}>
+                      <PublishedComponent
+                        pubRef="workforce.DatePicker"
+                        label="Effective Date"
+                        value={formData.incrementDate}
+                        onChange={(date) => handleChange("incrementDate", date)}
+                        required
+                      />
+                    </Grid>
                   </Grid>
                 </Box>
               </Grid>
@@ -449,15 +447,15 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
                         onChange={(e) => handleChange("decrementAmount", e.target.value)}
                       />
                     </Grid>
-                    {/* <Grid item xs={12}>
-                                    <PublishedComponent
-                                        pubRef="workforce.DatePicker"
-                                        label="Effective Date"
-                                        value={formData.decrementDate}
-                                        onChange={(date) => handleChange("decrementDate", date)}
-                                        required
-                                    />
-                                </Grid> */}
+                    <Grid item xs={12}>
+                      <PublishedComponent
+                        pubRef="workforce.DatePicker"
+                        label="Effective Date"
+                        value={formData.decrementDate}
+                        onChange={(date) => handleChange("decrementDate", date)}
+                        required
+                      />
+                    </Grid>
                   </Grid>
                 </Box>
               </Grid>

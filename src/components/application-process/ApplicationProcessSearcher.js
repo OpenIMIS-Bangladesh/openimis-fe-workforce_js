@@ -4030,7 +4030,7 @@ class ApplicationProcessSearcher extends Component {
               <Button variant="contained" color="primary" onClick={this.handleBulkApproveByAdmin}>
                 <FormattedMessage module="workforce" id="workforce.employee.application.bulkApprove" />
               </Button>
-              <IconButton onClick={this.handleOpenBFTN}>
+              <IconButton onClick={()=>this.handleOpenBFTN()}>
                 <PrintIcon />
               </IconButton>
             </Box>
@@ -4171,7 +4171,7 @@ class ApplicationProcessSearcher extends Component {
                 onSubmitRevert={this.handleRevertSubmit}
               />
             );
-          } else if (userType === WORKFORCE_USER_TYPE.ADMIN) {
+          } else if (userType === WORKFORCE_USER_TYPE.ADMIN||userType === WORKFORCE_USER_TYPE.SECRETARY||userType === WORKFORCE_USER_TYPE.MINISTER) {
             return (
               disableButtons !== 1 && (
                 <>
