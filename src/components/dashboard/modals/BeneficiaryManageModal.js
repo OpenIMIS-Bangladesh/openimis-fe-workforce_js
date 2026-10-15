@@ -293,6 +293,8 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
     }
   };
 
+  console.log({formData})
+
   const worker =
     beneficiary?.workforceApplication?.applicationType === "financialAssistance" || beneficiary?.workforceApplication?.applicationType === "deadlyGrant"
       ? safeParse(beneficiary?.workforceApplication?.deceasedWorkerInfo)?.nameBn
