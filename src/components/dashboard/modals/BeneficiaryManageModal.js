@@ -129,13 +129,13 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
         const lastPaymentDate = new Date(responseYear, responseMonth, 0);
         console.log("Last Payment Date:", lastPaymentDate);
         const selectedDate = formData.remarriageOrDeathDate !== null ? new Date(formData.remarriageOrDeathDate) : null;
-        if (selectedDate !== null && selectedDate < lastPaymentDate) {
-          alert(`Selected date (${selectedDate.toLocaleDateString("en-BD")}) cannot be earlier than the last payment month (${formatter.format(lastPaymentDate)}).`);
-          setFormData((prev) => ({
-            ...prev,
-            remarriageOrDeathDate: null,
-          }));
-        }
+        // if (selectedDate !== null && selectedDate < lastPaymentDate) {
+        //   alert(`Selected date (${selectedDate.toLocaleDateString("en-BD")}) cannot be earlier than the last payment month (${formatter.format(lastPaymentDate)}).`);
+        //   setFormData((prev) => ({
+        //     ...prev,
+        //     remarriageOrDeathDate: null,
+        //   }));
+        // }
       }
     });
   }, [formData.remarriageOrDeathDate]);
