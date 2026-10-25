@@ -67,8 +67,9 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
         (dependents.length > 0 ? dependents : [{}]).forEach((dep) => {
           const bankDetails = bankInfos.find((b) => b?.dependentNid === dep?.nid) || {};
           const grantPercent = parseFloat(dep?.percentage_of_grant || dep?.percentageOfCfGrant) || 0;
+          console.log({grantPercent})
           const approvedAmount = grantPercent > 0 ? (grantPercent / 100) * (getTotalAmount() || 200000) : (app?.grantAmount || "");
-
+          console.log({approvedAmount})
           rows.push({
             ...baseRow,
             sl: slIndex++,
@@ -110,6 +111,7 @@ const DeathDisabilityView = ({ classes, applications, dependentData, getTotalAmo
 
   const rows = getRows();
   console.log({deathDisability:applications})
+  console.log({rows:rows})
   return (
     <>
       <table className={classes.summaryTable}>

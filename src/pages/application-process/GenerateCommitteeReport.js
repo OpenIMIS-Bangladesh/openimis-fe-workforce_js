@@ -91,7 +91,7 @@ const GenerateCommitteeReport = ({ open, onClose, applications = [], userRights,
 
   const getTotalAmount = () => {
     return applications
-      .filter((item) => String(item.status) === String(status))
+      // .filter((item) => String(item.status) === String(status))
       .reduce((sum, item) => sum + (parseFloat(item.grantAmount) || 0), 0)
       .toFixed(2);
   };
