@@ -157,7 +157,7 @@ class ApplicationSummaryPage extends Component {
       } else if (status === "rejected") {
         renderSummaryData = summaryData.filter((item) => item.status === "rejected" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
       } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => item.status === "forward_to_dg" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
+        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_dg" || item.status ==="approved_by_dg"||item.status ==="approved_by_secretary"||item?.status === "approved_by_minister") && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
       }
     } else if (currentUserType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
       if (status === "pending") {
@@ -165,7 +165,7 @@ class ApplicationSummaryPage extends Component {
       } else if (status === "rejected") {
         renderSummaryData = summaryData.filter((item) => item.status === "rejected" && item.organizationType === "blwf");
       } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_dg" || item.status === "approved_by_director") && item.organizationType === "blwf");
+        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_dg" || item.status === "approved_by_director" || item.status === "approved_by_dg"||item?.status ==="approved_by_secretary"||item?.status ==="approved_by_minister") && item.organizationType === "blwf");
       }
     } else if (currentUserType === WORKFORCE_USER_TYPE.ADMIN) {
       if (status === "pending") {
@@ -173,7 +173,7 @@ class ApplicationSummaryPage extends Component {
       } else if (status === "rejected") {
         renderSummaryData = summaryData.filter((item) => item.status === "rejected");
       } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg");
+        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg" || item?.status ==="approved_by_secretary" || item?.status ==="approved_by_minister");
       }
     } else if (currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
       if (status === "pending") {
