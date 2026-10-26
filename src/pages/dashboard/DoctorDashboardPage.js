@@ -38,7 +38,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import ApplicationProcessSearcher from "../../components/application-process/ApplicationProcessSearcher";
 import { useSelector, useDispatch } from "react-redux";
 import { WORKFORCE_USER_TYPE } from "../../constants";
-import { getUserType, getUserTypeFromRights, isBlwfPath, isEisPath } from "../../utils/utils";
+import { getUserType, getUserTypeFromRights, isBlwfPath, isEisPath, safeParse } from "../../utils/utils";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles((theme) => ({
@@ -427,13 +427,22 @@ const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(null);
   const loggedInUserId = useSelector((state) => state.core?.user?.i_user?.id);
-
+  console.log(loggedInUserId)
   const handleChange = (panelId) => (event, isExpanded) => {
     setExpanded(isExpanded ? panelId : null);
   };
   return (
     <div className={classes.accordionPadding}>
-      {summaryData.map((item, index) => (
+      {summaryData.map((item, index) => {
+        const parsedUserIds = JSON.parse(item?.userIds)
+        console.log({item})
+        const isLoggedInUserValid = parsedUserIds?.includes(loggedInUserId)
+        console.log({isLoggedInUserValid})
+
+        if (!isLoggedInUserValid) {
+          return
+        }
+       return (
         <Accordion key={index} expanded={expanded === item.id} onChange={handleChange(item.id)} className={classes.accordion}>
           <AccordionSummary className={classes.accordionSummary} expandIcon={<ExpandMoreIcon className="material-icons" />}>
             <Typography variant="subtitle1" style={{ flex: 1 }}>
@@ -458,7 +467,7 @@ const MeetingSheet = ({ summaryData = [], disableButtons = 0 }) => {
             </Card>
           </AccordionDetails>
         </Accordion>
-      ))}
+      )})}
     </div>
   );
 };
@@ -484,7 +493,7 @@ const DoctorDashboard = () => {
 
   const pendingSummaryData = data.filter((d) => d.status === "forward_to_doctor" && organizationType);
   const forwardedSummaryData = data.filter((d) => d.status === "approved_by_doctor" && organizationType);
-
+  console.log({faltuData:pendingSummaryData})
   const renderContent = () => {
     const user_type = getUserType();
 

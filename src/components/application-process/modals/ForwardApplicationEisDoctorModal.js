@@ -165,6 +165,7 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
         organizationType: isEisPath() ? "eis" : !isEisPath() && !isBlwfPath() ? "cf" : "blwf",
         sectionType: "",
         applicationData: JSON.stringify(ids),
+        userIds: JSON.stringify(formData?.userIds || []),
       };
 
       console.log("createApplicationSummaryData", createApplicationSummaryData);
@@ -328,7 +329,7 @@ const ForwardApplicationEisDoctorModal = ({ open, onClose, selectedApplicationId
     }
   }, [serverResponse]);
 
-  console.log({ selectedApplicationIds });
+  console.log({ selectedApplicationIds:formData });
 
   return (
     <Modal open={open} onClose={onClose}>

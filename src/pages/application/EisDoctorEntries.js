@@ -271,7 +271,7 @@ const EisDoctorEntries = ({ handleChange, formData, setFormData, applicationType
           <Box mt={3} mb={1}>
             <Grid container justify="space-between">
               <Grid item>
-                <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>EIS-GB Sub Committee Meeting No: 16</Typography>
+                <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>{user_type === WORKFORCE_USER_TYPE.EIS_DOCTOR && "EIS-GB Sub Committee Meeting No: 16"}</Typography>
               </Grid>
               <Grid item>
                 <Typography style={{ fontWeight: "bold", fontSize: "12px", fontFamily: "Arial" }}>Date: {new Date().toLocaleDateString()}</Typography>
