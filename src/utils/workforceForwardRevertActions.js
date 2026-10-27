@@ -606,10 +606,9 @@ export const handleApprovalByDoctor = async ({
 
           toRoleId: userType === WORKFORCE_USER_TYPE.DOCTOR ? 32 : userType === WORKFORCE_USER_TYPE.BLWF_DOCTOR ? 40 : userType === WORKFORCE_USER_TYPE.EIS_DOCTOR ? 42 : null,
         };
-        const hasOtherValues = Object.keys(obj).some((key) => !["dateOfAssessment", "nameOfAssessmentMeeting"].includes(key));
+        const hasOtherValues = Object.entries(selectedItem).some(([key, value]) => !["dateOfAssessment", "nameOfAssessmentMeeting","briefInjuryDescription","briefTreatmentDescription","injurySiteLocation","injuryDetailsDescription","observationCurrentCondition"].includes(key) && value != null && value !== "");
         if (isEisPath() && !hasOtherValues) {
           throw new Error("অনুগ্রহ করে দুর্ঘটনা ও চিকিৎসা বিবরণ তথ্য প্রদান করুন। ");
-          
         }
         await updateApplication(updateApplicationData, "update workforce application");
 
@@ -625,7 +624,7 @@ export const handleApprovalByDoctor = async ({
 
       setServerResponse({
         status: "ERROR",
-        message:error?.message? error?.message: "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
+        message: error?.message ? error?.message : "আবেদন অনুমোদন ব্যর্থ হয়েছে!",
       });
     } finally {
       history.push("/");
