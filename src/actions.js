@@ -2309,6 +2309,7 @@ export function fetchEisPaymentProcess(applicationIds, mm) {
         noaSmsSent
         noaConfirmed
         routingNumber
+        remarks
         bank {
           id
           nameEn
@@ -2644,6 +2645,7 @@ export function fetchEisPaymentProcessWithoutFilters(filters, mm) {
           eisPaymentType
           routingNumber
           bankAccountNo
+          remarks
           bank {
             nameEn
             routingNumber
@@ -2717,6 +2719,7 @@ export function fetchEisPaymentProcessFiltersBeneficiary(filters, mm) {
         remarriageOrDeathDate
         routingNumber
         bankAccountNo
+        remarks
         bank {
           nameEn
           routingNumber

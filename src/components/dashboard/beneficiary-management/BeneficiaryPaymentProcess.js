@@ -256,13 +256,18 @@ const BeneficiaryPaymentProcess = () => {
                 return (
                   <TableRow key={row.id} hover>
                     <TableCell padding="checkbox" align="center">
-                      {row?.beneficiaryStatus !== "closed" && (
+                      {/* {row?.beneficiaryStatus !== "closed" && (
                         <input
                           type="checkbox"
                           checked={selectedIds.includes(row.id)}
                           onChange={() => handleRowSelect(row.id)}
                         />
-                      )}
+                      )} */}
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(row.id)}
+                        onChange={() => handleRowSelect(row.id)}
+                      />
                     </TableCell>
 
                     <TableCell>
