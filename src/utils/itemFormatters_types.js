@@ -188,7 +188,8 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
       </div>
     ) : null,
   );
-  formatters.push((application) => (
+  formatters.push((application) =>
+    component.props.status !== "approved" ?  (
     <div className={component.props.classes.horizontalButtonContainer}>
       <Tooltip title="save">
         <IconButton disabled={application?.isHistory} onClick={() => component.handleUpdateGrantMoney(application)}>
@@ -196,7 +197,7 @@ export const itemAdminFormatters = (isShowHistory, modulesManager, history, comp
         </IconButton>
       </Tooltip>
     </div>
-  ));
+  ):null);
 
   return formatters;
 };
