@@ -38,6 +38,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const parseBankInfos = (raw) => {
+  try {
+    let value = raw;
+    while (typeof value === "string") value = JSON.parse(value);
+    return Array.isArray(value) ? value : value ? [value] : [];
+  } catch {
+    return [];
+  }
+};
+
 // Add this helper function above your GenerateBFTN component definition
 const getIncidentDetails = (rawInfo) => {
   let type = "ND";
@@ -67,6 +77,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
   const [loader, setLoader] = useState(false);
   const [mappings, setMappings] = useState([]);
   const userIds = safeParse(summaryData?.userIds);
+  const [dependentsByApplication, setDependentsByApplication] = useState({});
 
   console.log({ applications });
 
@@ -192,16 +203,16 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
               updatePayload.eisApprovedByIds = JSON.stringify(approvedUserIds);
               updatePayload.status = targetStatus;
 
-              await dispatch(updateApplication(updatePayload, "update workforce application")).then(async(res)=>{
+              await dispatch(updateApplication(updatePayload, "update workforce application")).then(async (res) => {
                 const createApplicationMovementData = {
-                            applicationId: decodedId,
-                            status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
-                            note: "আবেদন পরিচালকের কাছে পাঠানো হয়েছে",
-                            action: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
-                          };
-                await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"))
+                  applicationId: decodedId,
+                  status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+                  note: "আবেদন পরিচালকের কাছে পাঠানো হয়েছে",
+                  action: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR,
+                };
+                await dispatch(createApplicationMovement(createApplicationMovementData, "create workforce movement"));
                 await dispatch(updateApplicationSummary({ id: summary_Id, status: WORKFORCE_STATUS.FORWARD_TO_DIRECTOR }, "update workforce application summary"));
-              })
+              });
             }
           }
         }
@@ -213,7 +224,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     } finally {
       setLoader(false);
       onClose();
-      window.location.reload()
+      window.location.reload();
     }
   };
 
@@ -262,23 +273,22 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     }
   }, [open]);
 
-  const fetchApplicationEmployeeDependent = async () => {
-    const applicationId = safeDecodeId(applications?.[0]?.id);
-
-    try {
-      const response = await dispatch(fetchWorkforceEmployeeDependent(modulesManager, [`workforceApplication_Id: "${applicationId}"`]));
-      const dependentData = parseData(response?.payload?.data?.workforceEmployeeDependent) || [];
-      console.log("dependentData", dependentData);
-      setDependentData(dependentData);
-    } catch (error) {
-      console.error("Failed to load dependent data", error);
-    }
-  };
   useEffect(() => {
-    if (open) {
-      fetchApplicationEmployeeDependent();
-    }
-  }, [open]);
+    if (!open) return;
+
+    const financialApplications = applications.filter((app) => app.applicationType === "financialAssistance");
+
+    Promise.all(
+      financialApplications.map(async (app) => {
+        const applicationId = safeDecodeId(app.id);
+        const response = await dispatch(fetchWorkforceEmployeeDependent(modulesManager, [`workforceApplication_Id: "${applicationId}"`]));
+
+        return [String(app.id), parseData(response?.payload?.data?.workforceEmployeeDependent) || []];
+      }),
+    )
+      .then((entries) => setDependentsByApplication(Object.fromEntries(entries)))
+      .catch((error) => console.error("Failed to load dependent data", error));
+  }, [open, applications, dispatch, modulesManager]);
 
   const loadImageAsBuffer = async (url) => {
     try {
@@ -290,6 +300,34 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
       return null;
     }
   };
+
+  const paymentRows = applications.flatMap((app) => {
+    if (app.applicationType === "financialAssistance") {
+      const dependents = dependentsByApplication[String(app.id)] || [];
+
+      return dependents.map((dep) => ({
+        applicationId: app.id,
+        applicationType: app.applicationType,
+        date: app.dateCreated,
+        accountName: dep.bankAccountHolderName,
+        accountNumber: dep.bankAccountNo,
+        receiverRoutingNumber: dep.bank?.routingNumber,
+        amount: (Number(dep.percentageOfCfGrant) / 100) * Number(app.grantAmount || 0),
+        factoryName: app.employeeFactory?.nameEn,
+      }));
+    }
+
+    return parseBankInfos(app.employeeBankInfo).map((bankInfo) => ({
+      applicationId: app.id,
+      applicationType: app.applicationType,
+      date: app.dateCreated,
+      accountName: bankInfo.accountHolderName || app.workforceEmployee?.firstNameBn,
+      accountNumber: bankInfo.accountNumber,
+      receiverRoutingNumber: bankInfo.branch?.routingNumber,
+      amount: Number(app.grantAmount || 0),
+      factoryName: app.employeeFactory?.nameEn,
+    }));
+  });
 
   const exportToExcel = async () => {
     try {
@@ -639,8 +677,8 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_COORDINATOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.EIS_ADVISOR ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.DIRECTOR ||
-    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR||
-    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECRETARY||
+    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.BLWF_DIRECTOR ||
+    getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.SECRETARY ||
     getUserTypeFromRights(userRights) === WORKFORCE_USER_TYPE.MINISTER
   ) // else if (!getUserTypeFromRights(userRights).includes("blwf"))
   {
@@ -718,7 +756,7 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                 </TableCell>
               </TableRow>
             </TableHead>
-            {applications[0]?.applicationType === "financialAssistance" ? (
+            {/* {applications[0]?.applicationType === "financialAssistance" ? (
               <>
                 <TableHead>
                   <TableRow>
@@ -857,7 +895,45 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
                   </TableRow>
                 </TableBody>
               </>
-            )}
+            )} */}
+            <TableHead>
+              <TableRow>
+                <TableCell>SL No</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Sender A/C No</TableCell>
+                <TableCell>Receiver's Routing Number</TableCell>
+                <TableCell>Sender's Routing Number</TableCell>
+                <TableCell>Account Name</TableCell>
+                <TableCell>Account No</TableCell>
+                <TableCell>Factory Name</TableCell>
+                <TableCell align="right">Approved Amount</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
+              {paymentRows.map((row, index) => (
+                <TableRow key={`${row.applicationId}-${index}`}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.date?.split("T")[0] || ""}</TableCell>
+                  <TableCell>4426336001034</TableCell>
+                  <TableCell>{row.receiverRoutingNumber || ""}</TableCell>
+                  <TableCell>200275714</TableCell>
+                  <TableCell>{row.accountName || ""}</TableCell>
+                  <TableCell>{row.accountNumber || ""}</TableCell>
+                  <TableCell>{row.factoryName || ""}</TableCell>
+                  <TableCell align="right">{row.amount || 0}</TableCell>
+                </TableRow>
+              ))}
+
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <strong>Total Amount</strong>
+                </TableCell>
+                <TableCell align="right">
+                  <strong>{getTotalAmount()}</strong>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
           {/* <FormattedBankPaymentAdvice 
              applications={applications}
