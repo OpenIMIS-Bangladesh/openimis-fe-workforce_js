@@ -432,85 +432,102 @@ const GenerateBFTN = ({ open, onClose, applications = [], userRights, status, su
 
       // Table headers
 
-      if (applications[0]?.applicationType === "financialAssistance") {
-        /* ================= FINANCIAL ASSISTANCE ================= */
+      // if (applications[0]?.applicationType === "financialAssistance") {
+      //   /* ================= FINANCIAL ASSISTANCE ================= */
 
-        const headers = [
-          "SL No",
-          "Date",
-          "Sender A/C No",
-          "Receiver's Routing Number",
-          "Sender's Routing Number",
-          "Dependent Account Name",
-          "Dependent Account No",
-          "Type(C/D)",
-          "Approved Amount",
-        ];
-        worksheet.addRow(headers);
-        worksheet.getRow(13).font = { bold: true };
-        worksheet.getRow(13).alignment = { horizontal: "center" };
+      //   const headers = [
+      //     "SL No",
+      //     "Date",
+      //     "Sender A/C No",
+      //     "Receiver's Routing Number",
+      //     "Sender's Routing Number",
+      //     "Dependent Account Name",
+      //     "Dependent Account No",
+      //     "Type(C/D)",
+      //     "Approved Amount",
+      //   ];
+      //   worksheet.addRow(headers);
+      //   worksheet.getRow(13).font = { bold: true };
+      //   worksheet.getRow(13).alignment = { horizontal: "center" };
 
-        dependentData.forEach((dep, index) => {
-          const totalGrant = getTotalAmount() || 200000;
-          const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
+      //   dependentData.forEach((dep, index) => {
+      //     const totalGrant = getTotalAmount() || 200000;
+      //     const approvedAmount = ((parseFloat(dep.percentageOfCfGrant) || 0) / 100) * totalGrant;
 
-          worksheet.addRow([
-            index + 1,
-            dep?.dateCreated?.split("T")[0] || "",
-            "4426336001034",
-            dep?.bank?.routingNumber || "",
-            "200275714",
-            dep?.bankAccountHolderName || "",
-            dep?.bankAccountNo || "",
-            "",
-            approvedAmount,
-          ]);
-        });
-      } else {
-        /* ================= OTHER APPLICATION TYPE ================= */
+      //     worksheet.addRow([
+      //       index + 1,
+      //       dep?.dateCreated?.split("T")[0] || "",
+      //       "4426336001034",
+      //       dep?.bank?.routingNumber || "",
+      //       "200275714",
+      //       dep?.bankAccountHolderName || "",
+      //       dep?.bankAccountNo || "",
+      //       "",
+      //       approvedAmount,
+      //     ]);
+      //   });
+      // } else {
+      //   /* ================= OTHER APPLICATION TYPE ================= */
 
-        const headers = [
-          "SL No",
-          "Date",
-          "Sender A/C No",
-          "Receiver's Routing Number",
-          "Sender's Routing Number",
-          "Customer Account Name",
-          "Customer Account No",
-          "Type(C/D)",
-          "Approved Amount",
-        ];
-        worksheet.addRow(headers);
-        worksheet.getRow(13).font = { bold: true };
-        worksheet.getRow(13).alignment = { horizontal: "center" };
+      //   const headers = [
+      //     "SL No",
+      //     "Date",
+      //     "Sender A/C No",
+      //     "Receiver's Routing Number",
+      //     "Sender's Routing Number",
+      //     "Customer Account Name",
+      //     "Customer Account No",
+      //     "Type(C/D)",
+      //     "Approved Amount",
+      //   ];
+      //   worksheet.addRow(headers);
+      //   worksheet.getRow(13).font = { bold: true };
+      //   worksheet.getRow(13).alignment = { horizontal: "center" };
 
-        applications
-          .flatMap((row) => {
-            let bankInfos = [];
-            try {
-              const parsed = JSON.parse(row.employeeBankInfo);
-              const finalParsed = typeof parsed === "string" ? JSON.parse(parsed) : parsed;
-              bankInfos = Array.isArray(finalParsed) ? finalParsed : [finalParsed];
-            } catch (e) {
-              console.error("Bank info parse error", e);
-              return [];
-            }
-            return bankInfos.map((bankInfo) => ({ row, bankInfo }));
-          })
-          .forEach(({ row, bankInfo }, index) => {
-            worksheet.addRow([
-              index + 1,
-              row?.dateCreated?.split("T")[0] || "",
-              "4426336001034",
-              bankInfo?.branch?.routingNumber || "",
-              "200275714",
-              bankInfo?.accountHolderName || row?.workforceEmployee?.firstNameBn || "",
-              bankInfo?.accountNumber || "",
-              "",
-              row?.grantAmount || 0,
-            ]);
-          });
-      }
+      //   applications
+      //     .flatMap((row) => {
+      //       let bankInfos = [];
+      //       try {
+      //         const parsed = JSON.parse(row.employeeBankInfo);
+      //         const finalParsed = typeof parsed === "string" ? JSON.parse(parsed) : parsed;
+      //         bankInfos = Array.isArray(finalParsed) ? finalParsed : [finalParsed];
+      //       } catch (e) {
+      //         console.error("Bank info parse error", e);
+      //         return [];
+      //       }
+      //       return bankInfos.map((bankInfo) => ({ row, bankInfo }));
+      //     })
+      //     .forEach(({ row, bankInfo }, index) => {
+      //       worksheet.addRow([
+      //         index + 1,
+      //         row?.dateCreated?.split("T")[0] || "",
+      //         "4426336001034",
+      //         bankInfo?.branch?.routingNumber || "",
+      //         "200275714",
+      //         bankInfo?.accountHolderName || row?.workforceEmployee?.firstNameBn || "",
+      //         bankInfo?.accountNumber || "",
+      //         "",
+      //         row?.grantAmount || 0,
+      //       ]);
+      //     });
+      // }
+
+      paymentRows.forEach((row, index) => {
+        worksheet.addRow([
+          index + 1,
+          row.date?.split("T")[0] || "",
+          "4426336001034",
+          row.receiverRoutingNumber || "",
+          "200275714",
+          row.accountName || "",
+          row.accountNumber || "",
+          row.factoryName || "",
+          Number(row.amount) || 0,
+        ]);
+      });
+
+      // Total matching the payment rows
+      const paymentTotal = paymentRows.reduce((sum, row) => sum + (Number(row.amount) || 0), 0);
 
       // Total amount row
       worksheet.addRow(["", "", "", "", "", "Total Amount", "", "", getTotalAmount() || 0]);
