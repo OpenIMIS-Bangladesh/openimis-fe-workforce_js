@@ -324,7 +324,7 @@ const BeneficiaryPaymentProcess = () => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      {row?.beneficiaryStatus !== "closed" && (
+                      {/* {row?.beneficiaryStatus !== "closed" && (
                         <Button
                           variant="outlined"
                           size="small"
@@ -333,7 +333,15 @@ const BeneficiaryPaymentProcess = () => {
                         >
                           Process
                         </Button>
-                      )}
+                      )} */}
+                      <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => handleApprove([row.id])}
+                          style={{ marginLeft: 6 }}
+                        >
+                          Process
+                        </Button>
                     </TableCell>
                   </TableRow>
                 );
