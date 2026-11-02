@@ -1163,6 +1163,7 @@
   "workforce.application.beneficiaryDisbursedPayments": "Beneficiary Disbursed Payments",
   "workforce.application.beneficiaryNoaConfirmation": "NOA Confirmation",
   "workforce.application.beneficiaryProcessedPaymentList": "Processed Payments",
+  "workforce.application.beneficiaryPayments": "Beneficiary Payments",
   "workforce.modal.saveCalculation": "Save Calculation",
   "workforce.modal.recalculate": "Recalculate",
   "workforce.dashboard": "Dashboard",

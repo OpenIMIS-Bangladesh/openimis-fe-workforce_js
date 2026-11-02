@@ -3793,3 +3793,57 @@ export function markAllNotificationAsRead(userId) {
   `;
   return graphql(mutation, "MARK_ALL_NOTIFICATIONS_AS_READ");
 }
+
+
+export function fetchWorkforceEisBeneficiaries(filters) {
+  const payload = `
+    {
+      workforceEisBeneficiaries(
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+      ) {
+        id
+        beneficiaryId
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
+
+export function fetchWorkforceEisBeneficiaryPayments(filters) {
+  const payload = `
+    {
+      workforceEisBeneficiaryPayments(
+        monthIndex: "${filters?.month ?? ""}"
+        year: "${filters?.year ?? ""}"
+        beneficiaryId: "${filters?.beneficiaryId ?? ""}"
+      ) {
+        id
+        monthIndex
+        year
+        eisMonthlyAmount
+        paidAmount
+        eisInitialMonthlyAmount
+        eisPaymentType
+        eisApprovedAmount
+        eisCalculatedAmount
+        eisInitialReplacementRate
+        incrementAmount
+        decrementAmount
+        totalAdjustmentAmount
+        processingDate
+        disbursementDate
+        beneficiaryId
+        isDisbursed
+        phoneNumber
+        userConfirmed
+        routingNumber
+        payFromDate
+        payToDate
+        installmentNumber
+      }
+    }
+  `;
+
+  return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
