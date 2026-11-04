@@ -2641,6 +2641,10 @@ export function fetchEisPaymentProcessWithoutFilters(filters, mm) {
           beneficiaryId
           beneficiaryStatus
           payableAmount
+          incrementAmount
+          incrementDate
+          decrementAmount
+          decrementDate
           eisApprovedAmount
           eisPaymentType
           routingNumber

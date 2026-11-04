@@ -48,6 +48,15 @@ const BeneficiaryPaymentProcess = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
+  function extractYearMonth(date) {
+      const d = new Date(date);
+
+      return {
+          year: d.getFullYear(),
+          month: d.getMonth() + 1
+      };
+  }
+
   const handleOpenModal = (row) => {
     setSelectedBeneficiary(row);
     setOpenModal(true);
@@ -252,7 +261,33 @@ const BeneficiaryPaymentProcess = () => {
                   row?.workforceApplication?.applicationType === "deadlyGrant"
                   ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameEn
                   : row?.workforceApplication?.workforceEmployee?.firstNameEn;
+                let incrementMonth= row?.incrementDate?extractYearMonth(row?.incrementDate): null;
+                let decrementMonth= row?.decrementDate?extractYearMonth(row?.decrementDate): null;
+                let incrementYearMonth= 0;
+                let decrementYearMonth= 0;
+                let payableAmount= Number(row?.payableAmount);
+                let filterYearMonth= Number(filters.year.toString()+filters.month.toString().padStart(2, '0'));
+                if (incrementMonth!==null)
+                {
+                  incrementYearMonth= Number(incrementMonth.year.toString()+incrementMonth.month.toString().padStart(2, '0'));
+                }
+                if (decrementMonth!==null)
+                {
+                  decrementYearMonth= Number(decrementMonth.year.toString()+decrementMonth.month.toString().padStart(2, '0'));
+                }
+                if(incrementYearMonth>0 || decrementYearMonth>0)
+                {
+                  console.log("incrementMonth", incrementYearMonth);
+                  console.log("decrementMonth", decrementYearMonth);
+                  console.log("filterYearMonth", filterYearMonth);
+                }
 
+                if(filterYearMonth<incrementYearMonth){
+                  payableAmount-= Number(row?.incrementAmount);
+                }
+                if(filterYearMonth<decrementYearMonth){
+                  payableAmount+= Number(row?.decrementAmount);
+                }
                 return (
                   <TableRow key={row.id} hover>
                     <TableCell padding="checkbox" align="center">
@@ -296,13 +331,13 @@ const BeneficiaryPaymentProcess = () => {
                     </TableCell>
 
                     <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.payableAmount).toLocaleString("en-BD") ?? Number(row?.payableAmount).toLocaleString("en-BD")}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(payableAmount).toLocaleString("en-BD") ?? Number(payableAmount).toLocaleString("en-BD")}</Typography>
                       <Typography variant="caption" color="textSecondary">{"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
                       <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
                     </TableCell>
                     
                     <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (Number(row?.payableAmount) + Number(row?.arrearAmount)).toLocaleString("en-BD") : Number(row?.payableAmount).toLocaleString("en-BD")}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (Number(payableAmount) + Number(row?.arrearAmount)).toLocaleString("en-BD") : Number(payableAmount).toLocaleString("en-BD")}</Typography>
                       {Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (
                         <Typography variant="caption" color="textSecondary">{"Includes increments of previous months of amount:" + Number(row?.arrearAmount).toLocaleString("en-BD")}</Typography>
                       ) : (
