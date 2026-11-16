@@ -35,7 +35,8 @@ import {
   formatWorkforceCommitteeUserGQL,
   formatWorkforceNotificationGQL,
   formatWorkforceCommitteeBankAdviceMapGQL,
-  formatWebsiteLegalGuidelineGQL
+  formatWebsiteLegalGuidelineGQL,
+  formatWorkforceLiveCheckRequestGQL
 } from "./utils/format_gql";
 import { WORKFORCE_STATUS } from "./constants";
 import { safeDecodeId } from "./utils/utils";
@@ -1206,8 +1207,33 @@ export function fetchWorkforceDocument(mm, filters) {
     "workforceEmployeeBankingInfo{id}",
     "workforceDocumentType{id,nameBn,nameEn,documentType,mandatoryForApplicant,formStepNo,fieldId}",
     "workforceDocumentMapDocumentId{edges{node{workforceApplication{id},workforceDocument{id},verifiedBy{id},verifiedByRole{id},verificationDate,note,status}}}",
+    "isVerifyRequest",
+    "verifyRequestReason",
   ];
   const payload = formatPageQueryWithCount("workforceDocuments", filters, projections);
+  return graphql(payload, "WORKFORCE_DOCUMENT");
+}
+export function fetchWorkforceLiveCheckRequest(mm, filters) {
+  const projections = [
+    "id",
+    "status",
+    "workforceApplication{id}",
+    "workforceApplicationSummary{id}",
+    "workforceEmployeeDependent{id}",
+    "workforceDocument{id,path,url}",
+    "processedBy{id}",
+    "isApproved",
+    "processingDate",
+    "approvalDate",
+    "beneficiaryId",
+    "beneficiaryNameEn",
+    "beneficiaryNameBn",
+    "reason",
+    "phoneNumber",
+    "path",
+    "url"
+  ];
+  const payload = formatPageQueryWithCount("workforceLiveCheckRequests", filters, projections);
   return graphql(payload, "WORKFORCE_DOCUMENT");
 }
 
@@ -1261,6 +1287,18 @@ export function updateWorkforceDocument(workforceDocumentType, clientMutationLab
     requestedDateTime,
   });
 }
+
+export function updateTrainedWorkforceDocument(workforceDocumentType, clientMutationLabel) {
+  const mutation = formatMutation("updateTrainBeneficiaryPhoto", formatWorkforceDocumentGQL(workforceDocumentType), clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["DOCUMENT_MUTATION_REQ", "DOCUMENT_UPDATE_DOCUMENT_RESP", "DOCUMENT_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+
+
 export function createWorkforceDocumentMap(workforceDocumentType, clientMutationLabel) {
   const mutation = formatMutation("createWorkforceDocumentMap", formatWorkforceDocumentMapGQL(workforceDocumentType), clientMutationLabel);
   const requestedDateTime = new Date();
@@ -3850,4 +3888,24 @@ export function fetchWorkforceEisBeneficiaryPayments(filters) {
   `;
 
   return graphql(payload, "EIS_PAYMENT_PROCESS");
+}
+
+
+export function createWorkforceLiveCheckRequest(workforceDocumentType, clientMutationLabel) {
+  const mutation = formatMutation("createWorkforceDocumentVerify", formatWorkforceLiveCheckRequestGQL(workforceDocumentType), clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["DOCUMENT_MUTATION_REQ", "DOCUMENT_CREATE_DOCUMENT_RESP", "DOCUMENT_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
+}
+export function updateWorkforceLiveCheckRequest(workforceDocumentType, clientMutationLabel) {
+  const mutation = formatMutation("updateWorkforceDocumentVerify", formatWorkforceLiveCheckRequestGQL(workforceDocumentType), clientMutationLabel);
+  const requestedDateTime = new Date();
+  return graphql(mutation.payload, ["DOCUMENT_MUTATION_REQ", "DOCUMENT_UPDATE_DOCUMENT_RESP", "DOCUMENT_MUTATION_ERR"], {
+    clientMutationId: mutation.clientMutationId,
+    clientMutationLabel,
+    requestedDateTime,
+  });
 }

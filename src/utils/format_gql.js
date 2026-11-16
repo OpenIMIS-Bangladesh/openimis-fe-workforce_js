@@ -587,6 +587,7 @@ export function formatWorkforceDocumentGQL(workforceDocumentType) {
     ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
     ${workforceDocumentType?.note ? `note: "${formatGQLString(workforceDocumentType?.note)}"` : ""}
     ${workforceDocumentType?.isDeleted ? `isDeleted: "${workforceDocumentType?.isDeleted}"` : ""}
+    ${workforceDocumentType?.isVerifyRequest !== undefined ? `isVerifyRequest: ${workforceDocumentType.isVerifyRequest}` : ""}
   `;
 }
 
@@ -684,5 +685,31 @@ export function formatWebsiteLegalGuidelineGQL(legalGuideline) {
     ${legalGuideline?.description ? `description: ${escapeQuotes(legalGuideline.description)}` : ""}
     ${legalGuideline?.documentUrl ? `documentUrl: "${legalGuideline.documentUrl}"` : ""}
     ${legalGuideline?.documentPath ? `documentPath: "${legalGuideline.documentPath}"` : ""}
+  `;
+}
+
+export function formatWorkforceLiveCheckRequestGQL(workforceDocumentType) {
+  return `
+    ${workforceDocumentType?.id ? `id: "${workforceDocumentType?.id}"` : ""}
+    ${workforceDocumentType?.documentId ? `documentId: "${workforceDocumentType?.documentId}"` : ""}
+    ${workforceDocumentType?.workforceApplicationId ? `workforceApplicationId: "${workforceDocumentType?.workforceApplicationId}"` : ""}
+    ${workforceDocumentType?.applicationSummaryId ? `applicationSummaryId: "${workforceDocumentType?.applicationSummaryId}"` : ""}
+    ${workforceDocumentType?.factoryId ? `factoryId: "${workforceDocumentType?.factoryId}"` : ""}
+    ${workforceDocumentType?.workforceDependentId ? `workforceDependentId: "${workforceDocumentType?.workforceDependentId}"` : ""}
+    ${workforceDocumentType?.workforceDocumentTypeId ? `workforceDocumentTypeId: "${workforceDocumentType?.workforceDocumentTypeId}"` : ""}
+    ${workforceDocumentType?.path ? `path: "${workforceDocumentType?.path}"` : ""}
+    ${workforceDocumentType?.url ? `url: "${workforceDocumentType?.url}"` : ""}
+    ${workforceDocumentType?.isDeleted ? `isDeleted: ${workforceDocumentType?.isDeleted}` : ""}
+
+    ${workforceDocumentType?.verifierId ? `verifierId: "${formatGQLString(workforceDocumentType?.verifierId)}"` : ""}
+    ${workforceDocumentType?.approverId ? `approverId: "${formatGQLString(workforceDocumentType?.approverId)}"` : ""}
+    ${workforceDocumentType?.submissionDate ? `submissionDate: "${formatGQLString(workforceDocumentType?.submissionDate)}"` : ""}
+    ${workforceDocumentType?.approvalDate ? `approvalDate: "${formatGQLString(workforceDocumentType?.approvalDate)}"` : ""}
+    ${workforceDocumentType?.remarks ? `remarks: "${formatGQLString(workforceDocumentType?.remarks)}"` : ""}
+    ${workforceDocumentType?.status ? `status: "${formatGQLString(workforceDocumentType?.status)}"` : ""}
+    ${workforceDocumentType?.note ? `note: "${formatGQLString(workforceDocumentType?.note)}"` : ""}
+    ${workforceDocumentType?.isVerifyRequest ? `isVerifyRequest: ${workforceDocumentType?.isVerifyRequest}` : ""}
+    ${workforceDocumentType?.isApproved ? `isApproved: ${workforceDocumentType?.isApproved}` : ""}
+    ${workforceDocumentType?.verifyRequestReason ? `verifyRequestReason: "${formatGQLString(workforceDocumentType?.verifyRequestReason)}"` : ""}
   `;
 }

@@ -251,8 +251,8 @@ const BeneficiaryManageModal = ({ open, onClose, onSuccess, beneficiaryId }) => 
       console.log({ targetDoc });
       console.log({ message });
       // Ensure sendSmsNotification is imported at the top
-      // await dispatch(sendSmsNotification("01537457083", message));
-      await dispatch(sendSmsNotification(beneficiary?.phoneNumber, message));
+      await dispatch(sendSmsNotification("01836774231", message));
+      // await dispatch(sendSmsNotification(beneficiary?.phoneNumber, message));
       alert("Message Sent!");
     } catch (error) {
       console.error(error);

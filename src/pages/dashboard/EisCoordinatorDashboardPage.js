@@ -56,6 +56,7 @@ import BeneficiaryBankAdviceList from "../../components/dashboard/beneficiary-ma
 import BeneficiaryDisbursedPayments from "../../components/dashboard/beneficiary-management/BeneficiaryDisbursedPayments";
 import BeneficiaryNoaConfirmation from "../../components/dashboard/beneficiary-management/BeneficiaryNoaConfirmation";
 import BeneficiaryPaymentList from "../../components/dashboard/beneficiary-management/BeneficiaryPaymentList";
+import LiveCheckVerifyRequest from "../../components/dashboard/beneficiary-management/LiveCheckVerifyRequest";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -182,6 +183,11 @@ const SidebarMenu = [
   {
     id: "applicationStatus",
     text: <FormattedMessage module="workforce" id="workforce.application.status" />,
+    icon: <AssignmentIcon />,
+  },
+  {
+    id: "liveCheckVerifyRequest",
+    text: <FormattedMessage module="workforce" id="workforce.application.liveCheckVerifyRequest" />,
     icon: <AssignmentIcon />,
   },
   {
@@ -1672,6 +1678,8 @@ const EisCoordinatorDashboardPage = () => {
         return <ApplicationStatus />;
       case "beneficiaryReportSheet":
         return <BeneficiaryReportSheet />;
+      case "liveCheckVerifyRequest":
+        return <LiveCheckVerifyRequest />;
       case "beneficiaryManagement":
         return <BeneficiaryManagement />;
       case "beneficiaryPaymentProcess":

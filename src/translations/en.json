@@ -1158,6 +1158,7 @@
   "workforce.doctor.discussionRequired":"Discussion needed",
   "workforce.doctor.rejectRequest":"Reject",
   "workforce.doctor.recommend":"Recommend",
+  "workforce.application.liveCheckVerifyRequest": "live check verify request",
   "workforce.application.beneficiaryManagement": "Beneficiary Management",
   "workforce.application.beneficiaryPaymentProcess": "Beneficiary Payment Process",
   "workforce.application.beneficiaryDisbursedPayments": "Beneficiary Disbursed Payments",
