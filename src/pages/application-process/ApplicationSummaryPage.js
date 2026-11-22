@@ -42,6 +42,67 @@ const styles = (theme) => ({
   },
 });
 
+const buildSummaryFilters = (rights, status) => {
+  const role = getUserTypeFromRights(rights || []);
+
+  const rules = {
+    [WORKFORCE_USER_TYPE.DIRECTOR]: {
+      organizationType: isBlwfPath() ? "blwf" : "cf",
+      statuses: {
+        pending: ["forward_to_director"],
+        rejected: ["rejected"],
+        approved: ["forward_to_dg", "approved_by_dg", "approved_by_secretary", "approved_by_minister"],
+      },
+    },
+    [WORKFORCE_USER_TYPE.BLWF_DIRECTOR]: {
+      organizationType: "blwf",
+      statuses: {
+        pending: ["forward_to_director"],
+        rejected: ["rejected"],
+        approved: ["forward_to_dg", "approved_by_director", "approved_by_dg", "approved_by_secretary", "approved_by_minister"],
+      },
+    },
+    [WORKFORCE_USER_TYPE.ADMIN]: {
+      statuses: {
+        pending: ["approved_by_director"],
+        rejected: ["rejected"],
+        approved: ["approved_by_dg", "approved_by_secretary", "approved_by_minister"],
+      },
+    },
+    [WORKFORCE_USER_TYPE.EIS_ADVISOR]: {
+      organizationType: "eis",
+      statuses: {
+        pending: ["forward_to_eis_advisor", "meeting_created"],
+        rejected: ["rejected"],
+        approved: ["approved_by_eis_director", "approved_by_eis_advisor"],
+      },
+    },
+    [WORKFORCE_USER_TYPE.SECRETARY]: {
+      statuses: {
+        pending: ["approved_by_dg"],
+        rejected: ["rejected"],
+        approved: ["approved_by_secretary"],
+      },
+    },
+    [WORKFORCE_USER_TYPE.MINISTER]: {
+      statuses: {
+        pending: ["approved_by_secretary"],
+        rejected: ["rejected"],
+        approved: ["approved_by_minister"],
+      },
+    },
+  };
+
+  const rule = rules[role];
+  const statuses = rule?.statuses?.[status];
+  if (!statuses) return null;
+
+  return [
+    ...(rule.organizationType ? [`organizationType:"${rule.organizationType}"`] : []),
+    statuses.length === 1 ? `status:"${statuses[0]}"` : `statusIn:[${statuses.map((value) => `"${value}"`).join(",")}]`,
+  ];
+};
+
 class ApplicationSummaryPage extends Component {
   constructor(props) {
     super(props);
@@ -64,24 +125,10 @@ class ApplicationSummaryPage extends Component {
   };
 
   handleCloseReschedule = () => {
-    this.setState(
-      {
-        rescheduleDialogOpen: false,
-        selectedRescheduleId: null,
-      },
-      () => {
-        // This callback runs AFTER the state is updated
-        const { modulesManager, fetchSummaryApplications } = this.props;
-        fetchSummaryApplications(modulesManager);
-      },
-    );
+    this.setState({ rescheduleDialogOpen: false, selectedRescheduleId: null }, this.fetchSummaryData);
   };
 
   handleRescheduleSuccess = () => {
-    const { modulesManager, fetchSummaryApplications } = this.props;
-    // Refresh the data
-    fetchSummaryApplications(modulesManager);
-    // Close the dialog automatically after success
     this.handleCloseReschedule();
   };
 
@@ -129,80 +176,116 @@ class ApplicationSummaryPage extends Component {
     });
   };
 
+  fetchSummaryData = () => {
+    const { modulesManager, fetchSummaryApplications, rights, status } = this.props;
+    const filters = buildSummaryFilters(rights, status);
+
+    if (!filters) {
+      this.setState({ isLoading: false });
+      return Promise.resolve();
+    }
+
+    this.setState({ isLoading: true });
+
+    return Promise.resolve(fetchSummaryApplications(modulesManager, filters))
+      .catch((error) => console.error("Failed to fetch summaries", error))
+      .finally(() => this.setState({ isLoading: false }));
+  };
+
   componentDidMount() {
-    const { modulesManager, fetchSummaryApplications } = this.props;
-    Promise.resolve(fetchSummaryApplications(modulesManager)).finally(() => this.setState({ isLoading: false }));
+    this.fetchSummaryData();
   }
 
   componentDidUpdate(prevProps) {
-    if (this.state.isLoading && prevProps.summaryData !== this.props.summaryData) {
-      this.setState({ isLoading: false });
+    const previousFilters = buildSummaryFilters(prevProps.rights, prevProps.status);
+    const currentFilters = buildSummaryFilters(this.props.rights, this.props.status);
+
+    if (JSON.stringify(previousFilters) !== JSON.stringify(currentFilters)) {
+      this.fetchSummaryData();
     }
   }
 
   render() {
-    const { classes, rights, applications, summaryData, loggedInUserId, status, disableButtons = 0, isLoading } = this.props;
-    // EXTRACTED new state variables
-    const { value, openGenerateBFTN, expanded, reorderedData, rescheduleDialogOpen, selectedRescheduleId } = this.state;
-
-    let renderSummaryData = [];
+    const { classes, rights, applications, summaryData, loggedInUserId, status } = this.props;
+    const { isLoading, expanded, reorderedData, rescheduleDialogOpen, selectedRescheduleId } = this.state;
 
     const currentUserType = getUserTypeFromRights(rights);
 
-    if (currentUserType === WORKFORCE_USER_TYPE.DIRECTOR) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter(
-          (item) => item.status === "forward_to_director" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"),
-        );
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_dg" || item.status ==="approved_by_dg"||item.status ==="approved_by_secretary"||item?.status === "approved_by_minister") && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
-      }
-    } else if (currentUserType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter((item) => item.status === "forward_to_director" && item.organizationType === "blwf");
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected" && item.organizationType === "blwf");
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_dg" || item.status === "approved_by_director" || item.status === "approved_by_dg"||item?.status ==="approved_by_secretary"||item?.status ==="approved_by_minister") && item.organizationType === "blwf");
-      }
-    } else if (currentUserType === WORKFORCE_USER_TYPE.ADMIN) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_director");
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected");
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg" || item?.status ==="approved_by_secretary" || item?.status ==="approved_by_minister");
-      }
-    } else if (currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_eis_advisor" || item.status === "meeting_created") && item.organizationType === "eis");
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected" && item.organizationType === "eis");
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter(
-          (item) => (item.status === "approved_by_eis_director" || item.status === "approved_by_eis_advisor") && item.organizationType === "eis",
-        );
-      }
-    } else if (currentUserType === WORKFORCE_USER_TYPE.SECRETARY) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg");
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected");
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_secretary");
-      }
-    } else if (currentUserType === WORKFORCE_USER_TYPE.MINISTER) {
-      if (status === "pending") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_secretary");
-      } else if (status === "rejected") {
-        renderSummaryData = summaryData.filter((item) => item.status === "rejected");
-      } else if (status === "approved") {
-        renderSummaryData = summaryData.filter((item) => item.status === "approved_by_minister");
-      }
-    }
+    // if (currentUserType === WORKFORCE_USER_TYPE.DIRECTOR) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter(
+    //       (item) => item.status === "forward_to_director" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"),
+    //     );
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected" && (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"));
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter(
+    //       (item) =>
+    //         (item.status === "forward_to_dg" || item.status === "approved_by_dg" || item.status === "approved_by_secretary" || item?.status === "approved_by_minister") &&
+    //         (isBlwfPath() ? (item.organizationType = "blwf") : item.organizationType === "cf"),
+    //     );
+    //   }
+    // } else if (currentUserType === WORKFORCE_USER_TYPE.BLWF_DIRECTOR) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "forward_to_director" && item.organizationType === "blwf");
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected" && item.organizationType === "blwf");
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter(
+    //       (item) =>
+    //         (item.status === "forward_to_dg" ||
+    //           item.status === "approved_by_director" ||
+    //           item.status === "approved_by_dg" ||
+    //           item?.status === "approved_by_secretary" ||
+    //           item?.status === "approved_by_minister") &&
+    //         item.organizationType === "blwf",
+    //     );
+    //   }
+    // } else if (currentUserType === WORKFORCE_USER_TYPE.ADMIN) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_director");
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected");
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg" || item?.status === "approved_by_secretary" || item?.status === "approved_by_minister");
+    //   }
+    // } else if (currentUserType === WORKFORCE_USER_TYPE.EIS_ADVISOR) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter((item) => (item.status === "forward_to_eis_advisor" || item.status === "meeting_created") && item.organizationType === "eis");
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected" && item.organizationType === "eis");
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter(
+    //       (item) => (item.status === "approved_by_eis_director" || item.status === "approved_by_eis_advisor") && item.organizationType === "eis",
+    //     );
+    //   }
+    // } else if (currentUserType === WORKFORCE_USER_TYPE.SECRETARY) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_dg");
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected");
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_secretary");
+    //   }
+    // } else if (currentUserType === WORKFORCE_USER_TYPE.MINISTER) {
+    //   if (status === "pending") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_secretary");
+    //   } else if (status === "rejected") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "rejected");
+    //   } else if (status === "approved") {
+    //     renderSummaryData = summaryData.filter((item) => item.status === "approved_by_minister");
+    //   }
+    // }
 
+    // handleCloseReschedule = () => {
+    //   this.setState({ rescheduleDialogOpen: false, selectedRescheduleId: null }, this.fetchSummaryData);
+    // };
+
+    // handleRescheduleSuccess = () => {
+    //   this.handleCloseReschedule();
+    // };
+
+    const renderSummaryData = summaryData || [];
     this.renderSummaryData = renderSummaryData;
     const dataToRender = reorderedData || renderSummaryData;
 
@@ -263,7 +346,7 @@ class ApplicationSummaryPage extends Component {
               </Accordion>
             ))}
 
-            <GenerateBFTN open={openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
+            <GenerateBFTN open={this.state.openGenerateBFTN} onClose={this.handleCloseBFTN} applications={applications} userRights={rights} />
 
             {/* ADDED: The Dialog component rendered at the root of the page to prevent nesting issues */}
             <RescheduleMeetingDialog open={rescheduleDialogOpen} onClose={this.handleCloseReschedule} summaryId={selectedRescheduleId} onSuccess={this.handleRescheduleSuccess} />
@@ -282,7 +365,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchSummaryApplications: (modulesManager) => dispatch(fetchSummaryApplications(modulesManager, "")),
+  fetchSummaryApplications: (modulesManager, filters) => dispatch(fetchSummaryApplications(modulesManager, filters)),
 });
 
 export default withModulesManager(withHistory(connect(mapStateToProps, mapDispatchToProps)(withTheme(withStyles(styles)(ApplicationSummaryPage)))));

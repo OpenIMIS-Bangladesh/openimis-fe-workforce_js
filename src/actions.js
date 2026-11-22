@@ -2858,6 +2858,13 @@ export function deleteWorkforceEisPaymentStage(ids) {
 export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
   const present_location_projection = "presentLocation" + mm.getProjection("location.Location.FlatProjection");
   const permanent_location_projection = "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const associationIds = (filters?.allAssociationIds ?? [])
+  .map((id) => `"${id}"`)
+  .join(", ");
+
+const associationFilter = associationIds
+  ? `allAssociationIdIn: [${associationIds}]`
+  : "";
   const payload = `
     {
       workforceEisPaymentDisbursementStage(
@@ -2867,6 +2874,7 @@ export function fetchWorkforceEisPaymentDisbursementStage(filters, mm) {
         notInDisburse: "${filters?.notInDisburse ?? ""}"
         workforceFactoryId: "${filters?.workforceFactoryId ?? ""}"
         allAssociationId: "${filters?.allAssociationId ?? ""}"
+        ${associationFilter}
         workforceEisBankAdviceId: "${filters?.workforceEisBankAdviceId ?? ""}"
       ) {
         id
