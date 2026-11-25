@@ -2655,6 +2655,12 @@ export function fetchEisPaymentProcessWithFilters(filters, mm) {
 export function fetchEisPaymentProcessWithoutFilters(filters, mm) {
   const present_location_projection = "presentLocation" + mm.getProjection("location.Location.FlatProjection");
   const permanent_location_projection = "permanentLocation" + mm.getProjection("location.Location.FlatProjection");
+  const associationIds = (filters?.allAssociationIds ?? [])
+  .map((id) => `"${id}"`)
+  .join(", ");
+  const associationFilter = associationIds
+  ? `allAssociationIdIn: [${associationIds}]`
+  : "";
   const payload = `
     {
       workforceEisPaymentProcess(
@@ -2671,6 +2677,7 @@ export function fetchEisPaymentProcessWithoutFilters(filters, mm) {
         approvalDateTo: "${filters?.approvalDateTo ?? ""}"
         accidentDateFrom: "${filters?.accidentDateFrom ?? ""}"
         accidentDateTo: "${filters?.accidentDateTo ?? ""}"
+        ${associationFilter}
         month: "${filters?.month ?? ""}"
         year: "${filters?.year ?? ""}"
         notInStage: "${filters?.notInStage ?? ""}"

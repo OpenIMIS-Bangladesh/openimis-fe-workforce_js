@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Typography, CircularProgress, Box, TextField, MenuItem, Grid, Button, Chip
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  CircularProgress,
+  Box,
+  TextField,
+  MenuItem,
+  Grid,
+  Button,
+  Chip,
 } from "@material-ui/core";
-import ClearAllIcon from '@material-ui/icons/ClearAll';
-import SearchIcon from '@material-ui/icons/Search';
+import ClearAllIcon from "@material-ui/icons/ClearAll";
+import SearchIcon from "@material-ui/icons/Search";
 
 import {
   fetchEisPaymentProcessWithFilters,
   createWorkforceEisPaymentStage,
   fetchWorkforceFactoriesSummary,
   fetchWorkforceAllAssociationSummary,
-  fetchEisPaymentProcessWithoutFilters
+  fetchEisPaymentProcessWithoutFilters,
 } from "../../../actions";
 import { useModulesManager, PublishedComponent } from "@openimis/fe-core";
 import { getPaymentTypeString, getRelationString, safeDecodeId, safeParse } from "../../../utils/utils";
 import BeneficiaryManageModal from "../modals/BeneficiaryManageModal";
-
 
 const BeneficiaryPaymentProcess = () => {
   const dispatch = useDispatch();
@@ -26,9 +38,7 @@ const BeneficiaryPaymentProcess = () => {
   const currentMonth = new Date().getMonth() + 1; // Months are 0-indexed
   const yearOptions = Array.from({ length: 11 }, (_, i) => currentYear - i);
   const monthOptions = Array.from({ length: 12 }, (_, i) => i + 1);
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
-
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const modulesManager = useModulesManager();
 
@@ -43,18 +53,19 @@ const BeneficiaryPaymentProcess = () => {
     year: currentYear,
     factory: "",
     association: "",
+    allAssociationIds: [],
   });
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
 
   function extractYearMonth(date) {
-      const d = new Date(date);
+    const d = new Date(date);
 
-      return {
-          year: d.getFullYear(),
-          month: d.getMonth() + 1
-      };
+    return {
+      year: d.getFullYear(),
+      month: d.getMonth() + 1,
+    };
   }
 
   const handleOpenModal = (row) => {
@@ -67,29 +78,31 @@ const BeneficiaryPaymentProcess = () => {
     setSelectedBeneficiary(null);
   };
 
-
-
   const loadData = async () => {
     setLoading(true);
     try {
-      dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then(res => setFactories(res?.payload?.data?.workforceEmployerFactories?.edges|| []));
-      dispatch(fetchWorkforceAllAssociationSummary([])).then(res => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
+      dispatch(fetchWorkforceFactoriesSummary(modulesManager, [])).then((res) => setFactories(res?.payload?.data?.workforceEmployerFactories?.edges || []));
+      dispatch(fetchWorkforceAllAssociationSummary([])).then((res) => setAssociations(res?.payload?.data?.workforceAllAssociation?.edges || []));
       const [processRes] = await Promise.all([
-        dispatch(fetchEisPaymentProcessWithoutFilters({
-          month: filters.month,
-          year: filters.year,
-          workforceFactoryId: safeDecodeId(filters.factory) ?? "",
-          allAssociationId: safeDecodeId(filters.association) ?? "",
-          status: "active",
-          // beneficiaryStatus: "eligible",
-          approved: "yes",
-          notInStage: "yes"
-        }, modulesManager)),
-
+        dispatch(
+          fetchEisPaymentProcessWithoutFilters(
+            {
+              month: filters.month,
+              year: filters.year,
+              workforceFactoryId: safeDecodeId(filters.factory) ?? "",
+              // allAssociationId: safeDecodeId(filters.association) ?? "",
+              allAssociationIds: filters.allAssociationIds.map(safeDecodeId).filter(Boolean),
+              status: "active",
+              // beneficiaryStatus: "eligible",
+              approved: "yes",
+              notInStage: "yes",
+            },
+            modulesManager,
+          ),
+        ),
       ]);
 
       setData(processRes?.payload?.data?.workforceEisPaymentProcess || []);
-
     } catch (err) {
       console.error("Data Load Error:", err);
     } finally {
@@ -103,7 +116,7 @@ const BeneficiaryPaymentProcess = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   const clearFilters = () => {
@@ -111,22 +124,19 @@ const BeneficiaryPaymentProcess = () => {
   };
 
   const getStatusChip = (row) => {
-    if (row?.beneficiaryStatus === "eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }} />;
-    if (row?.beneficiaryStatus === "closed") return <Chip label="Closed" size="small" style={{ backgroundColor: '#f5e8e8ff', color: '#7d2e2eff' }} />;
-    if (row?.beneficiaryStatus === "hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: '#f5f4e8ff', color: '#787d2eff' }} />;
+    if (row?.beneficiaryStatus === "eligible") return <Chip label="Eligible" size="small" style={{ backgroundColor: "#e8f5e9", color: "#2e7d32" }} />;
+    if (row?.beneficiaryStatus === "closed") return <Chip label="Closed" size="small" style={{ backgroundColor: "#f5e8e8ff", color: "#7d2e2eff" }} />;
+    if (row?.beneficiaryStatus === "hold") return <Chip label="On Hold" size="small" style={{ backgroundColor: "#f5f4e8ff", color: "#787d2eff" }} />;
     return <Chip label={row?.beneficiaryStatus} size="small" variant="outlined" />;
   };
 
-
   const handleRowSelect = (id) => {
-    setSelectedIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   const handleSelectAll = (checked) => {
     if (checked) {
-      setSelectedIds(data.map(row => row.id));
+      setSelectedIds(data.map((row) => row.id));
     } else {
       setSelectedIds([]);
     }
@@ -141,7 +151,6 @@ const BeneficiaryPaymentProcess = () => {
     loadData();
   };
 
-
   return (
     <Box bgcolor="#fafafa" minHeight="100vh">
       <Box mb={2} display="flex" justifyContent="space-between" alignItems="flex-end">
@@ -155,29 +164,37 @@ const BeneficiaryPaymentProcess = () => {
         </Box>
       </Box>
 
-      <Paper elevation={0} style={{ padding: '24px', marginBottom: '24px', borderRadius: '12px', border: '1px solid #eceff1' }}>
+      <Paper elevation={0} style={{ padding: "24px", marginBottom: "24px", borderRadius: "12px", border: "1px solid #eceff1" }}>
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth select label="Factory" name="factory" variant="outlined" size="small"
-              value={filters.factory} onChange={handleFilterChange}
-              disabled={loading}
-            >
-              <MenuItem value=""><em>All Factories</em></MenuItem>
-              {factories.map(f => (
-                <MenuItem key={f.node.id} value={f.node.id}>{f.node.nameBn || f.node.nameEn}</MenuItem>
+            <TextField fullWidth select label="Factory" name="factory" variant="outlined" size="small" value={filters.factory} onChange={handleFilterChange} disabled={loading}>
+              <MenuItem value="">
+                <em>All Factories</em>
+              </MenuItem>
+              {factories.map((f) => (
+                <MenuItem key={f.node.id} value={f.node.id}>
+                  {f.node.nameBn || f.node.nameEn}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <TextField
-              fullWidth select label="Association" name="association" variant="outlined" size="small"
-              value={filters.association} onChange={handleFilterChange}
-              disabled={loading}
+              fullWidth
+              select
+              label="Association"
+              name="allAssociationIds"
+              value={filters.allAssociationIds}
+              variant="outlined"
+              size="small"
+              // value={filters.associationIds}
+              onChange={handleFilterChange}
+              SelectProps={{ multiple: true }}
             >
-              <MenuItem value=""><em>All Associations</em></MenuItem>
-              {associations.map(a => (
-                <MenuItem key={a.node.id} value={a.node.id}>{a.node.shortNameBn || a.node.nameEn}</MenuItem>
+              {associations.map(({ node }) => (
+                <MenuItem key={node.id} value={node.id}>
+                  {node.shortNameBn || node.nameEn}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
@@ -193,9 +210,13 @@ const BeneficiaryPaymentProcess = () => {
               onChange={handleFilterChange}
               disabled={loading}
             >
-              <MenuItem value=""><em>All Months</em></MenuItem>
-              {monthOptions.map(month => (
-                <MenuItem key={month} value={month}>{monthNames[month - 1]}</MenuItem>
+              <MenuItem value="">
+                <em>All Months</em>
+              </MenuItem>
+              {monthOptions.map((month) => (
+                <MenuItem key={month} value={month}>
+                  {monthNames[month - 1]}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
@@ -211,8 +232,10 @@ const BeneficiaryPaymentProcess = () => {
               onChange={handleFilterChange}
               disabled={loading}
             >
-              {yearOptions.map(year => (
-                <MenuItem key={year} value={year}>{year}</MenuItem>
+              {yearOptions.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
               ))}
             </TextField>
           </Grid>
@@ -234,59 +257,60 @@ const BeneficiaryPaymentProcess = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <TableContainer component={Paper} elevation={0} style={{ borderRadius: '12px', border: '1px solid #e0e0e0' }}>
+        <TableContainer component={Paper} elevation={0} style={{ borderRadius: "12px", border: "1px solid #e0e0e0" }}>
           <Table>
-            <TableHead style={{ backgroundColor: '#f8fafd' }}>
+            <TableHead style={{ backgroundColor: "#f8fafd" }}>
               <TableRow>
                 <TableCell padding="checkbox" align="center">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.length === data.length && data.length > 0}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                  />
+                  <input type="checkbox" checked={selectedIds.length === data.length && data.length > 0} onChange={(e) => handleSelectAll(e.target.checked)} />
                 </TableCell>
                 <TableCell style={{ fontWeight: 600 }}>Beneficiary Details</TableCell>
                 <TableCell style={{ fontWeight: 600 }}>Worker, Factory & Association</TableCell>
                 <TableCell style={{ fontWeight: 600 }}>Payment Method</TableCell>
-                <TableCell align="right" style={{ fontWeight: 600 }}>Amounts</TableCell>
-                <TableCell align="right" style={{ fontWeight: 600 }}>This Month Payable</TableCell>
-                <TableCell align="center" style={{ fontWeight: 600 }}>Status</TableCell>
-                <TableCell align="center" style={{ fontWeight: 600 }}>Action</TableCell>
+                <TableCell align="right" style={{ fontWeight: 600 }}>
+                  Amounts
+                </TableCell>
+                <TableCell align="right" style={{ fontWeight: 600 }}>
+                  This Month Payable
+                </TableCell>
+                <TableCell align="center" style={{ fontWeight: 600 }}>
+                  Status
+                </TableCell>
+                <TableCell align="center" style={{ fontWeight: 600 }}>
+                  Action
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {data.map((row) => {
                 const dep = row?.workforceEmployeeDependent?.[0] || {};
-                const worker = row?.workforceApplication?.applicationType === "financialAssistance" ||
-                  row?.workforceApplication?.applicationType === "deadlyGrant"
-                  ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameEn
-                  : row?.workforceApplication?.workforceEmployee?.firstNameEn;
-                let incrementMonth= row?.incrementDate?extractYearMonth(row?.incrementDate): null;
-                let decrementMonth= row?.decrementDate?extractYearMonth(row?.decrementDate): null;
-                let incrementYearMonth= 0;
-                let decrementYearMonth= 0;
-                let payableAmount= Number(row?.payableAmount);
-                let filterYearMonth= Number(filters.year.toString()+filters.month.toString().padStart(2, '0'));
-                if (incrementMonth!==null)
-                {
-                  incrementYearMonth= Number(incrementMonth.year.toString()+incrementMonth.month.toString().padStart(2, '0'));
+                const worker =
+                  row?.workforceApplication?.applicationType === "financialAssistance" || row?.workforceApplication?.applicationType === "deadlyGrant"
+                    ? safeParse(row?.workforceApplication?.deceasedWorkerInfo)?.nameEn
+                    : row?.workforceApplication?.workforceEmployee?.firstNameEn;
+                let incrementMonth = row?.incrementDate ? extractYearMonth(row?.incrementDate) : null;
+                let decrementMonth = row?.decrementDate ? extractYearMonth(row?.decrementDate) : null;
+                let incrementYearMonth = 0;
+                let decrementYearMonth = 0;
+                let payableAmount = Number(row?.payableAmount);
+                let filterYearMonth = Number(filters.year.toString() + filters.month.toString().padStart(2, "0"));
+                if (incrementMonth !== null) {
+                  incrementYearMonth = Number(incrementMonth.year.toString() + incrementMonth.month.toString().padStart(2, "0"));
                 }
-                if (decrementMonth!==null)
-                {
-                  decrementYearMonth= Number(decrementMonth.year.toString()+decrementMonth.month.toString().padStart(2, '0'));
+                if (decrementMonth !== null) {
+                  decrementYearMonth = Number(decrementMonth.year.toString() + decrementMonth.month.toString().padStart(2, "0"));
                 }
-                if(incrementYearMonth>0 || decrementYearMonth>0)
-                {
+                if (incrementYearMonth > 0 || decrementYearMonth > 0) {
                   console.log("incrementMonth", incrementYearMonth);
                   console.log("decrementMonth", decrementYearMonth);
                   console.log("filterYearMonth", filterYearMonth);
                 }
 
-                if(filterYearMonth<incrementYearMonth){
-                  payableAmount-= Number(row?.incrementAmount);
+                if (filterYearMonth < incrementYearMonth) {
+                  payableAmount -= Number(row?.incrementAmount);
                 }
-                if(filterYearMonth<decrementYearMonth){
-                  payableAmount+= Number(row?.decrementAmount);
+                if (filterYearMonth < decrementYearMonth) {
+                  payableAmount += Number(row?.decrementAmount);
                 }
                 return (
                   <TableRow key={row.id} hover>
@@ -298,24 +322,28 @@ const BeneficiaryPaymentProcess = () => {
                           onChange={() => handleRowSelect(row.id)}
                         />
                       )} */}
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.includes(row.id)}
-                        onChange={() => handleRowSelect(row.id)}
-                      />
+                      <input type="checkbox" checked={selectedIds.includes(row.id)} onChange={() => handleRowSelect(row.id)} />
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant="subtitle2" style={{ fontWeight: 600 }}>{dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameEn || "—"}</Typography>
-                      <Typography variant="caption" color="primary">{getRelationString(dep)}</Typography>
-                      <Box mt={0.5} mb={0.5}><Chip label={row.beneficiaryId} variant="outlined" style={{ height: 20 }} /></Box>
+                      <Typography variant="subtitle2" style={{ fontWeight: 600 }}>
+                        {dep?.nameEn || dep?.nameBn || row?.workforceApplication?.workforceEmployee?.firstNameEn || "—"}
+                      </Typography>
+                      <Typography variant="caption" color="primary">
+                        {getRelationString(dep)}
+                      </Typography>
+                      <Box mt={0.5} mb={0.5}>
+                        <Chip label={row.beneficiaryId} variant="outlined" style={{ height: 20 }} />
+                      </Box>
                       <Typography variant="caption" display="block" color="textSecondary">
                         {"ATN: " + row?.workforceApplication?.trackingNumber || "N/A"}
                       </Typography>
                     </TableCell>
 
                     <TableCell>
-                      <Typography variant="body2" style={{ fontWeight: 500 }}>{worker}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 500 }}>
+                        {worker}
+                      </Typography>
                       <Typography variant="caption" display="block" color="textSecondary">
                         {row?.workforceApplication?.employeeFactory?.nameEn}
                       </Typography>
@@ -326,22 +354,43 @@ const BeneficiaryPaymentProcess = () => {
 
                     <TableCell>
                       <Typography variant="body2">{row.bank?.parent?.nameEn || "N/A"}</Typography>
-                      <Typography variant="body2">{row.bank?.nameEn + " (Routing #" + (row?.bank?.routingNumber=='0' || row?.bank?.routingNumber==null ? row?.routingNumber : row?.bank?.routingNumber) + ")" || "N/A"}</Typography>
-                      <Typography variant="caption" color="textSecondary">{"A/C: " + row.bankAccountNo}</Typography>
+                      <Typography variant="body2">
+                        {row.bank?.nameEn +
+                          " (Routing #" +
+                          (row?.bank?.routingNumber == "0" || row?.bank?.routingNumber == null ? row?.routingNumber : row?.bank?.routingNumber) +
+                          ")" || "N/A"}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {"A/C: " + row.bankAccountNo}
+                      </Typography>
                     </TableCell>
 
                     <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(payableAmount).toLocaleString("en-BD") ?? Number(payableAmount).toLocaleString("en-BD")}</Typography>
-                      <Typography variant="caption" color="textSecondary">{"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}</Typography>
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{getPaymentTypeString(row.eisPaymentType)}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>
+                        {Number(payableAmount).toLocaleString("en-BD") ?? Number(payableAmount).toLocaleString("en-BD")}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {"Total: " + (Number(row?.eisApprovedAmount).toLocaleString("en-BD") ?? "--")}
+                      </Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>
+                        {getPaymentTypeString(row.eisPaymentType)}
+                      </Typography>
                     </TableCell>
-                    
+
                     <TableCell align="right">
-                      <Typography variant="body2" style={{ fontWeight: 700 }}>{Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (Number(payableAmount) + Number(row?.arrearAmount)).toLocaleString("en-BD") : Number(payableAmount).toLocaleString("en-BD")}</Typography>
-                      {Number(row?.arrearPaymentMonth)=== Number(filters.month)-1 && Number(row?.arrearPaymentYear)=== Number(filters.year) ? (
-                        <Typography variant="caption" color="textSecondary">{"Includes increments of previous months of amount:" + Number(row?.arrearAmount).toLocaleString("en-BD")}</Typography>
+                      <Typography variant="body2" style={{ fontWeight: 700 }}>
+                        {Number(row?.arrearPaymentMonth) === Number(filters.month) - 1 && Number(row?.arrearPaymentYear) === Number(filters.year)
+                          ? (Number(payableAmount) + Number(row?.arrearAmount)).toLocaleString("en-BD")
+                          : Number(payableAmount).toLocaleString("en-BD")}
+                      </Typography>
+                      {Number(row?.arrearPaymentMonth) === Number(filters.month) - 1 && Number(row?.arrearPaymentYear) === Number(filters.year) ? (
+                        <Typography variant="caption" color="textSecondary">
+                          {"Includes increments of previous months of amount:" + Number(row?.arrearAmount).toLocaleString("en-BD")}
+                        </Typography>
                       ) : (
-                        <Typography variant="caption" color="textSecondary">{"Payable for selected Month"}</Typography>
+                        <Typography variant="caption" color="textSecondary">
+                          {"Payable for selected Month"}
+                        </Typography>
                       )}
                     </TableCell>
 
@@ -349,12 +398,12 @@ const BeneficiaryPaymentProcess = () => {
                       {getStatusChip(row)}
                       {row?.beneficiaryStatus === "hold" && (
                         <Typography variant="caption" color="success">
-                          {"Payment on hold From "+ (row?.lastLiveCheckDate)}
+                          {"Payment on hold From " + row?.lastLiveCheckDate}
                         </Typography>
                       )}
                       {row?.beneficiaryStatus === "closed" && (
                         <Typography variant="caption" color="success">
-                          {"Payment closed From "+ (row?.remarriageOrDeathDate)}
+                          {"Payment closed From " + row?.remarriageOrDeathDate}
                         </Typography>
                       )}
                     </TableCell>
@@ -369,14 +418,9 @@ const BeneficiaryPaymentProcess = () => {
                           Process
                         </Button>
                       )} */}
-                      <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => handleApprove([row.id])}
-                          style={{ marginLeft: 6 }}
-                        >
-                          Process
-                        </Button>
+                      <Button variant="outlined" size="small" onClick={() => handleApprove([row.id])} style={{ marginLeft: 6 }}>
+                        Process
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -392,12 +436,7 @@ const BeneficiaryPaymentProcess = () => {
       )}
       <Box mt={2} display="flex" justifyContent="flex-end" alignItems="center" gap="8px">
         {selectedIds.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!selectedIds.length}
-            onClick={() => handleApprove(selectedIds)}
-          >
+          <Button variant="contained" color="primary" disabled={!selectedIds.length} onClick={() => handleApprove(selectedIds)}>
             Approve Selected
           </Button>
         )}
